@@ -1,2 +1,2 @@
 # DSF_BookIndexBuilding
-Building an index of the book
+A tool to automatically build back-of-the-book index 
