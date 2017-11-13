@@ -1,0 +1,1500 @@
+%%chapter%% 08
+<%
+  require "./scripts/eruby_util.rb"
+%>
+
+<%
+  chapter(
+    '08',
+    %q{The integral},
+    'ch:integral'
+  )
+%>
+
+<% begin_sec("The accumulation of change",nil,'accumulation') %>
+  <% begin_sec("Change that accumulates in discrete steps",nil,'discrete-sums') %>
+    <% begin_sec("A schoolboy plays a trick",nil,'schoolboy-trick') %>
+Toward the end of the eighteenth century, a German elementary school teacher
+decided to keep his pupils busy by assigning them a long, boring arithmetic
+problem: to add up all the numbers
+from one to a hundred.\footnote{I'm giving my own retelling of a hoary legend. We don't really know the exact problem, just that it was
+supposed to have been something of this flavor.}
+% http://www.americanscientist.org/issues/pub/gausss-day-of-reckoning#
+ The children set to work on their slates, and the teacher
+lit his pipe, confident of a long break. But almost immediately, a boy named
+Carl Friedrich Gauss brought up his answer: 5,050.\label{gauss-story}\index{Gauss, Carl Friedrich}
+
+<% marg(-17) %>
+<%
+  fig(
+    'gauss-square',
+    %q{Adding the numbers from 1 to 7.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'gauss-solution',
+    %q{A trick for finding the sum.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'gauss',
+    %q{Carl Friedrich Gauss (1777-1855), a long time after graduating from elementary school.}
+  )  
+%>
+<% end_marg %>
+
+Figure \figref{gauss-square} suggests one way of solving this type of problem.
+The filled-in columns of the graph represent the numbers from 1 to 7, and
+adding them up means finding the area of the shaded region. Roughly half the
+square is shaded in, so if we want only an approximate solution, we can
+simply calculate $7^2/2=24.5$.
+
+But, as suggested in figure \figref{gauss-solution}, it's not much more work to
+get an exact result. There are seven sawteeth sticking out out above the diagonal,
+with a total area of $7/2$, so the total shaded area is $(7^2+7)/2=28$.
+In general, the sum of the first $n$ numbers will be $(n^2+n)/2$, which explains
+Gauss's result: $(100^2+100)/2=5,050$.
+
+There is a tantalizing hint here of a link with differential calculus, because the
+derivative of a real function $f(n)=(n^2+n)/2$ is almost, but not quite, equal to $n$.
+    <% end_sec('schoolboy-trick') %>
+
+    <% begin_sec("Accumulation of change in discrete steps",nil,'discrete-accumulation') %>
+
+Problems like this come up frequently. Imagine that each household in a certain
+small town sends a total of one ton of garbage to the dump every year. Over
+time, the garbage accumulates in the dump, taking up more and more space.
+If the population is constant, then
+garbage accumulates at a constant rate.
+But maybe the town's population is growing. If the population starts out
+as 1 household in year 1, and then grows to 2 in year 2, and so on, then
+we have the same kind of problem that the young Gauss solved. After 100
+years, the accumulated amount of garbage will be 5,050 tons. The pile of
+refuse grows more quickly every year.
+    <% end_sec('discrete-accumulation') %>
+
+    <% begin_sec("Sigma notation",nil,'sigma-notation') %>\index{sigma ($\Sigma$) notation}
+There is a convenient way of notating sums like the ones we've been doing,
+which involves $\Sigma$, called ``sigma,'' the capital Greek letter ``S.''
+Here the ``S'' stands for ``sum.'' The sigma notation looks like this:
+\begin{equation}\label{eqn:sigma-notation}
+  \sum_{i=1}^{100} \; i = 5,050
+\end{equation}
+This is read as ``the sum of $i$ for $i$ from 1 to 100 equals 5,050.''
+The version without the sigma notation is much more cumbersome to write:
+\begin{equation}\label{eqn:no-sigma-notation}
+  1+2+3+\ldots+100 = 5,050
+\end{equation}
+In equation \eqref{eqn:sigma-notation}, $i$ is a dummy variable. We could have written
+\begin{equation*}
+  \sum_{j=1}^{100} \; j = 5,050
+\end{equation*}
+and it would have meant exactly the same thing.
+We've already seen some examples of dummy variables. In set notation (box \figref{sets}, p.~\pageref{fig:sets}),
+\begin{equation*}
+ \zu{S}=\{x|x^2>0\} \quad \text{and} \quad \zu{T}=\{y|y^2>0\}
+\end{equation*}
+describe exactly the same set, and S=T. Similarly, the function $f$ defined by $f(u)=u^2$ and the function
+$g$ defined by $g(v)=v^2$ are the same function, $f=g$.
+    <% end_sec('sigma-notation') %>
+  <% end_sec('discrete-sums') %>
+
+  <% begin_sec("The area under a graph",nil,'area-under-a-graph') %>
+The examples in section \ref{subsec:discrete-sums} involved change that occurred in discrete
+steps. Calculus is concerned with \emph{continuous} change. The continuous analog of
+a discrete sum is the area under a graph.
+Let $f$ be a function that is defined on an interval\footnote{For
+interval notation, see p.~\pageref{interval-notation}.} $[a,b]$
+and assume the value of $f$ is always positive (so that its graph lies above
+the $x$ axis). \emph{How large is the area of the region caught
+  between the $x$ axis, the graph of $y=f(x)$ and the vertical lines
+  $y=a$ and $y=b$?}
+  <% end_sec('area-under-a-graph') %>
+<% marg(0) %>
+<%
+  fig(
+    'riemann-portrait',
+    %q{Bernhard Riemann (1826-1866).}
+  )  
+%>
+<% end_marg %>
+
+<%
+  fig(
+    'area-under-graph',
+    %q{1.~The area under the graph of the function $f$. 2.~Approximating this area using 20 thin rectangles.},
+    {
+      'width'=>'wide',
+      'sidecaption'=>false
+    }
+  )
+%>
+
+  <% begin_sec("Approximation using a Riemann sum",nil,'riemann-sum') %>
+
+We can try to compute this area, figure \figref{area-under-graph}{1}, by approximating
+the region with many thin rectangles, \figref{area-under-graph}{2}.  The idea is that
+even though we don't know how to compute the area of a region bounded
+by arbitrary curves, we do know how to find the area of one or more
+rectangles. In this example, we've subdivided the interval from $a$ to $b$
+into $n=20$ equal subintervals, each of width $\Delta x=(b-a)/n$.
+Let's write $x_1$ for the $x$ value that lies in the center of the first
+subinterval, etc.
+We've chosen the height of each rectangle so that its top intersects the
+graph at this midpoint, so that, e.g., the height of the first rectangle
+is $f(x_1)$.
+The area of the $k^{\textrm{th}}$ rectangle is the product of its
+height and width, which is $f(x_k)\Delta x$.  Adding up all the rectangles'
+areas yields
+\begin{equation}\label{eqn:riemann-sum}
+  R = \sum_{k=1}^n (\text{height})(\text{width}) = \sum_{k=1}^n f(x_k)\Delta x\eqquad.
+\end{equation}
+This is an example of what is called a \emph{Riemann sum}, meaning an approximation
+to the area under a curve using rectangles.\index{Riemann sum}
+This particular type of Riemann sum
+is one in which (a) the interval is subdivided into equal parts, and (b) the value
+of the function is sampled at the center of each subinterval.
+
+If $f$ is negative in certain places, then
+we will hit certain values of $k$ for which the product $f(x_k)\Delta x$ is negative.
+We will simply \emph{define} areas below the $x$ axis to be negative. We think of
+the rectangle as having positive width $\Delta x$ but negative height $f(x_k)$. A similar
+geometrical example is the use of negative numbers for angles that are directed contrary
+to a standard direction of rotation.
+
+If our rectangles are all sufficiently narrow then we expect the total
+area of all the rectangles to be a good approximation of the area of the region
+under the graph.
+  <% end_sec('riemann-sum') %>
+<% end_sec('accumulation') %>
+
+<% begin_sec("The definite integral",nil,'definite-integral') %>\index{integral!definite}
+  <% begin_sec("Definition of the integral of a continuous function",nil,'integral') %>
+This suggests the following definition.
+
+\begin{important}[Definition of the integral of a continuous function]\index{integral!definite!defined for a continuous function}
+  If $f$ is a continuous function defined on an interval $[a, b]$, then
+  the integral of $f(x)$ from $x=a$ to $b$ is defined as
+  \begin{equation*}
+    \lim_{\Delta x\rightarrow 0} R\eqquad,
+  \end{equation*}
+  where $R$ is the type of Riemann sum defined above, using equal subintervals
+  sampled at their centers.
+\end{important}
+
+<%
+  fig(
+    'visualize-riemann-integral',
+    %q{Three Riemann sums for the same function on the same interval. As $\Delta x$ approaches zero,
+       the total area approaches
+       the Riemann integral.},
+    {
+      'width'=>'wide',
+      'sidecaption'=>false
+    }
+  )
+%>
+
+Finding the integral of a function referred to as integrating it. The idea behind the
+words is that one meaning of ``integrate'' in ordinary speech
+is to assemble a whole out of smaller parts. For example, you could integrate
+sit-ups into your routine at the gym.
+
+Up until now we've been doing differential calculus. The other half of calculus,
+integral calculus, consists of the study of integrals. The type of integral defined
+here is called a definite integral. We'll see later that there is another type, called
+the indefinite integral.
+
+This definition is restricted to continuous functions. A more general definition is
+given in section \ref{subsec:integral-discontinuous}, p.~\pageref{subsec:integral-discontinuous}.
+
+<%
+  fig(
+    'riemann-triangle-area',
+    %q{Example \ref{eg:riemann-triangle-area}.},
+    {
+      'width'=>'wide',
+      'sidecaption'=>false
+    }
+  )
+%>
+
+\begin{eg}{A triangle}\label{eg:riemann-triangle-area}
+Let $f(x)=x$. Then the integral of $f$ from $0$ to $1$ represents the area of a triangle
+with height 1 and a base of width 1. We know from elementary geometry that this shape has
+an area equal to $\frac{1}{2}(\text{base})(\text{height})=\frac{1}{2}$, so we don't need
+integral calculus to determine it. But let's see how this works
+out if we do it as an integral, in order to get comfortable with the tool and see if it
+works in a case where we already know the answer.
+
+When we split up the interval $[0,1]$ into $n$ parts, we have $\Delta x=1/n$.
+The first subinterval is $[0,\Delta x$], and its center is
+the first sample point, $x_1=(1/2)\Delta x$. Continuing in this way, we have
+$x_k=(k-1/2)\Delta x$, for $k$ running from 1 to $n$. Since our function is just
+$f(x)=x$, we also have $f(x_k)=(k-1/2)\Delta x$. 
+The Riemann sum $R$ is shown in figure \figref{riemann-triangle-area}. It looks
+almost exactly like the staircase in \figref{gauss-square} on
+p.~\pageref{fig:gauss-square}. There are two differences: (1) in the
+original staircase problem, the graph covered a
+region of graph paper $n$ squares wide and $n$ squares tall, whereas the graph of our
+Riemann sum is scaled down so that it fits inside  a single
+ square with a width of 1 and a height of 1; (2) all of the steps have been lowered by
+half a step.
+
+When we evaluate the Riemann sum, we find that the fates have been kind to us, and
+its value in this example always seems to be $1/2$, for every $n$. For example, with $n=3$ the Riemann sum is 
+$\frac{1}{6}\Delta x+\frac{1}{2}\Delta x+\frac{5}{6}\Delta x=\frac{9}{6}\Delta x=\frac{1}{2}$.
+
+To see that this is always true in this example, let's go ahead and compute the Riemann sum
+for an arbitrary $n$.
+\begin{align*}
+  R &= \sum_{k=1}^n f(x_k)\Delta x \\
+    &= \sum_{k=1}^n \left[\left(k-\frac{1}{2}\right)\Delta x\right]\Delta x \\
+    &= (\Delta x)^2 \sum_{k=1}^n \left(k-\frac{1}{2}\right) \\
+    &= (\Delta x)^2 \left[\left(\sum_{k=1}^n k\right) -\left(\sum_{k=1}^n \frac{1}{2}\right)\right] \\
+    &= (\Delta x)^2 \left[\left(\sum_{k=1}^n k\right) -\frac{n}{2}\right]
+\end{align*}
+The sum over $k$ is the same one that we encountered in our previous study of the
+``staircase'' sum; it equals $(n^2+n)/2$. The result is:
+\begin{align*}
+  R &= (\Delta x)^2 \left\{\left[\frac{n^2+n}{2}\right] -\frac{n}{2}\right\} \\
+    &= (\Delta x)^2 \frac{n^2}{2}
+\end{align*}
+But $\Delta x=1/n$, so $R=1/2$ exactly for every $n$, and
+the integral equals
+\begin{equation*}
+  \lim_{n\rightarrow\infty} R = \frac{1}{2}\eqquad,
+\end{equation*}
+as expected geometrically.
+\end{eg}
+  <% end_sec('integral') %>
+
+  <% begin_sec("Leibniz notation",4,'integral-leibniz') %>\index{Leibniz notation!integral}\index{integral!definite!Leibniz notation}
+If we take equation \eqref{eqn:riemann-sum} that defines the Riemann sum $R$, and substitute it
+into the definition of the integral $\lim_{\Delta x\rightarrow 0} R$, the result looks
+like this:
+\begin{equation*}
+  \lim_{\Delta x\rightarrow 0} \sum_{k=1}^n f(x_k)\Delta x
+\end{equation*}
+Leibniz invented the following expressive, versatile, and useful notation for this limit:
+\begin{equation*}
+  \int_a^b f(x) \der x
+\end{equation*}
+The symbol $\int$ is an ``S'' that's been stretched like taffy.
+It stands for ``sum,'' just as the sigma, $\Sigma$,
+stands for ``sum.'' But we think of $\int$ as meaning a \emph{smooth} sum, whose graphical
+representation is the area under a smooth curve rather than under a staircase. Notice how the shape
+of $\int$ is smooth. Like the $k$ in the sigma notation, the $x$ in this example is a dummy variable.
+Therefore $\int_a^b f(x) \der x$ means exactly the same thing as $\int_a^b f(s) \der s$. The
+dummy variable inside an integral is referred to as a variable of integration, and has no
+meaning outside the integral. One of the reasons for writing the
+$\der x$ is that it states what we're integrating with respect to.
+
+
+\begin{eg}{Leibniz notation for the area of a triangle}\label{eg:leibniz-triangle-area}
+In example \ref{eg:riemann-triangle-area}, we integrated the function $f(x)=x$ from $x=0$ to 1, and
+found that it was 1/2. In Leibniz notation, the result is written like this:
+\begin{equation*}
+  \int_0^1 x\:\der x = \frac{1}{2}
+\end{equation*}
+It makes no difference if we notate this instead with $s$ as the variable of integration:
+\begin{equation*}
+  \int_0^1 s\:\der s = \frac{1}{2}
+\end{equation*}
+\end{eg}
+
+\begin{eg}{A rectangle}\label{eg:riemann-rectangle-area}
+\egquestion Evaluate
+\begin{equation*}
+  \int_0^4 1\:\der x\eqquad.
+\end{equation*}
+
+\eganswer The graph of this function is a rectangle with height 1 and width 4.
+A rectangle is a shape that can be sliced up into thin, vertical slices that are
+also rectangles, and this is what any Riemann-sum approximation to this integral
+will look like. The approximations aren't really approximations at all. Every
+Riemann sum has an area of 4, so the limit occurring in the definition of the
+integral is 4. This is of course the correct result for the area of this rectangle.
+\end{eg}
+
+
+We defined the Leibniz notation as simply a notation for a certain limit, but we can think of
+it conceptually as a sum with infinitely many terms. That is, we make a Riemann sum with
+infinitely many rectangles. Normally if you added up an infinite
+number of things, you would expect to get an infinite result. But remember, each of these rectangles
+is infinitely skinny. We think of $\der x$ as being the infinitely small width, so that the area
+$f(x)\der x$ is infinitely small. We're therefore adding an infinite number of things, each of which
+is infinitely small, so that the result can be finite. Recall that, as discussed in section
+\ref{sec:safe-handling-of-dx}, p.~\pageref{sec:safe-handling-of-dx}, the real number system doesn't
+have infinitely big or infinitely small numbers; however, if we handle our infinities
+according to the simple rules given
+in that section, nothing bad happens. Historically, these rules weren't formalized, and practitioners just
+knew that if they did their work according to certain methods, the Leibniz notation never led
+to the wrong result. This confusion was definitively cleared up around 1965, but many mathematicians
+have been influenced by the historical uneasiness about the Leibniz notation, so they prefer to think
+of $\int\ldots\der x$ purely as a shorthand notation for a limit. This is a matter of taste. Those who prefer
+to think of it only as a shorthand will consider the $\der x$ inside the integral to be nothing
+more than punctuation, like the period at the end of a sentence. From this point of view, its
+only job is to tell us what the dummy variable is, i.e., what we're integrating with respect to.
+
+\begin{eg}{Moving the $\der x$ around}\label{eg:moving-the-dx}
+One of the rules in section \ref{sec:safe-handling-of-dx} was that we were allowed to manipulate
+differentials such as $\der x$ using any of the elementary axioms of the real numbers
+(section \ref{sec:elementary-reals}, p.~\pageref{sec:elementary-reals}). One of these axioms is
+that multiplication is commutative, $uv=vu$. Therefore the integral in example
+\ref{eg:leibniz-triangle-area} on p.~\pageref{eg:leibniz-triangle-area} can be written in either
+of the following equivalent ways:
+\begin{equation*}
+  \int_0^1 x\:\der x = \frac{1}{2}   \qquad    \int_0^1 \der x \: x = \frac{1}{2}
+\end{equation*}
+Similarly, all of the following are the same integral:
+\begin{equation*}
+  \int_1^2 \frac{1}{x}\:\der x = \int_1^2 \der x\:\frac{1}{x} = \int_1^2 \frac{\der x}{x}
+\end{equation*}
+Most people would write it with the $\der x$ on top, which makes it more compact.
+\end{eg}
+
+\begin{eg}{The integral of \ldots what?}\label{eg:integral-of-what}
+How should we interpret this expression?
+\begin{equation*}
+  \int_0^4 \der x
+\end{equation*}
+There doesn't seem to be any function written inside the integral, so what is it that
+we're integrating? One of the elementary axioms of the real numbers
+(section \ref{sec:elementary-reals}, p.~\pageref{sec:elementary-reals}) is that 1 is the
+multiplicative identity, i.e., $1u=u$ for any number $u$. As discussed in section
+\ref{sec:safe-handling-of-dx}, the elementary axioms also apply to differentials. 
+Therefore it's valid to rewrite our integral as follows.
+\begin{equation*}
+  \int_0^4 1 \der x
+\end{equation*}
+The function we're integrating is 1, which makes this the same integral as the one
+in example \ref{eg:riemann-rectangle-area} on p.~\pageref{eg:riemann-rectangle-area}.
+The result is 4.
+
+Another way of interpreting the original form of the integral is that $\der x$ means
+``a little bit of $x$,'' so that the integral expresses the idea of letting $x$ change
+from 0 to 4, and adding up all the little changes in $x$. Clearly the sum of all the
+little changes will be the total change, which is 4.
+\end{eg}
+
+Another nice feature of the Leibniz notation is that it makes the units come out right.\index{Leibniz notation!units}
+Consider our earlier example of the town dump. Suppose that the rate of garbage
+production is given by a function $p(t)$, where $t$ is in units of years
+and $p$ in tons per year. Then the amount of garbage accumulated at the town dump
+from year $a$ to year $b$ is given by
+\begin{equation*}
+  \int_a^b p(t)\:\der t\eqquad.
+\end{equation*}
+The integral sign $\int$ is a kind of sum, and the units of a sum are the same
+as the units of each term. Since $\der$ means ``a little bit of \ldots,''
+$\der t$ stands for a little bit of time, and it therefore also has units of years.
+The units of the terms in the sum are
+\begin{equation*}
+  \frac{\text{tons}}{\text{year}} \times \text{years} = \text{tons}\eqquad,
+\end{equation*}
+which makes sense.
+
+We can now see three independent reasons why an integral such as $\int_0^1 x^2\:\der x$
+can't be written like $\int_0^1 x^2$, without the $\der x$:\label{why-you-need-dx}
+\begin{enumerate}
+  \item If $x$ has units, then the expression without the $\der x$ has the wrong units.
+  \item It would be a sum of infinitely many numbers, each of them finite, so it would probably be infinite.
+  \item If we don't write the $\der x$, we haven't stated what we're integrating with respect to.
+\end{enumerate}
+  <% end_sec('integral-leibniz') %>
+
+<% end_sec('definite-integral') %>
+
+<% begin_sec("The fundamental theorem of calculus",4,'fundamental-theorem') %>
+  <% begin_sec("A connection between the derivative and the integral",nil,'connect-derivative-and-integral') %>
+We've already seen some clear indications of a link between derivatives and integrals.
+A derivative is a rate of change, and an integral measures the accumulation of change.
+Let's say for concreteness that we're talking about functions of time.
+If a function $A$ tells us the rate at which function $B$ changes, then $B$ tells us
+how the rate of change measured by $A$ has accumulated over time. That is, it seems
+clear conceptually that the integral and the derivative are inverse operations: operations
+that undo each other, in the same way that subtraction undoes addition, or a square
+root undoes a square.
+<% marg(0) %>
+<%
+  fig(
+    'garbage-spreadsheet-bitmap',
+    %q{Columns A and B in the spreadsheet relate to each other approximately as derivative and integral.}
+  )  
+%>
+<% end_marg %>
+
+Figure \figref{garbage-spreadsheet-bitmap} shows this in the context of discrete rather than
+continuous functions. Column A shows how many tons of garbage are sent to the town dump per year.
+It is the rate of change of the pile at the dump, which is given in column B. The population
+is growing, so column A is not constant. Presumably one of these columns was typed into the
+spreadsheet from data collected by the town, but we can't tell from looking at the spreadsheet
+which one it was. It's possible that the raw data was column A, in which case column B would
+have been constructed by telling the spreadsheet software to calculate a running sum based on A.
+The running sum of a discrete function is conceptually similar to the integral of a continuous
+one, so we can say that in some loose sense that B is the integral of A. On the other hand,
+it's possible that the raw data was column B: a municipal employee has been going out to the dump at yearly
+intervals and measuring how big the pile of trash was. Column A would then have been calculated from B
+by taking differences of successive years. This is conceptually similar to saying that A is the
+derivative of B.
+  <% end_sec('connect-derivative-and-integral') %>
+  <% begin_sec("What the fundamental theorem says",nil,'fundamental-theorem-statement') %>
+
+\begin{theorem}[The fundamental theorem of calculus]\index{fundamental theorem of calculus!integral of a derivative}
+  Let $f$ be a function defined on the interval $[a,b]$, and let $f$ be differentiable
+  on that interval. Then
+  \begin{equation}
+    \label{eqn:fundamental-theorem}
+    \int_a^b \frac{\der f}{\der x} \der x = f(b) - f(a)\eqquad.
+  \end{equation}
+\end{theorem}
+
+On the left-hand side, we have taken a function, differentiated it, and
+then integrated it. The right-hand side is a simple expression involving the
+original function, i.e., in some sense the integration has undone the
+differentiation, and we are left with the same function we started with.
+<% marg(0) %>
+<%
+  fig(
+    'garbage-spreadsheet-different-initial-conditions',
+    %q{The initial amount of garbage is 1000 tons rather than zero.}
+  )  
+%>
+<% end_marg %>
+
+To see why the right-hand side contains a difference of two values of
+$f$, consider figure \figref{garbage-spreadsheet-different-initial-conditions},
+which is a modified version of \figref{garbage-spreadsheet-bitmap}. What's changed
+is that rather than starting out empty in the first year, in this version of
+history the dump started out with 1000 tons of garbage already in it.
+This alteration of column B, however, has no effect on column A. For example,
+the subtraction $1015-1010$ gives the same result as $15-10$. 
+The fundamental theorem tells us that we can make a ``round trip'' by computing column
+A from column B using differences, and then reconstructing column B again by taking a running sum.
+But the round trip isn't perfect (cf.~figure
+\figref{chinese}). Some information is lost, because given column A,
+we can't tell whether the version of column B we should reconstruct is the one in
+figure \figref{garbage-spreadsheet-bitmap}, the one in 
+\figref{garbage-spreadsheet-different-initial-conditions}, or some other version that differs
+from them by some other additive constant. What we \emph{can} tell is that the \emph{difference}
+between the initial and final cells of column B must have been 28, which is the sum of
+column A.
+<% marg(100) %>
+<%
+  fig(
+    'chinese',
+    %q{After translation by a computer from English to Chinese, and then back to English, 
+       the original sentence is not quite the same. By analogy, the fundamental theorem tells us that
+       if we differentiate, then integrate, we cannot quite recover the original
+       function: we lose any information that amounts to an over-all additive constant.}
+  )  
+%>
+<% end_marg %>
+
+In terms of continuous functions rather
+than discrete ones, adding a constant onto $f$ doesn't change the derivative $\der f/\der x$.
+Therefore the left-hand side of the fundamental theorem can never tell us the \emph{value} of
+$f$ but only the \emph{difference in values} between $x=a$ and $x=b$.
+
+  <% end_sec('fundamental-theorem-statement') %>
+  <% begin_sec("A pseudo-proof",nil,'fundamental-theorem-pseudo-proof') %>
+
+We've seen examples before in which the Leibniz notation makes certain facts about calculus
+seem so obvious that they don't seem to need any further proof. This happens, for
+example, if we rewrite the chain
+rule as $\der z/\der x = (\der z/\der y)(\der y/\der x)$, which makes it seem like a simple
+fact about algebra; but this is not quite a rigorous proof for the reasons explained
+in example \ref{eg:chain-rule-not-quite-proof}, p.~\pageref{eg:chain-rule-not-quite-proof}.
+It's a ``pseudo-proof,'' but that's not necessarily a bad thing. Pseudo-proofs can be good.
+The pseudo-proof helps
+us to understand why the result makes sense, and it can, if we wish, serve as the backbone of a more
+rigorous proof.
+
+We will give a real proof of the fundamental theorem in section
+\ref{subsec:fundamental-theorem-proof}, p.~\pageref{subsec:fundamental-theorem-proof},
+but let's warm up with the pseudo-proof, which is pretty simple. We start with a statement of the
+result,
+\begin{equation}
+    \int_a^b \frac{\der f}{\der x} \der x \stackrel{?}{=} f(b) - f(a)\eqquad,
+\end{equation}
+with the question mark above the equals sign to show that this is what we are hoping to prove.
+For the same reasons as in example \ref{eg:chain-rule-not-quite-proof}
+on p.~\pageref{eg:chain-rule-not-quite-proof}, it is not quite valid to cancel the factors of
+$\der x$, but we'll do it anyway because this is only meant to be a pseudo-proof.
+\begin{equation}\label{eqn:fund-thm-pseudo-proof-2}
+    \int_{f(a)}^{f(b)} \der f \stackrel{?}{=} f(b) - f(a) 
+\end{equation}
+We can interpret the symbol $\der f$ as ``a little bit of $f$,'' so that the left-hand side
+is the sum of many very small changes in $f$. The limits of integration are now stated in terms
+of the values of $f$, since $f$ is now the variable of integration, not $x$. (It's true, but
+not as obvious, that this is equally valid regardless of whether $f$ is always increasing or
+always decreasing. If $f$ goes up and then comes back down, we could, for example, have
+$f(a)=f(b)$, so that the upper and lower limits of integration were the same.)
+
+It's clearly
+reasonable now to hope that we can make the left-hand side of equation \eqref{eqn:fund-thm-pseudo-proof-2} equal
+the right. The left-hand side
+says that we add up many small changes in the variable $f$. The right-hand side is simply the
+total accumulated change in $f$. To see this a little more explicitly, let's insert
+a factor of 1 inside the integral, as in example \ref{eg:integral-of-what}, p.~\pageref{eg:integral-of-what}.
+\begin{equation}\label{eqn:fund-thm-pseudo-proof-3}
+    \int_{f(a)}^{f(b)} 1\cdot\der f = f(b) - f(a) 
+\end{equation}
+As in that example, this integral represents the area of a rectangle. The rectangle has width
+$f(b)-f(a)$ and height 1, so its area is $f(b)-f(a)$, and the equation holds.
+
+This pseudo-proof is refined into a real proof in section
+\ref{subsec:fundamental-theorem-proof}, p.~\pageref{subsec:fundamental-theorem-proof},
+
+  <% end_sec('fundamental-theorem-pseudo-proof') %>
+
+
+  <% begin_sec("Using the fundamental theorem to integrate; the indefinite integral",nil,'using-fundamental-theorem') %>
+    <% begin_sec("Avoiding the Riemann sum",nil,'avoiding-riemann-sum') %>
+The fundamental theorem says this:
+\begin{equation*}
+  \int_a^b f'(x) \der x = f(b) - f(a)\eqquad.
+\end{equation*}
+In some examples, this gives us a tricky way to evaluate an integral exactly without having to muck
+around with Riemann sums. Consider the integral
+\begin{equation*}
+  \int_0^1 x\:\der x\eqquad,
+\end{equation*}
+whose geometrical interpretation is the area of a triangle and whose value we showed to be
+$1/2$  using Riemann sums in
+example \ref{eg:riemann-triangle-area}, p.~\pageref{eg:riemann-triangle-area}.
+The function we're integrating is $x$, but what if we could find a function $f$
+whose derivative was $x$? ---
+\begin{equation*}
+  f'(x) = x
+\end{equation*}
+The fundamental theorem would then immediately tell us the result of the integral.
+    <% end_sec('avoiding-riemann-sum') %>
+    <% begin_sec("Antiderivatives",nil,'antiderivatives') %>\index{antiderivative|see{integral, indefinite}}\index{integral!indefinite}
+The function $f$ is called an \emph{antiderivative} of the function $f'$.
+Although there are various tricks and methods for finding antiderivatives, in general
+the only way to find them is to guess and check. One way to approach this one is to
+think of $x$ as $x^1$. We know that when we differentiate a power, the power rule
+tells us to knock down the exponent by one. That makes it reasonable to guess
+something like $x^2$ as an antiderivative of $x$. Checking our guess, we find that
+it was almost, but not quite, right:
+\begin{equation*}
+  f(x)=x^2 \implies f'(x)=2x \qquad \text{[not quite what we wanted]}
+\end{equation*}
+We wanted the derivative to be $x$, but we got $2x$. This is easily fixed by
+halving our guess:
+\begin{equation*}
+  f(x)=\frac{1}{2}x^2 \implies f'(x)=x
+\end{equation*}
+The function $\frac{1}{2}x^2$ is an antiderivative of $x$. Therefore by the fundamental
+theorem we have\label{area-of-triangle-by-fundamental-theorem}
+\begin{align*}
+  \int_0^1 x\: \der x &= f(1) - f(0) \\ 
+         &= \frac{1}{2}1^2-\frac{1}{2}0^2 \\
+         &= \frac{1}{2}\eqquad.
+\end{align*}
+This is the same result that we obtained earlier and with much more labor using Riemann sums.
+
+Because antiderivatives are so frequently used in order to evaluate definite integrals,
+expressions of the form $f(b)-f(a)$ are very common, and
+various abbreviations have been invented.  We will abbreviate
+\[
+f(b)-f(a) \stackrel{\text{def}}{=} \bigl. f(x)\bigr]_{x=a}^b =
+\bigl.f(x)\bigr]_a^b\eqquad.
+\]
+
+<% marg(0) %>
+<%
+  fig(
+    'slopes-are-one-over-seven',
+    %q{All three functions are antiderivatives of the constant function $1/7$. Shifting the graph
+       vertically doesn't change its derivative.}
+  )  
+%>
+<% end_marg %>
+Any time we have an antiderivative, we can produce other antiderivatives by adding a constant.\index{constant of integration}
+For example, all of the following are antiderivatives of the constant function $1/7$ with respect to $x$:
+\begin{equation*}
+  \frac{1}{7}x \qquad \frac{1}{7}x+1 \qquad \frac{1}{7}x-2
+\end{equation*}
+Differentiating any one of these with respect to $x$ gives $1/7$. 
+    <% end_sec('antiderivatives') %>
+    <% begin_sec("Leibniz notation for the indefinite integral",nil,'indefinite-integral-leibniz') %>
+
+An antiderivative is more commonly referred to as an indefinite integral --- as opposed to the kind
+of integral we've been talking about up until now, which is called a definite integral.
+The Leibniz notation for an indefinite integral is an integral sign without any upper or lower
+limits of integration. For example,
+\begin{equation*}
+  \int x\:\der x = \frac{1}{2}x^2 + c\eqquad,
+\end{equation*}
+where $c$ is any constant. One way of understanding this notation is that both sides of this equals
+sign represent a certain \emph{solution set} --- the set of all functions whose derivative equals $x$.
+Similarly, when we write
+\begin{equation*}
+  \sqrt{4} = \pm 2\eqquad,
+\end{equation*}
+we could say that both sides of the equation represent the solution set $\{-2,2\}$ of the equation
+$x^2=4$.
+
+The following table summarizes the differences between definite and indefinite integrals.
+
+{\renewcommand{\arraystretch}{1.4}
+\noindent\begin{tabular}{p{53mm}p{53mm}}
+\emph{indefinite integral}       & \emph{definite integral} \\
+\hline
+$\int f(x) d x$ is a function of $x$.&
+    $\int_a^bf(x)d x$ is a number. \\
+\hline
+By definition $\int f(x)\:\der x$ is any function of $x$
+        whose derivative is $f (x)$. &
+$\int_a^b f(x)d x$ is defined in terms of Riemann sums and can
+      be interpreted as the area under the graph of $y=f(x)$.\\
+\hline
+The variable of integration is not a dummy variable. For example,
+      $\int 2x\:\der x=x^2+c$ and $\int 2t\:\der t=t^2+c$ are
+      expressed in terms of different variables,
+      so they are not the same.&
+The variable of integration is a dummy variable. For example,
+      $\int_0^1 2x\:\der x=1$, and $\int_0^1 2t\:\der t=1$,
+      so $\int_0^1 2x\:\der x=\int_0^1 2t\:\der t$.
+\end{tabular}
+}
+
+    <% end_sec('indefinite-integral-leibniz') %>
+\begin{eg}{}\label{eg:integrate-x-to-6th}
+\egquestion Evaluate
+\begin{equation*}
+  \int x^6\:\der x
+\end{equation*}
+
+\eganswer Differentiation of a power will reduce the exponent by one, so we want something like $x^7$.
+The derivative of $x^7$ would be $7x^6$, which is too big by a factor of $7$, so we want
+$x^7/7$. Including an arbitrary constant of integration, we have
+\begin{equation*}
+  \int x^6\:\der x = \frac{1}{7}x^7 + c\eqquad.
+\end{equation*}
+\end{eg}
+
+
+<% marg(100) %>
+<%
+  fig(
+    'power-ladder',
+    %q{Differentiation moves us down the ladder of powers of $x$. Integration climbs the ladder,
+       as in example \ref{eg:integrate-x-to-6th}. Example \ref{eg:integrate-1-over-x} deals with the
+       break in the middle of the ladder.}
+  )  
+%>
+<% end_marg %>
+
+\begin{eg}{Integral of $1/x$}\label{eg:integrate-1-over-x}
+\egquestion Evaluate the indefinite integral
+\begin{equation*}
+  \int \frac{\der x}{x}\eqquad.
+\end{equation*}
+
+\eganswer As discussed in example \ref{eg:moving-the-dx}, p.~\pageref{eg:moving-the-dx}, this
+notation says that the function being integrated is $1/x$, or $x^{-1}$.
+Normally if we wanted to find the antiderivative of $x$ to some power, we would increase the
+exponent by 1, as in example \ref{eg:integrate-x-to-6th}.
+But the derivative of $x^0$ is simply zero, so that doesn't work here. We recall that
+the ladder of powers is interrupted at this place, figure \figref{power-ladder}.
+The indefinite integral we want is
+\begin{equation*}
+\ln x+c\eqquad.
+\end{equation*}
+\end{eg}
+
+\begin{eg}{Area under the graph of $1/x$}\label{eg:hyperbola}
+\egquestion Interpret the definite integral
+\begin{equation*}
+  \int_{1}^{2} \frac{\der x}{x}\eqquad.
+\end{equation*}
+graphically; then evaluate it .
+
+\eganswer 
+Figure \figref{hyperbola-area} shows the graphical interpretation.
+
+We saw in example \ref{eg:integrate-1-over-x} that the integral of $1/x$ was $\ln x+c$.
+Using the fundamental theorem of calculus, the area
+is $(\ln 2+c)-(\ln 1+c)\approx 0.693147180559945$. Note that the constant of
+integration cancels out when we plug in the upper and lower limits of integration and
+subtract; this always happens when we evaluate a definite integral in this way, so
+constants of integration are irrelevant in this context, and usually we would skip
+writing the $+c$.
+
+Judging from the graph, it looks plausible that the shaded area is about 0.7.
+\end{eg}
+
+%%graph%% hyperbola-area-raw func=1/x format=svg xlo=0 xhi=3 ylo=0 yhi=1.5 with=lines x=t y=x xtic_spacing=1 ytic_spacing=1
+
+
+<% marg(0) %>
+<%
+  fig(
+    'hyperbola-area',
+    %q{Example \ref{eg:hyperbola}.}
+  )  
+%>
+<% end_marg %>
+
+  <% end_sec('using-fundamental-theorem') %>
+
+<% end_sec('fundamental-theorem') %>
+
+<% begin_sec("Using the tool correctly",nil,'using-integral-correctly') %>
+  <% begin_sec("When do you need an integral?",nil,'integral-generalizes-multiplication') %>\index{integral!when needed}
+In section \ref{subsec:when-derivative-is-needed}, p.~\pageref{subsec:when-derivative-is-needed},
+we asked the question, ``When do you need a derivative?'' It's natural to ask the same question
+about integrals. And since the derivative and integral are so closely linked by the fundamental
+theorem of calculus, the answers should be related. If the relationship between two variables
+$A$ and $B$ is such that expressing $A$ in terms of $B$ requires a derivative, then expressing
+$B$ in terms of $A$ also requires calculus --- it requires an integral.
+
+As a concrete example, let $x$ be your car's odometer reading, and let $v$ be the reading on
+the speedometer. If $v$ is constant, then we don't need calculus to express it in terms of $x$.
+\begin{equation}\label{eqn:no-derivative-needed}
+  v = \frac{\Delta x}{\Delta t} \qquad \text{[only if $v$ is constant]}
+\end{equation}
+But if $v$ is changing, then equation \eqref{eqn:no-derivative-needed}
+gives the wrong answer. We need calculus.
+\begin{equation}\label{eqn:derivative-needed}
+  v = \frac{\der x}{\der t} \qquad \text{[always valid]}
+\end{equation}
+
+Now suppose we want $x$ in terms of $v$. If $v$ is constant, then we don't need calculus. 
+Simple algebraic manipulation of equation \eqref{eqn:no-derivative-needed} gives
+\begin{equation}\label{eqn:no-integral-needed}
+  \Delta x = v\:\Delta t\eqquad. \qquad \text{[only if $v$ is constant]}
+\end{equation}
+But equation \eqref{eqn:no-integral-needed} clearly doesn't make sense if $v$ isn't constant.
+If you're in stop-and-go traffic, then your velocity isn't just one number. What would it even
+mean, then, to ``multiply $v$ by $\Delta t$?'' Multiplication is like that special thing that
+happens when a mommy and a daddy love each other very much; it's something that happens between
+just one number and one other number. Applying the fundamental theorem of calculus to equation
+\eqref{eqn:derivative-needed}, we get
+\begin{equation}
+  \Delta x = \int_{t_1}^{t_2} v\:\der t\eqquad. \qquad \text{[always valid]}
+\end{equation}
+We expect the integral to come up in applications as a generalization of multiplication that covers
+the case where one of the factors is varying.
+
+<%
+  fig(
+    'tractor-doing-work',
+    %q{Example \ref{eg:tractor-doing-work}. The tractor does mechanical work.},
+    {
+      'width'=>'wide',
+      'sidecaption'=>false
+    }
+  )
+%>
+
+\begin{eg}{Work}\label{eg:tractor-doing-work}\index{work (physics)}
+\egquestion In each of the examples in
+figure \figref{tractor-doing-work}, the tractor exerts a force while traveling 
+from position $x_1$ to position $x_2$, a distance $\Delta x=x_2-x_1$.
+If the force $F$ is constant, then the quantity $W=F\Delta x$, called mechanical work, measures
+the amount of energy expended. If $W$ is the same in all three cases in the figure, then the
+amount of gas the tractor burns is identical in all three cases. How should this definition of
+mechanical work be generalized to the case where the force is varying?
+
+\eganswer To generalize multiplication to a case where one of the factors isn't constant, we use
+an integral.
+\begin{equation*}
+  W = \int_{x_1}^{x_2} F\:\der x
+\end{equation*}
+\end{eg}
+
+  <% end_sec('integral-generalizes-multiplication') %>
+
+  <% begin_sec("Two trivial hangups",nil,'integration-hangups') %>
+In section \ref{sec:hangups}, p.~\pageref{sec:hangups}, we discussed two common difficulties that students
+encounter in applying differentiation to real-world problems. The same two issues occur in integration.
+The first is that although a calculus textbooks will often notate every problem in terms of the letters
+$y$ and $x$, any letters of the alphabet can occur in real-life applications. The second is that
+one often encounters symbolic constants, which are to be treated just like numerical constants.
+
+\begin{eg}{A falling rock}\label{eg:falling-rock-integral-symbolic}
+\egquestion A falling rock has a velocity that increases linearly as a function of time,
+$v=at$, where $a$ is a constant. Use an indefinite integral to
+find the position as a function of time.
+
+\eganswer Let's first figure out the roles played by the three letters:
+\begin{itemize}
+\item $t$ --- the independent variable
+\item $v$ --- a function of $t$
+\item $a$ --- a constant
+\item $x$ --- the function we get as an indefinite integral
+\end{itemize}
+
+Next, let's warm up by translating this into a more stereotypical problem from a calculus textbook.
+For example, we could be given the function $y=7x$ and asked to find its indefinite integral.
+The integral is $\int y \der x = (7/2)x^2+c$.
+
+The solution to the actual problem is found by simply shuffling letters of the alphabet and treating
+the constant $a$ the same way we treated the constant 7.
+The setup of the integral is
+\begin{equation*}
+  x = \int v\:\der t\eqquad,
+\end{equation*}
+and the result is
+\begin{equation*}
+  x = \frac{1}{2}a t^2+c\eqquad.
+\end{equation*}
+The constant of integration is interpreted as the initial position, so it's actually nicer to give
+it a notation that indicates that:
+\begin{equation*}
+  x = \frac{1}{2}a t^2+x_\zu{o}
+\end{equation*}
+\end{eg}
+  <% end_sec('integration-hangups') %>
+
+  <% begin_sec("Two ways of checking an integral",nil,'checking-an-integral') %>\index{integral!checking by differentiation}
+Every indefinite integral can be checked by taking its derivative to see if we can get back the
+original function. Furthermore, we can often check an integral by checking its units.
+
+\begin{eg}{Checking the falling rock}
+Let's use these techniques to check the result of example \ref{eg:falling-rock-integral-symbolic}.
+We were given the function
+\begin{equation}\label{eqn:falling-rock-check-1}
+  v = at\eqquad.
+\end{equation}
+We set up the integral as
+\begin{equation}\label{eqn:falling-rock-check-2}
+  x = \int v\:\der t\eqquad,
+\end{equation}
+and the result was
+\begin{equation}\label{eqn:falling-rock-check-3}
+  x = \frac{1}{2}a t^2+x_\zu{o}\eqquad.
+\end{equation}
+
+First we take the derivative of both sides of equation \eqref{eqn:falling-rock-check-3}. Because
+$t$ is the independent variable here, these are derivatives with respect to $t$.
+\begin{equation}
+  \frac{\der x}{\der t} \stackrel{?}{=} \frac{\der}{\der t} \left( \frac{1}{2}a t^2+x_\zu{o}\right)\eqquad.
+\end{equation}
+The left-hand side is the definition of the velocity $v$. On the right-hand side, we have to
+differentiate a polynomial. The constant $a$ is treated like any other multiplicative constant:
+it just ``comes along for the ride'' in differentiation. The constant $x_\zu{o}$ is treated
+like any other additive constant in differentiation: it goes away.
+\begin{equation}
+  v \stackrel{?}{=} a \frac{\der}{\der t} \left( \frac{1}{2} t^2\right)
+\end{equation}
+The derivative of $(1/2)t^2$
+with respect to $t$ is $t$, so we recover equation \ref{eqn:falling-rock-check-1}, and our solution
+passes the check.
+
+Next we check the units. The units of the given equation \eqref{eqn:falling-rock-check-1} ought
+to be right. If we
+remember the units of acceleration, we can check its units. If we don't remember the units of
+acceleration, we need to infer the units of the symbolic constant $a$ from
+equation \eqref{eqn:falling-rock-check-1}, because otherwise we won't be able to do the check
+on our own work. Based on equation \eqref{eqn:falling-rock-check-1}, the units of acceleration
+are implied to be meters over seconds squared, $\munit/\sunit^2$.
+
+Our initial setup in equation \eqref{eqn:falling-rock-check-2} has the following units:
+\begin{equation*}
+  \underbrace{x}_\munit = \int \underbrace{v}_{\munit/\sunit}\:\underbrace{\der t}_{\sunit}
+\end{equation*}
+The integral can be thought of as a sum, and the units of a sum are the same as the units of the
+things being added. This works out properly, so our setup passes this check as well.
+
+We finish by checking the units of our final result, equation \eqref{eqn:falling-rock-check-3}.
+\begin{equation*}
+  \underbrace{x}_\munit = \underbrace{\frac{1}{2}}_\text{unitless}
+                          \underbrace{a}_{\munit/\sunit^2}
+                          \underbrace{t^2}_{\sunit^2}
+                          +
+                          \underbrace{x_\zu{o}}_\munit
+\end{equation*}
+\end{eg}
+  <% end_sec('checking-an-integral') %>
+  <% begin_sec("Do I differentiate this, or do I integrate it?",nil,'to-differentiate-or-to-integrate') %>
+In an end-of-chapter problem in a calculus textbook, you're usually commanded either to integrate
+or to differentiate. In real-world contexts, however, the question can arise of which one is the
+right thing to do. Often we have a pair of variables, and we know that one is the integral of the other,
+and one is the derivative of the other. But which one is which? Memorization would be the wrong
+way to approach this. The following is a list of possible ways of telling which is is which.
+
+\begin{enumerate}
+  \item A derivative often represents a rate of change, an integral the accumulation of change.
+  \item Real-world quantities usually have units, and only one way of setting up the calculus
+        relationship causes the units to make sense.
+  \item The integral often occurs as a generalization of multiplication, the derivative as a
+        generalization of the slope of a line.
+\end{enumerate}
+
+\begin{eg}{A chemical reaction}
+\egquestion Chemicals P and Q react to produce R. There is a reaction rate $r$ and
+a concentration $C$ of the product. Which would be the derivative of which, and which would
+be the integral of which?
+
+\eganswer A derivative represents a rate of change, so $r=\der C/\der t$. An integral
+represents the accumulation of change, so $C=\int r\:\der t$.
+\end{eg}
+
+\begin{eg}{An epidemic}
+\egquestion During an epidemic, there is some number of people $I$ who have the disease,
+and some number $w$ of new cases per day being reported. How would the calculus relationships
+between these two variables be set up?
+
+\eganswer The variable $I$ is unitless; it is just a \emph{count} of the number of infected people.
+The variable $w$ has units of cases per day, but ``cases'' is really a count, not a unit, so
+the units of $w$ are really $\zu{day}^{-1}$ (inverse days). Conceptually, it's clear that these
+two quantities should be related as integral and derivative, and if we were unsure of which
+way around to write the relationship, the units would tell us.
+\begin{align*}
+  \underbrace{w}_{\zu{day}^{-1}} &= \underbrace{\frac{\der I}{\der t}}_{\frac{\text{unitless}}{\zu{days}}} \\
+  \underbrace{I}_{\text{unitless}} &= \int \underbrace{w}_{\zu{day}^{-1}}\:\underbrace{\der t}_{\zu{days}}
+\end{align*}
+\end{eg}
+
+An example of the third method was given in example \ref{eg:tractor-doing-work},
+p.~\pageref{eg:tractor-doing-work}, where the definition of mechanical work was generalized to
+cases where the force varies.
+  <% end_sec('to-differentiate-or-to-integrate') %>
+
+
+<% end_sec('using-integral-correctly') %>
+
+<% begin_sec("Linearity",nil,'linearity-of-integral') %>\index{integral!linearity}
+The most important and basic properties of the derivative (p.~\pageref{properties-of-derivative}) are that
+it adds, $(f+g)'=f'+g'$, and scales vertically, $(cf)'=cf'$, where $c$ is a constant. When an operation
+has these properties, we say that it is \emph{linear}.\index{linearity}
+Since the indefinite integral is defined as the antiderivative, it
+follows that the 
+indefinite integral is also linear,
+\begin{align*}
+  & \int [f(x)+g(x)]\:\der x = \int f(x)\:\der x + \int g(x)\:\der x \\
+  & \int c f(x)\:\der x = c \int f(x)\:\der x
+\end{align*}
+and by the fundamental theorem the same is true for the definite
+integral.
+
+<% marg(0) %>
+<%
+  fig(
+    'square-plus-triangle',
+    %q{Example \ref{eg:square-plus-triangle}. The total area is the area of the square base plus the
+       area of the triangle on top.}
+  )  
+%>
+<% end_marg %>
+\begin{eg}{}\label{eg:square-plus-triangle}
+\egquestion Evaluate the definite integral
+\begin{equation*}
+  \int_0^1 (1+x)\:\der x
+\end{equation*}
+and give a geometrical interpretation.
+
+\eganswer The linearity of the definite integral gives
+\begin{equation*}
+  \int_0^1 (1+x)\:\der x = \int_0^1 1\:\der x + \int_0^1 x\:\der x = 1+\frac{1}{2} = \frac{3}{2}\eqquad.
+\end{equation*}
+Figure \figref{square-plus-triangle} gives a geometrical interpretation.
+\end{eg}
+
+<% end_sec('linearity-of-integral') %>
+
+\vfill
+
+<% begin_sec("Some technical points",4,'integrals-technical') %>
+<% begin_sec("Riemann sums in general",nil,'riemann-sums-in-general') %>\index{Riemann sum!general}
+As a tree grows, its radius increases continuously. When a tree is cut down, as in
+figure \figref{tree-rings}, we can see that the growth in each year is not the same.
+For example, in most of California, where the weather tends to be dry, a tree will usually
+show markedly increased growth in a wet year. In this example, it's natural to think
+of the radius of the tree as an integral of the form $\int_{\ldots}^{\ldots} \der r$. Of course it would be
+silly to try to explicitly calculate this integral, when we could simply measure the radius
+with a ruler! We don't really need calculus here, but, as is often the case, calculus guides
+us in thinking about the concepts even when we aren't going to use the techniques of calculus.
+If we were to approximate this integral 
+using a Riemann sum, it would seem most natural to break the sum down into \emph{unequal}
+intervals $\Delta r$. This is allowed by the definition of a Riemann sum, and the kind
+of Riemann sum that we defined on p.~\pageref{eqn:riemann-sum}, with equal subintervals,
+was a more specific type.
+
+<%
+  fig(
+    'tree-rings',
+    %q{Each tree ring adds $\Delta r$ to the radius of the tree. The $\Delta r$ values are not all the same.},
+    {
+      'width'=>'wide',
+      'sidecaption'=>false
+    }
+  )
+%>
+
+A Riemann sum can also sample the value of the function at some other place than the center
+of each subinterval. The sample point can be at the left side, at the right, and it doesn't
+even need to be chosen in a consistent way for all the subintervals of a particular Riemann
+sum.
+<% end_sec('riemann-sums-in-general') %>
+
+  <% begin_sec("Integrating discontinuous functions",nil,'integral-discontinuous') %>\index{integral!definite!defined for a discontinuous function}
+
+The definition of the integral given in section \ref{subsec:integral}, for continuous functions, has some
+technical shortcomings if we try to apply it to badly behaved discontinuous functions.
+Most people who use calculus neither know nor care about these issues, and it's all right
+to skip this subsection on a first reading.
+
+To show what can go wrong, we define two functions, one naughty and the other even naughtier.
+
+\begin{itemize}
+\item Let $f(x)$ be defined as $f(x)=1/x$, except at $x=0$, where we set $f(0)=0$.
+\item Let $g(x)$ be the function such that if $x$ is a rational number, $g(x)=0$, but if
+$x$ is irrational, $g(x)=1$.
+\end{itemize}
+
+The definition of the integral in section \ref{subsec:integral} involved Riemann sums
+using equal subintervals, sampled at their centers. It carried a warning label saying that
+it only applied to continuous functions. Let's ignore the warning and see what goes wrong
+when we apply it to functions $f$ and $g$.
+
+The function $f$ is discontinuous  at only one point, and the discontinuity is one where
+it blows up to $+\infty$ on one side and $-\infty$ on the other. If we evaluate
+$\int_{-1}^1 f(x)\:\der x$ using equal subintervals sampled at their centers, then because
+$f$ is odd, every Riemann sum is exactly zero. The Riemann sums for odd $n$ use $x=0$ as
+a sample point, but these sums still vanish, because $f(0)=0$. This integral, as defined
+in section \ref{subsec:integral}, comes out to be zero.
+
+The function $g$ is what's known as a ``pathological'' example, meaning that it's so weird that
+we don't expect to encounter such a thing in any real-world application. For example, we could
+never determine a function like $g$ from physical measurements, because measurements can't
+distinguish a rational number from an irrational one. If we evaluate
+$\int_0^1 g(x)\:\der x$ using equal subintervals, sampled at their centers, then every sample
+point is a rational number, so the integral comes out to be zero according to
+the definition in section \ref{subsec:integral}.
+
+The worrisome thing about both of these examples is that they both gave zero, but zero is
+either misleading or wrong in both cases. The result for the integral of $f$ depended
+on a perfect cancellation of very large negative and very large positive terms in each Riemann sum.
+As $n$ grew, these terms grew without bound, but they still canceled. In any real-world
+application, it's unlikely that this would happen. For example, if $f$ represented the reading
+on a meter measuring the flow of water through a pipe (positive and negative indicating two different directions
+of flow), then the extreme positive and negative flows near $x=0$ would have destroyed the meter!
+
+The zero result for $g$ is even more morally wrong. There are in some sense \emph{more}
+irrational numbers than rational ones, so if this integral were to have some value, then
+clearly it should be 1, not 0.
+
+What we would really like is to have our definition of the integral be stated in such a way
+that integrals like these come out to be undefined. This can be done by requiring in the definition
+that no matter what Riemann sum we use, regardless of whether the subintervals are equal or the sample
+points are at their centers, the limit must come out to be the same.
+
+\begin{important}[Definition of the integral (Riemann)]
+Suppose we have a number $I$ such that
+for every $\varepsilon >0$, there exists a $\delta>0$ such that
+$|R -I|<\varepsilon$ for \emph{every} Riemann sum all of whose intervals have width 
+$x_{k+1}-x_k < \delta$, with any choice of sample points $s_1$, \dots , $s_n$.
+Then $I$ is the Riemann integral of the function.
+\end{important}
+
+For the integrals of the functions $f$ and $g$ described above,
+there is no number $I$ with the properties described in the definition.
+The integral is then undefined, as it should be. A function for which such an $I$
+does exist is called Riemann integrable. A sufficient
+condition for Riemann integrability is that the function has only finitely many points
+of discontinuity, and it doesn't blow up at these discontinuities. For functions that
+are Riemann-integrable, the Riemann integral gives the same answer as the simpler
+definition in section \ref{sec:definite-integral}, p.~\pageref{sec:definite-integral}.
+
+  <% end_sec('integral-discontinuous') %>
+
+  <% begin_sec("Proof of the fundamental theorem",nil,'fundamental-theorem-proof') %>\index{fundamental theorem of calculus!proof}
+We now refine the pseudo-proof in section \ref{subsec:fundamental-theorem-pseudo-proof},
+p.~\pageref{subsec:fundamental-theorem-pseudo-proof}, into a real proof of the fundamental
+theorem of calculus.
+We want to prove that
+  \begin{equation}
+    \int_a^b f'(x) \der x = f(b) - f(a)\eqquad.
+  \end{equation}
+We assume that $f'$ is Riemann integrable, so that we have the freedom to subdivide
+the interval $[a,b]$ and choose the sample points in any way that is convenient.
+We will break up
+the interval $[a,b]$ into $n$ equal subintervals $[x_i,x_{i+1}]$, where $i=1$, 2, \ldots $n-1$.
+However, rather than restricting ourselves to sampling at the center of each subinterval,
+we apply the mean value theorem to each subinterval, and choose $s_i$ to be the point for which
+\begin{equation*}
+  f'(s_i) = \frac{\Delta f_i}{\Delta x}\eqquad,
+\end{equation*}
+where $\Delta f_i=f(x_{i+1})-f(x_i)$ and $\Delta x=x_{i+1}-x_i$.
+This can be rearranged to give
+\begin{equation*}
+  \Delta f_i = f'(s_i)\Delta x\eqquad.
+\end{equation*}
+Adding these up, we have
+\begin{equation*}
+  f(b)-f(a) = \sum_{i=1}^n f'(s_i)\Delta x\eqquad.
+\end{equation*}
+This tells us that by an appropriate choice of the sample points, we can make \emph{every} Riemann
+sum, for \emph{every} $n$ produce the result claimed by the fundamental theorem. It therefore
+follows that the limit that defines the integral has the value claimed by the theorem.\myqed
+
+  <% end_sec('fundamental-theorem-proof') %>
+
+<% end_sec('integrals-technical') %>
+
+<% begin_sec("The definite integral as a function of its integration bounds",nil,'definite-integral-moving-bounds') %>
+  <% begin_sec("A function defined by an integral",nil,'function-defined-by-integral') %>
+Consider the expression
+\[
+I = \int_0^x t^2\, dt\eqquad.
+\]
+What does $I$ depend on?  To find out, we calculate the integral
+\[
+I = \bigl[\tfrac13t^3\bigr]_0^x 
+= \tfrac13 x^3 - \tfrac13 0^3
+= \tfrac13 x^3\eqquad.
+\]
+So the integral depends on $x$.  It does not depend on $t$, since $t$
+is a ``dummy variable.''
+
+In this way we can use integrals to define new functions.  For
+instance, we could define
+\[
+I(x) = \int_0^x t^2 \:\der t\eqquad,
+\]
+which would be a roundabout way of defining the function $I(x) = x^3/3$.  Again,
+since $t$ is a dummy variable we can replace it by any other variable we like.
+Thus
+\[
+I(x) = \int_0^x \alpha^2\, \der\alpha
+\]
+defines the same function (namely, $I(x) = \frac13x^3$).
+
+<% marg(0) %>
+<%
+  fig(
+    'erf',
+    %q{The definition of the error function, $\operatorname{erf}(x)$.}
+  )  
+%>
+<% end_marg %>
+This example does not really define a new function, in the sense that
+we already had a much simpler way of defining the same function,
+by writing ``$I(x) = x^3/3$.''  An example of a \textit{new} function
+defined by an integral is the so called \emph{error function} from
+statistics:
+\begin{equation}\label{eq:08erf-defined}
+  \operatorname{erf}(x) =
+  \frac2{\sqrt\pi} \int _0 ^x e^{-t^2}\;\der t\eqquad,
+\end{equation}
+so that $\operatorname{erf}(x)$ is the area of the shaded region in figure \figref{erf}.
+
+The integral in \eqref{eq:08erf-defined} cannot be computed as a formula.\footnote{
+For more on what this means, see
+section \ref{sec:impossible-integrals}, p.~\pageref{sec:impossible-integrals}.}
+As described in more detail in section \ref{subsec:continuous-random-variables},
+p.~\pageref{subsec:continuous-random-variables},
+the integral in \eqref{eq:08erf-defined} occurs very often
+in statistics, so it has been
+given its own name, ``$\operatorname{erf}(x)$''.\index{normal distribution}\index{erf}\index{error function}
+  <% end_sec('function-defined-by-integral') %>
+  <% begin_sec("How do you differentiate a function defined by an integral?",nil,'diff-function-defined-by-integral') %>
+The answer is simple, for if $f(x) = F'(x)$ then the fundamental theorem says
+that
+\[
+\int_a^x f(t) \; \der t = F(x) - F(a)\eqquad,
+\]
+and therefore
+\[
+\frac d{dx} \int_a^x f(t) \; dt =\frac {\der}{\der x}\bigl( F(x) - F(a)\bigr) = F'(x) =
+f(x)\eqquad,
+\]
+i.e.
+\[
+\frac {\der}{\der x} \int_a^x f(t) \; \der t = f(x)\eqquad.
+\]
+A similar calculation gives 
+\[
+\frac {\der}{\der x} \int_x^b f(t) \; \der t = -f(x)\eqquad.
+\]
+So what is the derivative of the error function?
+It is
+\begin{align*}
+  \operatorname{erf}\, '(x) 
+  &= \frac {\der}{\der x} \left[ \frac2{\sqrt\pi} \int _0 ^x e^{-t^2}\;\der t\right] \\
+  &= \frac2{\sqrt\pi} \frac {\der}{\der x} \left[\int _0 ^x e^{-t^2}\;\der t\right] \\
+  &=  \frac2{\sqrt\pi} e^{-x^2}\eqquad.
+\end{align*}
+  <% end_sec('diff-function-defined-by-integral') %>
+  <% begin_sec("A second version of the fundamental theorem",nil,'second-fund-thm') %>
+The way that we differentiated the $\operatorname{erf}$ function in 
+section \ref{subsec:diff-function-defined-by-integral} was an example of a more general
+idea, which can be considered as an alternative version of the fundamental theorem of calculus.
+The version of the fundamental theorem of calculus given in section
+\ref{sec:fundamental-theorem}, p.~\pageref{sec:fundamental-theorem}, says that if we differentiate
+and then integrate, we end up with the same function back again. This new second version says that
+something similar happens if we integrate and then 
+differentiate:\index{fundamental theorem of calculus!derivative of an integral}
+\begin{equation*}
+  \frac {\der}{\der x} \int_a^x f(t)\:\der t = f(x)
+\end{equation*}
+  <% end_sec('second-fund-thm') %>
+<% end_sec('definite-integral-moving-bounds') %>
+
+
+<% begin_hw_sec %>
+
+\begin{hwinstructions}
+Problems \ref{hw:barometric-altimeter}-\ref{hw:electric-meter} don't require you to
+calculate anything. The point is to practice setting
+up and interpreting relationships between pairs of variables that are related as integral
+and derivative.
+\end{hwinstructions}
+
+
+<% hw('barometric-altimeter',{'solution'=>true}) %>
+<% hw('present-value',{'solution'=>true}) %>
+<% hw('electric-meter',{'solution'=>true}) %>
+
+\pagebreak
+
+<% hw_block(2) %>
+
+% robbin
+<% hw('sigma-notation') %>
+
+<% hw('wrong-integral-notation',{'solution'=>true}) %>
+
+
+%%graph%% hw-riemann-sinc-raw func=sin(x+0.000001)/(x+0.000001) format=svg xlo=0 xhi=1 ylo=0 yhi=1 with=lines
+%%graph%% hw-riemann-etan-raw func=exp(x-1)*tan(3.141592*x/4.0) format=svg xlo=0 xhi=1 ylo=0 yhi=1 with=lines
+%%graph%% hw-riemann-cos2-e-x-raw func=(cos(exp(x)))**2 format=svg xlo=0 xhi=1 ylo=0 yhi=1 with=lines
+%%graph%% hw-riemann-x-to-x-raw func=(x+0.000001)**(x+0.000001) format=svg xlo=0 xhi=1 ylo=0 yhi=1 with=lines
+
+\begin{hwinstructions}
+In each of problems \ref{hw:riemann-sinc}-\ref{hw:riemann-x-to-x},
+the goal is to approximate the area between the graph
+and the $x$ axis between $x=0$ and $x=1$, i.e., the value of
+$  \int_0^1 f(x)\: \der x $
+for the given function $f$. Each function was chosen such that for $x\in[0,1]$, we have $y\in[0,1]$ as well,
+so that the graph
+fits into a $1\times 1$ square, as shown in the figure.
+These happen to be functions for which it is not possible
+to find an antiderivative, hence the need for an approximation. Divide the interval up into
+5 equal subintervals, sample the function at the center of each interval,
+and find the resulting Riemann sum. Maintain four decimal places of
+precision throughout the calculation so that you are left with three
+decimal places at the end that are not likely to be way off simply because of rounding.
+\end{hwinstructions}
+
+<% hw('riemann-sinc') %>
+<% hw('riemann-etan') %>
+<% hw('riemann-cos2-e-x') %>
+<% hw('riemann-x-to-x') %>
+
+<%
+  fig(
+    'hw-riemann',
+    %q{Problems \ref{hw:riemann-sinc}-\ref{hw:riemann-x-to-x}.
+    },
+    {
+      'width'=>'wide',
+      'sidecaption'=>true
+    }
+  )
+%>
+
+<% hw_block(2) %>
+
+
+<% hw('three-antiderivatives-of-e-to-x',{'solution'=>true}) %>
+<% hw('find-incorrect-integral',{'solution'=>true}) %>
+
+\pagebreak
+
+% robbin
+\begin{hwinstructions}
+Evaluate the antiderivatives in problems \ref{hw:antiderivative-01}-\ref{hw:antiderivative-12}.
+  If in doubt, guess and check as in problem \ref{hw:find-incorrect-integral}.
+  With experience it gets easier to guess correctly.
+\end{hwinstructions}
+
+<% hw('antiderivative-01') %>
+<% hw('antiderivative-02') %>
+<% hw('antiderivative-03') %>
+<% hw('antiderivative-04') %>
+<% hw('antiderivative-05') %>
+<% hw('antiderivative-06') %>
+<% hw('antiderivative-07') %>
+<% hw('antiderivative-08') %>
+<% hw('antiderivative-09') %>
+<% hw('antiderivative-10') %>
+<% hw('antiderivative-11') %>
+<% hw('antiderivative-12') %>
+
+<% hw_block(2) %>
+
+\begin{hwinstructions}
+Evaluate the antiderivatives in problems
+  \ref{hw:antiderivative-symbolic-const-01}-\ref{hw:antiderivative-symbolic-const-03}.
+  All letters other than the variable of integration are constants.
+\end{hwinstructions}
+
+
+<% hw('antiderivative-symbolic-const-01') %>
+<% hw('antiderivative-symbolic-const-02') %>
+<% hw('antiderivative-symbolic-const-03') %>
+<% hw('antiderivative-symbolic-const-04') %>
+
+\pagebreak
+
+<% hw_block(2) %>
+
+\begin{hwinstructions}
+In problems
+  \ref{hw:antiderivative-change-form-01}-\ref{hw:antiderivative-change-form-04},
+  find the antiderivatives. All letters other than the variable of integration are constants.
+  These problems can be done by first rewriting the given integrand in a
+  form that you know how to integrate.
+\end{hwinstructions}
+
+
+<% hw('antiderivative-change-form-01',{'solution'=>true}) %>
+<% hw('antiderivative-change-form-02') %>
+<% hw('antiderivative-change-form-03') %>
+<% hw('antiderivative-change-form-04') %>
+
+<% hw_block(2) %>
+
+\begin{hwinstructions}
+These instructions are for problems \ref{hw:riemann-and-exact-cos}-\ref{hw:riemann-and-exact-sqrt}.
+Each function $f$ was chosen such that for $x\in[0,1]$, we have $y\in[0,1]$ as well, so that
+the graph fits into a $1\times 1$ square, as shown in the figure.\\
+(a) Make an eyeball estimate of the area under the curve.\\
+(b) As in problems \ref{hw:riemann-sinc}-\ref{hw:riemann-x-to-x}, divide the interval up into
+5 equal subintervals, sample the function at the center of each interval,
+and find the resulting Riemann sum. Maintain four decimal places of
+precision throughout the calculation so that you are left with three
+decimal places at the end that are not likely to be way off simply because of rounding.
+Your result should be roughly consistent with your estimate from part a, and you can
+also check it online.\\
+(c) Find the antiderivative $\int f(x)\:\der x$, and check it online.\\
+(d) Evaluate the definite integral, $\int_0^1 f(x)\:\der x$, check it against the approximations
+in parts a and b, and check it online.
+\end{hwinstructions}
+
+
+%%graph%% hw-riemann-and-exact-cos-raw func=cos(x) format=svg xlo=0 xhi=1 ylo=0 yhi=1 with=lines
+%%graph%% hw-riemann-and-exact-sin-raw func=sin(x) format=svg xlo=0 xhi=1 ylo=0 yhi=1 with=lines
+%%graph%% hw-riemann-and-exact-exp-raw func=exp(x)/3.0 format=svg xlo=0 xhi=1 ylo=0 yhi=1 with=lines
+%%graph%% hw-riemann-and-exact-sqrt-raw func=sqrt(x) format=svg xlo=0 xhi=1 ylo=0 yhi=1 with=lines
+
+<% 
+  fig(
+    'hw-riemann-and-exact',
+    %q{Problems \ref{hw:riemann-and-exact-cos}-\ref{hw:riemann-and-exact-sqrt}.
+    },
+    {
+      'width'=>'wide',
+      'sidecaption'=>true
+    }
+  )
+%>
+
+<% hw('riemann-and-exact-cos') %>
+<% hw('riemann-and-exact-sin') %>
+<% hw('riemann-and-exact-exp') %>
+<% hw('riemann-and-exact-sqrt') %>
+
+\pagebreak
+
+<% hw_block(2) %>
+
+\begin{hwinstructions}
+Problems \ref{hw:longbow}-\ref{hw:compression-ratio} all involve
+calculating the work done by a force, as described in example
+\ref{eg:tractor-doing-work}, p.~\pageref{eg:tractor-doing-work}.
+These problems also require you to check the units of your result. To do that, you will need to know
+the following. The SI unit of force is the newton (N). Work has units of
+$(\text{force})\times(\text{distance})$, or $\nunit\unitdot\munit$
+(newton-meters).
+\end{hwinstructions}
+
+
+<% marg(100) %>
+<%
+  fig(
+    'hw-longbow',
+    %q{Problem \ref{hw:longbow}.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'hw-contracting-muscle',
+    %q{Problem \ref{hw:contracting-muscle}.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'hw-jupiter-comet',
+    %q{Problem \ref{hw:jupiter-comet}.}
+  )  
+%>
+<% end_marg %>
+
+<% hw('longbow',{'solution'=>true}) %>
+<% hw('contracting-muscle') %>
+<% hw('jupiter-comet') %>
+<% hw('compression-ratio') %>
+
+<% marg(100) %>
+<%
+  fig(
+    'hw-compression-ratio',
+    %q{Problem \ref{hw:compression-ratio}.}
+  )  
+%>
+<% end_marg %>
+
+
+<% hw_block(2) %>
+
+<% hw('v-to-x-cruise-control') %>
+<% hw('v-to-x-piston') %>
+
+\pagebreak
+
+<% hw_block(2) %>
+
+\begin{hwinstructions}
+In problems \ref{hw:definite-integral-practice-01}-\ref{hw:definite-integral-practice-12},
+compute the definite integrals. These  are in groups of three similar problems, with 
+the intention being that a given
+student would do one from each group.
+\end{hwinstructions}
+
+
+<% hw('definite-integral-practice-01') %>
+<% hw('definite-integral-practice-02') %>
+<% hw('definite-integral-practice-03') %>
+<% hw('definite-integral-practice-04') %>
+<% hw('definite-integral-practice-05') %>
+<% hw('definite-integral-practice-06') %>
+<% hw('definite-integral-practice-07') %>
+<% hw('definite-integral-practice-08') %>
+<% hw('definite-integral-practice-09') %>
+<% hw('definite-integral-practice-10') %>
+<% hw('definite-integral-practice-11') %>
+<% hw('definite-integral-practice-12') %>
+
+<% hw_block(2) %>
+
+<% hw('silly-constant') %>
+<% hw('log-abs-val-two-constants') %>
+
+<% end_hw_sec %>
+
+<% end_chapter %>

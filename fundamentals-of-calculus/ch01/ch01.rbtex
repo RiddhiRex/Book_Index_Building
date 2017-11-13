@@ -1,0 +1,1526 @@
+%%chapter%% 01
+<%
+  require "./scripts/eruby_util.rb"
+%>
+
+<%
+  chapter(
+    '01',
+    %q{An informal introduction to the derivative},
+    'ch:derivative'
+  )
+%>
+ 
+<% begin_sec("Review: functions and the slope of a linear function",nil,'functions') %>
+Calculus\index{calculus!defined} is the study of rates of change, and of how change accumulates.
+For example, figure \figref{stock-market} shows the changes in the United States
+stock market over a period of 24 years. The $y$ axis of this graph is a certain
+weighted average of the prices of stock, and the $x$ axis is time, measured in
+years. This is an example of the concept of a mathematical \emph{function},\index{function}
+which you've learned about in a previous course. We say that the stock index is a function
+of time, meaning that it depends on time. What makes this graph the graph of a function is that
+a vertical line only intersects it in one place. This means that at any given time, there is only
+one value of the index, not more than one.
+
+<% marg(0) %>
+<%
+  fig(
+    'stock-market',
+    %q{The S\&P 500 stock index is a function of time.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'rise-over-run',
+    %q{Given two points on a line, we can find its slope by computing $\Delta y/\Delta x$,
+       the rise over the run.}
+  )  
+%>
+<% end_marg %>
+Figure \figref{stock-market} shows a function that was determined by measurement and
+observation, but functions can also be defined by a formula. For example, we could define
+a function $y$ by stating that for any number $x$, the value of the function is given by $y(x)=x^2$.
+We sometimes state this kind of thing more casually by referring to ``the function $y=x^2$''
+or ``the function $x^2$.''
+
+I drew figure \figref{stock-market} by graphing yearly data, so it's made of line segments that
+connect one year to the next. Each of these line segments has a \emph{slope},\index{slope}
+defined as
+\begin{equation}
+  \text{slope} = \frac{y_2-y_1}{x_2-x_1}\eqquad.
+\end{equation}
+The slope measures how fast the function is changing. A positive slope says the function is increasing,
+negative decreasing. If the slope is zero, the function is not changing at all.
+
+It's often convenient to express this kind of thing with the notation $\Delta$,\index{delta ($\Delta$) notation}
+the capital Greek
+letter delta, which is the equivalent of our Latin ``D'' and here stands for ``difference.'' In terms of this notation,
+we have
+\begin{equation}
+  \text{slope} = \frac{\Delta y}{\Delta x}\eqquad.
+\end{equation}
+A symbol like $\Delta y$ indicates the \emph{change} in $y$,
+$\Delta y=y_2-y_1$. It doesn't
+mean a number $\Delta$ multiplied by a number $y$.
+
+<% end_sec('functions') %>
+
+<% begin_sec("The derivative",nil,'derivative') %>
+<% begin_sec("An informal definition of the derivative",nil,'informal-derivative') %>
+In many real-world applications, it makes sense to think of change as occurring smoothly and
+continuously. For example, the level of water in a reservoir rises and falls with time.
+Although it's true that this change happens one molecule at a time, so that in theory
+there are abrupt jumps, these jumps are too tiny to matter in practice.
+
+<%
+  fig(
+    'reservoir',
+    %q{The original graph, on the left, shows
+       the water level in Trinity Lake, California, for the thirty-day period
+       beginning March 7, 2014.
+       Each successive magnification to the right is by a factor of four.
+    },
+    {
+      'width'=>'fullpage'
+    }
+  )
+%>
+
+We want to keep track of the net rate of flow into the reservoir. We would
+like to define this rate as the slope of the graph, but the graph isn't a line, so how do we
+do that? We could pick two points on the graph and connect them with a line segment, but that
+would only represent an average rate of flow, not the actual rate of flow as it
+would be measured by a flow gauge at one particular time.
+
+To get around these difficulties, we imagine picking a point of interest on the graph
+and then zooming in on it more and more, as if through a microscope capable of unlimited
+magnification. As we zoom in, the curviness of the graph becomes less and less apparent.
+(Similarly, we don't notice in everyday life that the earth is a sphere.)
+In figure \figref{reservoir}, we zoom in by 400\%, and then again by 400\%, and so on.
+After a series of these zooms, the graph appears indistinguishable from a line, and we can
+measure its slope just as we would for a line. This is an intuitive description of what we mean
+by the slope of a function that isn't a line. We call this slope the
+\emph{derivative}\index{derivative!informal definition} of the function at the point of interest.
+This is admittedly not a mathematically rigorous definition, but it fixes our minds on the
+concept we want. A useful example is that if we consider a car's odometer reading as a function of
+time in hours, then its speedometer reading is the derivative of the odometer reading.
+<% marg(0) %>
+<%
+  fig(
+    'reservoir-tangent-line',
+    %q{The tangent line at a point on a curved graph.}
+  )  
+%>
+<% end_marg %>
+
+If we were only shown the ultra-magnified view in the rightmost part of figure \figref{reservoir},
+we wouldn't know that the graph was curved at all. We would think the whole thing was a line.
+This hypothetical line is called the \emph{tangent line}\index{tangent line}\label{tangent-line-informal}
+at the point marked with a dot. When you stand on the earth's surface and look at a point on
+the horizon, your line of sight is a tangent line to the surface. The derivative of a function is the slope
+of the tangent line.\index{derivative!informal definition}
+
+<% end_sec('informal-derivative') %>
+
+<% begin_sec("Locality of the derivative",nil,'deriv-local') %>
+From this informal definition it seems that the derivative
+of a function at a certain point should depend only on the behavior of the function near that point, not
+far away. To state this idea precisely, we need to use some notation referring to sets,
+reviewed in box \figref{sets}, and intervals.\label{set}
+
+<% marginbox(300,'sets','Sets',{},
+%q~
+A \emph{set} is a collection of things. The things can, for example, be numbers. They can even be other sets.
+A set can be defined by listing the things it holds, which are called its elements or members.
+For example, the solutions of the equation $x^2=1$
+are the members of the set $\{-1,1\}$. Often we deal with infinite sets such as the set of all the natural
+numbers, and it is then impossible to list all the elements. Instead, we can
+define a set using notation like this:
+\begin{equation*}
+  \zu{S} = \{x|x^2>0\}\eqquad,
+\end{equation*}
+read as, ``the set of all $x$ such that $x$ squared is greater than zero.'' Often, as in this example,
+we don't explicitly say what to consider as the \emph{possible} values of $x$; since the focus of
+calculus is on real numbers, the implication in this course 
+is usually that ``the set of all $x$ such that \ldots''
+means ``the set of all \emph{real numbers} $x$ such that \ldots''
+
+The notation $\in$ means ``is a member of,'' e.g., $1\in\zu{S}$ for the set S defined above.
+
+Two sets are the same if they have the same members. For example, let
+\begin{align*}
+  \zu{T} &= \{a|a^2>0\} \qquad \text{and}\\\\
+  \zu{U} &= \{g|g\ne 0\} 
+\end{align*}
+Because S, T, and U have the same members, they are equal, $\zu{S}=\zu{T}=\zu{U}$.
+      ~
+   )
+%>
+
+Often it is useful to define a set of all the real numbers that lie within a certain range, between
+numbers $a$ and $b$. This is called
+an interval.\label{interval-notation}\index{interval}\index{interval!finite!notation for}
+We can define intervals that contain or don't contain their endpoints.
+
+\begin{lessimportant}[Definition]
+\begin{tabular}{lll}
+\emph{type of interval} & \emph{definition} & \emph{abbreviation} \\
+closed  & $\{x|x\ge a\ \text{and}\ x\le b\}$  & $[a,b]$\\
+open    & $\{x|x> a\ \text{and}\ x< b\}$  & $(a,b)$
+\end{tabular}
+\end{lessimportant}
+We can also have intervals like $[a,b)$ and $(a,b]$, which are defined in the obvious way.
+A similar notation for infinite intervals is introduced in problem \ref{hw:find-ranges-of-functions},
+p.~\pageref{hw:find-ranges-of-functions}.
+
+\begin{lessimportant}[Locality of the derivative]\index{derivative!locality}
+The derivative is \emph{local}, in the following sense. Suppose there is
+an interval $\zu{I}=(a,b)$ on
+which the functions $f$ and $g$ are equal. That is, for any $x\in \zu{I}$, $f(x)=g(x)$.
+Then at any point in I, the derivatives of $f$ and $g$ are the same.
+\end{lessimportant}
+
+<%
+  fig(
+    'radar-gun',
+    %q{Fred and Ginger are both driving on the freeway. As Ginger is about to pass Fred,
+       she notices a motorcycle cop, so she abruptly decelerates and then
+       stays alongside Fred. The derivative of their
+       position is their speed. The derivative is local, so by the time
+       the cop measures their speeds, at point P, they
+       are the same.},
+    {
+      'width'=>'wide',
+      'sidecaption'=>false
+    }
+  )
+%>
+
+<% end_sec('deriv-local') %>
+
+
+<% begin_sec("Properties of the derivative",4,'properties-of-the-derivative') %>
+The following properties of the derivative are intuitively reasonable
+based on our conceptual definition, and they will be enough to allow us to do quite a bit
+of interesting calculus before we come back and make a more general definition.
+<% marg(300) %>
+<%
+  fig(
+    'properties-of-derivative',
+    %q{Some properties of the derivative.}
+  )  
+%>
+<% end_marg %>
+
+<% marginbox(-300,'proof-assumptions','Ideas about proof: stating your assumptions',{},
+%q~
+The properties listed here can be used to solve problems,
+as in section \ref{subsec:derivative-of-x-squared}, where we'll calculate the derivative
+of the function $y=x^2$. But math isn't just calculation.
+We also want to \emph{prove} general facts. A proof always requires certain starting assumptions,
+e.g., you can't prove to a friend that cap-and-trade is the best way to deal with global warming
+if your friend won't admit that global warming exists. This list of properties includes enough
+assumptions to prove quite a few general facts about derivatives.\index{proof!requires assumptions}
+      ~
+   )
+%>
+
+
+\begin{description}\label{properties-of-derivative}\index{derivative!properties}
+ \item[constant] The derivative of a constant function is zero.
+ \item[line] The derivative of a linear function is its slope.
+ \item[shift] Shifting a function $y(x)$ horizontally or vertically to form a new function 
+                   $y(x+a)$ or $y(x)+b$
+                   gives a derivative at any newly shifted point that is the same as
+                   the derivative at the corresponding point on the unshifted graph.
+ \item[flip] Flipping the function $y(x)$ horizontally or vertically to form a new function $y(-x)$ or
+                   $-y(x)$ negates its derivative at corresponding points.
+ \item[addition] The derivative of the sum of two functions is the sum
+                   of their derivatives.
+ \item[stretch] Stretching a function $y(x)$ vertically to form a new function $ry(x)$ multiplies its
+                   derivative by $r$ at the corresponding points, while stretching it horizontally
+                   to make $y(x/s)$ divides its derivative by $s$.
+ \item[no-cut] Suppose that for a certain point P on the graph of a function, there is a unique linear function
+                   $\ell$ that passes through P but doesn't cut through the graph at P. Then the graph of $\ell$
+                   is the tangent line, and
+                   the derivative of the function at P equals 
+                   the slope of the line.\label{no-cut}\index{tangent line!that is also a no-cut line}
+\end{description}
+
+As an example of the stretch rule, cars sold in the U.S.~have odometers that read out in units of miles,
+while those sold elsewhere are calibrated in kilometers, so their readings are greater by
+the conversion factor $r=1.6$. By the stretch property, cars outside the U.S.~also have speedometer
+readings that are greater by this factor: they read out in \emph{kilometers} per hour.
+
+There is usually, but not always, a line like the one described by the no-cut property.
+Sometimes there is a tangent line but it isn't a no-cut line. If this kind of mathematical
+puzzle interests you, try sketching the 
+graphs of the functions $x^3$ and $\sqrt{x}$. You should be able to convince yourself that
+their tangent lines at $x=0$ can't be described by no-cut functions.
+
+By the way, these are just names I've given to these properties, and if you use them with other
+people, they won't know what you mean. Once we've done more calculus, we'll see that several
+of these properties are actually special cases of a more general rule called the chain rule.
+
+<% end_sec('properties-of-the-derivative') %>
+
+<% begin_sec("The derivative of the function $y=x^2$",nil,'derivative-of-x-squared') %>
+
+%%graph%% x-squared func=x**2 format=eps xlo=-3 xhi=3 ylo=0 yhi=10 with=lines
+
+As our first example of a derivative, let's use the function $y=x^2$. Its graph is a parabola.
+The simplest point at which
+to find its derivative is $x=0$, the central point of the graph. From figure \figref{x-squared}, it seems like
+zooming in more and more on this point would give something that looked more and more like a
+horizontal line, and this suggests that the derivative at this point is zero. We can confirm this
+by using the flip property. Flipping the graph horizontally across the $y$ axis
+doesn't change the graph. (Recall that
+a function with this symmetry is called an \emph{even} function.)\index{even function}
+Since the flip doesn't change the function, it can't change the derivative of the function.
+But the flip rule says that when we flip a function, the derivative is negated at the
+corresponding point on the new graph. Here the point of interest is $x=0$, and that point
+doesn't move when we flip it, so its corresponding point on the new graph is the same point.
+Thus the derivative at $x=0$ must be the same as itself, but also equal to minus itself.
+Zero is the only number that remains the same when we reverse its sign, so the derivative at
+the center of the graph is zero.
+<% marg(200) %>
+<%
+  fig(
+    'x-squared',
+    %q{The function $y=x^2$.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'tangent-line',
+    %q{The line $2x-1$ intersects the function $x^2$ without cutting it.}
+  )  
+%>
+<% end_marg %>
+
+How about the derivative at the point $x=1$? Here we can apply the no-cut rule.
+By laying a ruler against this point, we find that the linear function $\ell(x)=2x-1$ seems
+to intersect the parabola without cutting across it. To prove that this is
+true, we can compute the difference between the two functions, $y(x)-\ell(x)=x^2-2x+1$.
+Completing the square allows us to rewrite this as $(x-1)^2$, which is clearly positive for
+any value of $x$ other than 1. Therefore the function $\ell$ meets the conditions of the
+no-cut rule, and the derivative of $x^2$ at $x=1$ is 2.
+
+%%graph%% tangent-line func=x**2 format=eps xlo=0 xhi=2 ylo=0 yhi=2 with=lines x=t y=x samples=300 ytic_spacing=1 ; func=2*x-1.0 with=lines
+
+Having found the derivative of $x^2$ at $x=1$, we can now use the stretch rule to find it
+at any other point. For example, suppose we want to know the derivative at $x=3$. If we were to
+take the graph of the function $x^2$ and stretch it by a factor of $3$ horizontally and $9$ vertically, we would
+get the same graph again. These stretches take the point $(1,1)$, where we know the derivative,
+to the point $(3,9)$, where we want to know it.
+The stretch rule tells us that the horizontal stretch decreases the
+derivative to $1/3$ of its original value, but the vertical stretch increases it by $9$ times,
+so that over all, the derivative at $(3,9)$ is $(1/3)(9)=3$ times greater than its value
+at $(1,1)$. Thus the derivative at $x=3$ equals 6.
+
+There is nothing special about the number 3. 
+The method that we applied to $x=3$ would work for any other number $x$, not just for 3.
+We find that the derivative of the function $x^2$ at any point $x$ equals $2x$. Taking stock of
+what we've done, we started with the function $x^2$, and found that at any point $x$, the derivative
+was $2x$.
+<% end_sec('derivative-of-x-squared') %>
+<% begin_sec("The derivative of a function is a function itself.",4,'derivative-is-a-function') %>\index{derivative!is a function}
+We've found that the derivative of the function $x^2$ at a point $x$ equals $2x$.
+The expression $2x$ can be thought of as a function of $x$. So what we've really done
+is to take a function and construct a new function that gives the derivative of the original
+function at each point. One way of notating this new function is $y'$, read ``$y$ prime.'' We have
+\begin{align*}
+  y &= x^2 \\
+  y' &= 2x\eqquad.
+\end{align*}
+The craft of finding this kind of derivative-function from the original function is called
+\emph{differentiation}.\index{differentiation|see{derivative}}
+We have differentiated the function $x^2$ and gotten its derivative,
+the function $2x$.
+<% marg(200) %>
+<%
+  fig(
+    'derivative-as-a-function',
+    %q{The derivative of $x^2$ is itself a function. As we change $x$, the slope of the tangent line
+       changes.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'baldy-elevation-graph',
+    %q{Example \ref{eg:baldy}.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'indifference-curve',
+    %q{Example \ref{eg:indifference-curve}.}
+  )  
+%>
+<% end_marg %>
+
+\begin{eg}{Hiking}\label{eg:baldy}
+Figure \figref{baldy-elevation-graph} shows a graph of my favorite route for climbing a mountain
+near where I live. (My wife rolls her eyes when I tell her the dog and I are doing this hike yet
+again.) How steep is the hike? There is no generic answer to this question, since the derivative
+of this function is itself a function. The derivative depends on $x$, so it has different values in
+different places. The slope of the graph at point P appears to be the steepest, with
+$y'\approx 0.80$. At other points, $y'$ has smaller values. At Q, it's slightly negative.
+The derivative $y'$ is a \emph{function} of $x$; it depends on which part of the hike you're presently
+climbing.
+\end{eg}
+
+\begin{eg}{An indifference curve}\label{eg:indifference-curve}\index{indifference curve}
+Let's say you enjoy beer, and you also enjoy sushi. How much would you prefer to have of each?
+Economists define a graph, figure \figref{indifference-curve}, called an \emph{indifference curve}.
+For a particular person, any two points on the curve are supposed to be equal in preference;
+the person is indifferent as to which one they get. For example, the person whose indifference
+curve is drawn in figure \figref{indifference-curve} is equally happy having one piece of sushi
+and five beers, or having three pieces of sushi and two beers. 
+
+There is a quantity called the marginal rate of substitution (MRS),\index{marginal rate of substitution}
+which is defined as minus the slope
+of the indifference curve, $-y'$. At point P in figure \figref{indifference-curve}, the MRS is
+high, which means that the person would have been just as happy to have another piece of
+sushi and a \emph{lot} less beer. The MRS, $-y'$, is a \emph{function} of where you are on the
+curve. If the person is at point Q on the graph, they have a moderate amount of beer and a moderate
+amount of sushi, so they consider them of more comparable value.
+Indifference curves are discussed further in section \ref{subsec:indifference-curves},
+p.~\pageref{subsec:indifference-curves}.
+\end{eg}
+
+\pagebreak
+
+\begin{eg}{What if $x$ is in the exponent rather than the base?}\label{eg:bunnies}
+The method used above to differentiate $x^2$ was basically a trick, and it depended on a special
+property of the function $x^2$, which is that its graph can be stretched horizontally and vertically in
+such a way that it can be brought back on top of itself again. The reason that this subject is
+called ``calculus'' rather than ``trickery'' is that we will soon (in ch.~\ref{ch:limits})
+develop more systematic
+methods for \emph{calculating} rates of change --- methods that don't depend on tricks.
+
+It may nevertheless be of interest to note that a similar trick is capable of telling us
+something about a different type of function,
+one in which $x$ appears in the exponent rather than the base. What about the function $2^x$, for example?
+A pair of rabbits marches off of Noah's ark. Two bunnies become four, then 8, 16, 32, and so on.
+What is the derivative of this function, i.e., the rate of change of the rabbit population per
+generation? (Strictly speaking, the derivative is only meaningful if we fill in all the non-integer
+values of $x$, which isn't really meaningful in terms of rabbits, since you can't have a fraction of
+a rabbit.)
+
+It happens that the function $2^x$, like $x^2$, can be brought back on top of itself again in a simple
+geometrical way. Instead of a horizontal stretch and a vertical stretch, we use a horizontal shift
+and a vertical stretch. For example, if we shift the graph of $2^x$ to the right by 3 units, and then
+stretch it vertically by a factor of 8, we get back the same graph again. This has come about because of the
+more fundamental property of exponential functions $b^{c+d}=b^cb^d$. (In our example, the base $b$ is 2.)
+As a result, we find that after
+3 generations, when the rabbit population goes up by a factor of 8, its derivative \emph{also} goes
+up by a factor of 8. That is, the derivative of an exponential function $y=b^x$ is proportional
+to $y$, or
+\begin{equation*}
+  y'=(\ldots)y\eqquad,
+\end{equation*}
+where ``\ldots'' is a constant of proportionality that depends on the base $b$. What is the constant
+of proportionality? We'll return to this question in example \ref{eg:exponential-with-limits}
+on p.~\pageref{eg:exponential-with-limits}.
+
+A similar example is
+credit card debt. The more credit card debt you have, the faster your debt grows; in this example, the
+constant of proportionality relates to the interest rate.
+\end{eg}
+<% end_sec('derivative-is-a-function') %>
+\startdq
+
+\begin{dq}
+m4_include(alr/ch01/dq/go-to-hell.tex)
+Refer to box \ref{textbox:proof-assumptions} on
+p.~\pageref{textbox:proof-assumptions}.
+\end{dq}
+<% end_sec('derivative') %>
+
+<% begin_sec("Derivatives of powers and polynomials",4,'deriv-polynomial') %>\index{derivative!of powers}\index{derivative!of polynomials}
+In section \ref{subsec:derivative-of-x-squared}, we found that the derivative of $x^2$ was $2x$.
+Straightforward application of the same technique to $x^3$ gives $3x^2$. We see a pattern:
+
+\begin{important}[Derivatives of powers]
+The derivative of $x^n$ equals $nx^{n-1}$, if $n$ is any integer greater than or equal to 1.
+\end{important}
+
+<% marginbox(300,'proof-not-by-example',"Ideas about proof: examples don't prove a rule",{},
+%q@
+An example can't prove a general rule. French is the official language of C\^ote d'Ivoire, but
+that doesn't prove that it's the official language of all of Africa. In fact there are other
+countries in Africa, such as Egypt, that speak different languages, such as Arabic. In general,
+an example can never prove a general rule, but a \emph{counterexample} (Egyptians speaking Arabic)
+can \emph{disprove} a rule (all of Africa speaking French).\index{proof!examples can't accomplish}\index{proof!counterexamples}
+      @
+   )
+%>
+
+\noindent Observing the pattern or giving examples is not enough to prove this general rule
+(box \figref{proof-not-by-example}).
+To prove this for all these values of $n$, rather than carrying out the proof for one value at
+a time, it will be more convenient to use techniques developed later in the book
+(section \ref{sec:power-rule-general}, p.~\pageref{sec:power-rule-general}).
+
+If we combine this with the addition and stretch rules, we know enough to differentiate any polynomial.
+<% marg(-50) %>
+<%
+  fig(
+    'derivative-of-a-polynomial',
+    %q{Example \ref{eg:derivative-of-a-polynomial}. The top graph shows the original function, the
+       bottom its derivative.
+       }
+  )  
+%>
+<% end_marg %>
+
+\begin{eg}{Differentiating a polynomial}\label{eg:derivative-of-a-polynomial}
+\egquestion Find the derivative of $y=x^3-7x+1$.
+
+\egquestion The addition property of the derivative
+tells us that we can break this problem down into three parts,
+\begin{equation*}
+  (x^3-7x+1)' = (x^3)'+(-7x)'+(1)'\eqquad,
+\end{equation*}
+where the primes indicate ``derivative of \ldots'' The stretch property says that $(-7x)'$ is the same
+as $(-7)(x)'$, so the derivative of our polynomial becomes
+\begin{equation*}
+   (x^3)'+(-7)(x)'+(1)'\eqquad.
+\end{equation*}
+We know how to differentiate powers: $(x^3)'=3x^2$, $(x')=1$, and $(1)'=0$. (We could have found the
+second term from the line property, and the final one from the constant property.) The result is
+\begin{equation*}
+   y' = 3x^2-7\eqquad.
+\end{equation*}
+
+The functions $y$ and $y'$ are graphed in figure \figref{derivative-of-a-polynomial}, and
+five points are marked as examples of how the \emph{slope} of $y$ corresponds
+to the \emph{value} of $y'$. Reading across from left to right on the top graph, the slopes are
+positive, zero, negative, zero, and positive. On the bottom graph, the values of $y'$ are
+easily seen to be positive, zero, negative, zero, and positive.
+\end{eg}
+
+%%graph%% polynomial-to-differentiate func=x**3-7*x+1 format=svg xlo=-3 xhi=3 ylo=-10 yhi=10 xtic_spacing=1 ytic_spacing=5 with=lines
+%%graph%% deriv-of-polynomial func=3*x**2-7 format=svg xlo=-3 xhi=3 ylo=-10 yhi=10 xtic_spacing=1 ytic_spacing=5 with=lines
+
+<% end_sec('deriv-polynomial') %>
+
+<% begin_sec("Two trivial hangups",4,'hangups') %>
+<% begin_sec("Changing letters of the alphabet",nil,'changing-letters') %>
+The following point is relatively trivial, but nevertheless hangs up many students
+in applying calculus to real life. In a calculus
+textbook, we typically use the letters $x$ and $y$, with $y$ being a function of $x$. That is, $x$ is the independent variable,
+and $y$ is the dependent one. In real-life applications, however, the variables have definite meanings, and we want to
+use letters that make it easy to remember what they stand for. 
+
+For example, suppose that a social media company has a certain
+number of users, and they need to have enough computing power at their data center to be able to handle all of those users.
+This computing power will cost them a certain amount of money per month. In this
+example, it would be natural to use the notation $u$ for
+the number of users, and $c$ for the monthly cost in dollars. Then $c$ depends on $u$, and we have a function $c(u)$. Let's
+say the function is this:
+\begin{equation*}
+  c = u^2
+\end{equation*}
+This is not an unrealistic equation to imagine for this example, since the company has to keep track of every user's
+relationship to every other user. For example, user Andy may be able to mark himself
+as a ``fan'' or ``follower'' of user Betty, and then the company has to store a piece
+of information in a database to record this relationship.
+If there are
+a thousand users, there are $1000\times 1000$ or a million such possible
+relationships that may need to be stored in a database.
+
+Now if the company's user base is growing, it's of interest to them to know how much their costs will go up for each
+additional user (the marginal cost). This would be expressed by the derivative $c'(u)$. Although the letters of the alphabet are different
+than the ones we used in our earlier examples, that makes no difference in how we do the math. If differentiating
+$y=x^2$ with respect to $x$ gives $y'=2x$, then differentiating $c=u^2$ with respect to $u$ gives the same result but
+with the letters changed,
+\begin{equation*}
+  c' = 2u
+\end{equation*}
+<% end_sec('changing-letters') %>
+<% begin_sec("Symbolic constants",nil,'symbolic-constants') %>\index{constant!symbolic}
+The vertical stretch property of the derivative tells us that if we know a derivative such as
+\begin{equation*}
+  (x^2)'=2x\eqquad,
+\end{equation*}
+then we can differentiate a function like $5x^2$
+by simply letting the factor of 5 ``come along for the ride,'' 
+\begin{align*}
+  (5x^2)' &= (5)(x^2)' \\
+          &= (5)(2x) \\
+          &= 10x\eqquad.
+\end{align*}
+Now suppose that we want to differentiate
+$bx^2$, where $b$ is a constant, i.e., $b$ doesn't depend on $x$. To many students this looks like a much
+more difficult and abstract problem, but the procedure is the same:
+\begin{align*}
+  (bx^2)' &= (b)(x^2)' \\
+          &= (b)(2x) \\
+          &= 2bx\eqquad.
+\end{align*}
+The same goes for a vertical shift. If we aren't intimidated by computing
+\begin{equation*}
+  (x^2+5)' = (x^2)' = 2x\eqquad,
+\end{equation*}
+then there is no reason to be scared of the similar computation (again with
+$b$ being a constant) of
+\begin{equation*}
+  (x^2+b)' = (x^2)' = 2x\eqquad.
+\end{equation*}
+<% end_sec('symbolic-constants') %>
+<% end_sec('hangups') %>
+
+<% begin_sec("Applications",nil,'apps-of-derivative') %>
+
+<% begin_sec("Velocity",nil,'velocity') %>
+<% begin_sec("Defining velocity",nil,'defining-velocity') %>\index{velocity}
+One of our prototypical examples has been the odometer and speedometer on a car's dashboard. In fact, if we want to \emph{define}
+what velocity means, we have to define it as a derivative. Suppose an object (it could be a car, a galaxy, or a subatomic
+particle) is moving in a straight line. By choosing a unit of distance and a location that we define as zero, we can superimpose
+a number line onto this line. (In the example of the car, the unit of distance might be kilometers, and the zero
+position would be the point on the road at which we last pushed the button to zero the odometer.) Let the position
+defined in this way be $x$. Then $x$ is a function of time $t$ (such as the time measured on a clock), and we notate this
+function as $x(t)$. Note that although we typically use the letters $x$ and $y$ in a generic mathematical context, with
+$y$ being a function of $x$, in our present example it is more natural to use different letters, and now $x$ is the
+\emph{dependent} variable, not the independent one. That is, $x$ is a function of $t$, but $t$ may not be a function of
+$x$; for example, if a car stops and backs up, then it can visit the same position twice, so that a graph of $t$ versus
+$x$ would fail the vertical line test for a function. In this notation, the velocity $v$ is defined as the
+derivative 
+\begin{equation*}
+  v(t) = x'(t)\eqquad.
+\end{equation*}
+<% end_sec('defining-velocity') %>
+<% begin_sec("Constant acceleration",nil,'constant-acceleration') %>\index{acceleration!constant}
+An important special case is the one in which the position function is of
+the form
+\begin{equation*}
+  x(t) = \frac{1}{2}at^2\eqquad,
+\end{equation*}
+where $a$ is a constant, and the factor of $1/2$ is conventional, and convenient for
+reasons that will become more apparent in a moment. Differentiating with respect to
+$t$, we have the velocity function
+\begin{equation*}
+  v(t) = at\eqquad,
+\end{equation*}
+where the symbolic constant $a$ has been treated like any other constant,
+and the $1/2$ in front has been canceled by the factor of 2 that comes down from the
+exponent. We see that the velocity is proportional to the amount of time that has passed.
+If $t$ is measured in seconds and $v$ in meters per second (m/s), then the constant $a$,
+called the \emph{acceleration},\index{acceleration} tells us how much speed the object
+gains with every second that goes by, in units of m/s/s, which can be written as $\munit/\sunit^2$.
+Falling objects have an acceleration of about $9.8\ \munit/\sunit^2$. This is a measure of
+the strength of the earth's gravity near its own surface.
+
+\begin{eg}{Dropping a rock down a well}
+\egquestion Looking down into a dark well, you can't see how deep it is. If you drop a rock
+in and hear it hit the bottom in 2 seconds, how deep is the well?
+
+\eganswer 
+\begin{equation*}
+  x(t) = \frac{1}{2}at^2 \approx 20\ \munit
+\end{equation*}
+\end{eg}
+
+\begin{eg}{The shift property applied to constant acceleration}
+The equations for constant acceleration were given above with the unstated assumption that
+both the position and the velocity would be zero at the time $t=0$. If we relax this assumption, then
+the position function can be of the more general form
+\begin{equation*}
+  x(t) = x_\zu{o}+\frac{1}{2}a(t-t_\zu{o})^2\eqquad,
+\end{equation*}
+where $t_\zu{o}$ is some initial time, at which the position equals $x_\zu{o}$. By the shift property of the
+derivative (p.~\pageref{properties-of-derivative}), the velocity function is then
+\begin{equation*}
+  v(t) = a(t-t_\zu{o})\eqquad.
+\end{equation*}
+\end{eg}
+<% end_sec('constant-acceleration') %>
+<% end_sec('velocity') %>
+
+<% begin_sec("When do you need a derivative?",nil,'when-derivative-is-needed') %>\index{derivative!when needed}
+Finding velocity from position data is a classic application of calculus, and yet how
+do we know when we really need calculus for this application? After all, many people
+do simple computations involving velocity without knowing calculus.
+
+Here's an example where calculus really is required.
+In July 1999, Popular Mechanics carried out tests to
+find which car sold by a major auto maker could cover a
+quarter mile (402 meters) in the shortest time, starting
+from rest. Because the distance is so short, this type of
+test is designed mainly to favor the car with the greatest
+acceleration, not the greatest maximum speed (which is
+irrelevant to the average person). The winner was the Dodge
+Viper, with a time of 12.08 s. If we divide the distance by the time, we get
+\begin{equation*}
+  v = \frac{\Delta x}{\Delta t} = 33.3\ \munit/\sunit\eqquad,
+\end{equation*}
+which is about 74 miles per hour or 120 kilometers per hour. Not a very impressive
+speed, is it? That's because it's wrong. During those twelve seconds of acceleration,
+the car didn't have just one speed. It started at a velocity of zero and went up from
+there. The top speed was nearly double the one calculated above
+($53\ \munit/\sunit\approx 119\ \zu{mi}/\zu{hr}\approx 191\ \zu{km}/\zu{hr}$). The important
+point here is that when we measure a rate of change using an expression of the form
+\begin{equation*}
+  \frac{\Delta\ldots}{\Delta\ldots}\eqquad,
+\end{equation*}
+we only get the right answer if the rate of change is \emph{constant}. In this example
+the rate of change is the velocity, and the velocity is not constant. To find the correct velocity,
+we first need to decide at which time we want to know the velocity, and then evaluate the derivative
+at that time.
+<% end_sec('when-derivative-is-needed') %>
+
+<% marg(-300) %>
+<%
+  fig(
+    'tram-fare-edited',
+    %q{Revenue from a tram as a function of the fare charged.}
+  )  
+%>
+<% end_marg %>
+%%graph%% tram-fare func=(100.0-x)*x x=f y=r format=svg xlo=0 xhi=100 ylo=0 yhi=2500 xtic_spacing=20 ytic_spacing=1000 with=lines
+
+<% begin_sec("Optimization",nil,'optimization') %>
+An extremely important use of the derivative is in optimization. For example, suppose that
+the operators of a privately owned mountain tram in Switzerland want to optimize
+their profit from transporting sightseers to a mountain summit in the Alps. The cost of
+building the tram is a sunk cost, and operating it for one day costs the same amount of money regardless
+of the number of passengers. Therefore the only goal is to get the maximum number of Swiss
+francs in the cash registers at the end of each day. The operators can raise the fare $f$ in order
+to make more money, but if the fare is too high then not as many people will be willing to pay it.
+Suppose that the number of riders in a given day is given by $a-bf$, where $a$ and $b$ are constants.
+That is, if the ride was free, $a$ passengers would ride each day, but for every one-franc
+increase in the fare, $b$ people will decide not to go. The tram's daily revenue is then found
+by multiplying the number of riders by the fare, which gives
+the function
+\begin{equation}\label{eqn:tram-revenue}
+  r(f) = (a-bf)f\eqquad.
+\end{equation}
+
+For insight into what's going on, figure \figref{tram-fare-edited} shows this function in the case where $a=100$ and
+$b=1$. When the fare is zero, we get plenty of customers every day, but they don't pay anything,
+so our revenue is zero. When the fare is 100 francs, the number of paying passengers goes down
+to zero, so again we have no revenue. 
+
+Somewhere in between these extremes  we have the fare that would optimize our
+revenue: the \emph{maximum} of the function $r$. At this point on the graph, the derivative is zero,
+so to find it, we should differentiate $r$, set it equal to zero, 
+and solve for $f$.\index{extrema}\index{maximum|see{extrema}}\index{minimum|see{extrema}}\index{optimization|see{extrema}}
+
+We haven't yet learned enough of the techniques of calculus to
+know how to find the derivative of a function with the form of equation
+\eqref{eqn:tram-revenue}, but by multiplying out the product we can make it into a polynomial,
+which is a form that we do know how to differentiate:
+\begin{align*}
+  r(f) &= -bf^2+af \\
+  r'(f) &= -2bf+a
+\end{align*} 
+Setting $r'$ equal to zero, we have
+\begin{align*}
+  0 &= -2bf+a \\
+  f&=\frac{a}{2b}\eqquad.
+\end{align*} 
+With the particular numerical values used to construct the graph, this gives an optimal
+fare of 50 francs, which looks about right from the graph.
+
+
+By searching for points where the derivative is zero we can often, but not always, find
+the the points where a function takes on its maximum and minimum values. The term extremum
+(plural extrema) is used to refer to these points. Figure \figref{cases-of-extrema} shows that
+quite a few different things can happen, and that searching for a zero derivative doesn't
+always tell us the whole story. We have a zero derivative at point G, but G is only a maximum
+compared to nearby points; we call G a local maximum, as opposed to the global maximum D.
+The zero-derivative test doesn't distinguish a local minimum like B from a local maximum.
+A zero derivative may not indicate a local extremum at all, as at C and H. We can have points
+such as E and F where the derivative is undefined. An extremum can occur at a point like A
+that is the endpoint of the function's domain.\footnote{For a more thorough review of notions such as the
+domain of a function, see section \ref{sec:inverse-of-function}, p.~\pageref{sec:inverse-of-function}.}
+We will come back to these technical points in more detail later in the 
+book.\footnote{section \ref{subsec:second-derivative-for-extrema},
+p.~\pageref{subsec:second-derivative-for-extrema}}
+<% marg(80) %>
+<%
+  fig(
+    'cases-of-extrema',
+    %q{A zero derivative often, but not always, indicates a local extremum. Sometimes we have
+       a zero derivative without a local extremum, and sometimes a local extremum with an
+       undefined or nonzero derivative.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'vanishing-point',
+    %q{The railroad tracks stretch toward a vanishing point at infinity.
+       Are there infinitely big or infinitely small numbers?}
+  )  
+%>
+<% end_marg %>
+
+<% end_sec('optimization') %>
+<% end_sec('apps-of-derivative') %>
+
+
+<% begin_sec("Review: elementary properties of the real numbers",nil,'elementary-reals') %>\index{real numbers!elementary properties}
+
+I began this chapter by defining calculus as the study of rates of change, but
+it could equally well be described as the study of infinity. The intuition behind the derivative
+is that we zoom in on a selected point on a smooth curve, until the curve appears like a line
+and we can measure the slope of the line. But the curve won't appear perfectly
+straight until we've cranked up our microscope to an \emph{infinitely big} magnification, at which point
+we'll be seeing values of $\Delta x$ and $\Delta y$ that are \emph{infinitely small} (but not zero).
+Calculus was invented by Isaac Newton\index{Newton, Isaac} and
+Gottfried Wilhelm von Leibniz\index{Leibniz, Gottfried Wilhelm von}
+back in the era of powdered wigs and silk stockings, and in those days
+the concept of ``number'' was still in the process of being
+standardized and formalized.\footnote{For more on the
+history, see Blaszczyk, Katz, and Sherry, ``Ten misconceptions from the history of analysis and 
+their debunking,'' \url{arxiv.org/abs/1202.4153}.}
+Newton and Leibniz found it convenient to work with symbols representing
+infinitely big and infinitely small numbers, and a debate ensued about whether it was
+all right to call those things ``numbers.''
+
+Today we think about this kind of thing in a different way. Decisions about what to allow
+as a legal number are thought of not as matters of right and wrong but as definitions.
+We define certain sets of numbers, including:
+
+\begin{description}
+\item[the integers:] whole numbers such as $-1$, 0, and $1$                 \index{integers}
+\item[the rational numbers:] ratios of integers such as $2/1$ and $3/4$     \index{rational numbers}
+\item[the real numbers,] including quantities like $\pi$ and $\sqrt{2}$
+\item[the complex numbers,] such as $\sqrt{-1}$                            \index{complex numbers}
+\end{description}
+
+<% marg(0) %>
+<%
+  fig(
+    'stevin-decimals',
+    %q{Simon Stevin (1548-1620) was a Flemish mathematician and engineer who
+       lived a century before the invention of the calculus. He wrote a book on decimals,
+       using a notation somewhat different from the modern one. (The figure shows the modern
+       notation and Stevin's notation for the decimal expansion of $\sqrt{2}$.) 
+       Stevin's decimals represent an alternative approach to defining what we mean by
+       a real number: rather than defining them by listing their properties,
+       we can define them by \emph{constructing} them out of simpler objects (decimal digits).
+       Stevin argued for allowing any arbitrary, infinite string of digits, which is equivalent
+       to including all the real numbers but forbidding infinitely big and infinitely small numbers.}
+  )  
+%>
+<% end_marg %>
+
+Do these systems contain infinitely big and infinitely small 
+numbers? Can they? 
+Should they?\index{infinite and infinitesimal quantities}
+\index{infinity|see{infinite and infinitesimal quantities}}
+\index{infinitesimal|see{infinite and infinitesimal quantities}}
+
+To answer these questions, we need to give a more definite account of how these number systems
+are defined. One good way to define them is with a list of their axioms. (For an alternative,
+constructive approach, see figure \figref{stevin-decimals}.)
+Here is a list of axioms for the system of real numbers. Except as otherwise stated,
+each of these properties holds for \emph{any} real-number values of the symbols $x$, $y$, \ldots
+
+\index{commutativity}\index{identity}\index{associativity}\index{distributivity}\index{ordering property of the real numbers}
+
+\begin{description}\label{list-elementary-properties-of-reals}
+\item[commutativity] $x+y=y+x$ and $xy=yx$
+\item[identities] There exist numbers 0 and 1 such that for any $x$, $x+0=x$ and $1x=x$.
+\item[inverses] For any $x$, there exists a number $-x$ such that $x+(-x)=0$. For any nonzero $x$,
+          there exists $1/x$ such that $(x)(1/x)=1$.
+\item[associativity] $x+(y+z)=(x+y)+z$ and $x(yz)=(xy)z$
+\item[distributivity] $x(y+z)=xy+xz$
+\item[ordering] We can define whether or not $x<y$, and this ordering relates to the addition and
+      multiplication operations in specific ways, which you've seen defined in a previous course
+      on algebra and which for brevity we will not explicitly give here.
+\end{description}
+
+This list of axioms holds for the real numbers, but it fails for the integers, since for example
+the integer 2 doesn't have an inverse that is an integer. It also fails for the complex numbers,
+which don't have a well-defined ordering. The list seems detailed and precise, so it may come
+as a surprise that it does \emph{not} suffice to prove anything about whether or not infinite
+numbers exist. The list of axioms is in fact not enough to characterize the real numbers.
+Later in this book we will add another axiom, called the completeness axiom
+(section \ref{sec:completeness},
+p.~\pageref{sec:completeness}),\index{completeness axiom}
+to the list. The completeness axiom holds for the reals but not the rationals, and it also
+rules out the existence of infinitely large or infinitely small real numbers. It is possible
+to extend the real number system to a larger one that does include infinities (section
+\ref{sec:safe-handling-of-dx}, p.~\pageref{sec:safe-handling-of-dx}).
+
+<% end_sec('elementary-reals') %>
+
+<% begin_sec("The Leibniz notation",nil,'leibniz-notation') %>\index{Leibniz notation!derivative}
+<% begin_sec("Motivation",nil,'leibniz-motivation') %>
+Lacking the more precise modern ideas described in section \ref{sec:elementary-reals},
+Leibniz argued as follows.
+Let's just make $\Delta x$ and $\Delta y$ infinitely small (but not zero). In modern terminology,
+this means that they can't be real numbers. To make it clear that we're talking about infinitely small
+differences in $x$ and $y$, we change the notation to $\der x$ and $\der y$. Recall that $\Delta$
+is the Greek version of capital ``D,'' so we're using a smaller version of the letter, ``$\der$,''
+to represent a change that is smaller (in fact, infinitely small). Dividing these two
+``numbers'' (whatever mysterious species of number they may turn out to be), we get the
+derivative,
+\begin{equation*}
+  \frac{\der y}{\der x}\eqquad.
+\end{equation*}
+Although the notation's original justification was not up to modern standards of
+rigor, it is one of the most expressive and well-designed mathematical notations ever devised,
+and has been the most commonly used notation for the derivative ever since Leibniz published it
+in 1686. Around 1970, mathematicians clarified some of these issues and essentially
+justified and codified the centuries-old procedures for manipulating the $\der y$'s and $\der x$'s;
+section \ref{sec:safe-handling-of-dx} on p.~\pageref{sec:safe-handling-of-dx} boils these
+modern developments down to a simple set of practical rules.
+<% marg(80) %>
+<%
+  fig(
+    'leibniz-portrait',
+    %q{Gottfried Wilhelm Leibniz (1646-1716).}
+  )  
+%>
+<% end_marg %>
+<% end_sec('leibniz-motivation') %>
+
+<% begin_sec("With respect to what?",nil,'leibniz-wrt-what') %>
+One of the good things about the Leibniz notation is that it states clearly what we're differentiating
+\emph{with respect to}. For example, $\der v/\der t$ could indicate how much a car was speeding up
+with each passing second of time, while $\der v/\der x$ would measure the speed gained with
+each meter that it moved down the road.
+<% end_sec('leibniz-wrt-what') %>
+
+<% begin_sec("Shows units",nil,'leibniz-shows-units') %>
+Another selling point of the notation is that it shows the units of the derivative.\index{Leibniz notation!units}
+For example,
+the definition of velocity, expressed in Leibniz notation, is
+\begin{equation*}
+  v = \frac{\der x}{\der t}\eqquad.
+\end{equation*}
+On the left-hand side we have velocity, whose units in the SI are meters per second. On the
+right we have a tiny change in position, which has units of meters, divided by a tiny change
+in time, which has units of seconds. In terms of units, then, the equation reads as
+\begin{equation*}
+  \zu{m/s} = \frac{\munit}{\sunit}\eqquad,
+\end{equation*}
+which works out correctly. In more complicated examples, checking the units like this is a powerful
+method for checking your answer to a calculus problem.
+
+\begin{eg}{Burning gasoline}
+\egquestion Let $x$ be a car's odometer reading and $g$ the amount of gasoline burned since the odometer was zeroed.
+One can think of $x$ as a function of $g$.
+Many cars have a digital display that shows the function $x'(g)$ in real time. Express this using
+the Leibniz notation. What is the interpretation of this derivative, and what units
+does it have?
+
+\eganswer The Leibniz notation is $\der x/\der g$, which makes it clear that the units are kilometers per liter,
+km/L (or, in U.S.~units, miles per gallon). The interpretation is that this number gives a measure of
+how efficient the car is at using fuel to transport you a given distance.
+\end{eg}
+
+<% marginbox(300,'units','The SI',{},
+%q~
+The metric system is the system of units used universally in engineering and the sciences, as well
+as in daily life in every country except the United States. Formally known as the
+Syst\`eme International (SI),\index{metric system}\index{Syst\`eme International}
+it was invented during the French Revolution. For mechanical (as opposed to electrical)
+measurements, the SI uses three basic units:
+
+\textbf{meters} for length
+
+\textbf{kilograms} for mass
+
+\textbf{seconds} for time
+
+\noindent Other measurements are built from these, e.g., meters per second (m/s) for
+velocity.
+
+There is a system of prefixes that represent powers of ten in which the exponent is a multiple
+of three. The most common of these are $\zu{kilo-}=10^3$, and $\zu{milli-}=10^{-3}$. (The prefix
+$\zu{centi-}=10^{-2}$ is used only in the centimeter, and doesn't require memorization since we know
+that dollars and euros are subdivided into 100 cents.)
+      ~
+   )
+%>
+
+\begin{eg}{An insect pest}\label{eg:pest}
+\egquestion An insect pest from the United States is inadvertently released in
+a village in rural China. The pests spread outward at a rate of $s$ kilometers
+per year, forming a widening circle of contagion. Find the number of square
+kilometers per year that become newly infested. Check that the units of the result
+make sense. Interpret the result.
+
+\eganswer Let $t$ be the time, in years, since the pest was introduced.
+The radius of the circle is $r=st$, and its area is $a=\pi r^2=\pi(st)^2$.
+To make this look like a polynomial, we have to rewrite it as
+$a=(\pi s^2)t^2$. The derivative is
+\begin{align*}
+  \frac{\der a}{\der t} &= (\pi s^2)(2t) \\
+                        &= (2\pi s^2) t
+\end{align*}
+The units of $s$ are km/year, so squaring it gives $\zu{km}^2/\zu{year}^2$.
+The 2 and the $\pi$ are unitless, and multiplying by $t$ gives units
+of $\zu{km}^2/\zu{year}$, which is what we expect for $\der a/\der t$, since
+it represents the number of square kilometers per year that become infested.
+
+Interpreting the result, we notice a couple of things. First, the rate
+of infestation isn't constant; it's proportional to $t$, so people might not
+pay so much attention at first, but later on the effort required to combat the
+problem will grow more and more quickly. Second, we notice that the
+result is proportional to $s^2$. This suggests that anything that could be
+done to reduce $s$ would be very helpful. For instance, a measure that cut
+$s$ in half would reduce $\der a/\der t$ by a factor of four.
+\end{eg}
+
+\begin{eg}{A whirling bucket}\label{eg:whirling-bucket}
+\egquestion
+Figure \figref{whirling-bucket} shows a bucket full of water that is being whirled
+rapidly, so that the water spreads out from the center. The surface of the water
+forms a parabola with the equation
+\begin{equation*}
+  y = \frac{x^2}{c}\eqquad,
+\end{equation*}
+where $c$ is a constant. Infer the units of $c$, find the slope of the water's
+surface, and check the units of your answer.
+
+\eganswer
+Both $x$ and $y$ are measured in units of meters, so we have
+\begin{equation*}
+  \munit = \frac{\munit^2}{\text{units of $c$}}\eqquad.
+\end{equation*}
+If the units of the left and right sides are to be equal, $c$ must have units of
+meters as well.
+
+Differentiation gives the slope of the water's surface as
+\begin{equation*}
+  \frac{\der y}{\der x} = \frac{2x}{c}\eqquad,
+\end{equation*}
+where the factor of $1/c$ ``comes along for the ride,'' as with any multiplicative constant.
+
+Checking the units of the result, we have
+\begin{equation*}
+  \frac{\munit}{\munit} = \frac{(\text{unitless})\cdot\munit}{\munit}\eqquad,
+\end{equation*}
+which checks out.
+\end{eg}
+<% marg(125) %>
+<%
+  fig(
+    'whirling-bucket',
+    %q{Example \ref{eg:whirling-bucket}.}
+  )  
+%>
+<% end_marg %>
+
+<% end_sec('leibniz-shows-units') %>
+
+<% begin_sec("Operator interpretation",nil,'leibniz-operator') %>
+Sometimes the Leibniz notation gives an unwieldy, top-heavy tower of symbols:\index{Leibniz notation!derivative!operator interpretation}
+\begin{equation*}
+  \frac{\der\left(\frac{x^2}{2}+\frac{1}{7}\right)}{\der x} = x
+\end{equation*}
+One way to avoid this awkwardness is to revert to the ``prime'' notation:
+\begin{equation*}
+  \left(\frac{x^2}{2}+\frac{1}{7}\right)' = x
+\end{equation*}
+But a more common solution is write the function being differentiated over on the right:
+\begin{equation*}
+  \frac{\der}{\der x}\left(\frac{x^2}{2}+\frac{1}{7}\right) = x
+\end{equation*}
+This can be seen simply as a typographical expedient, or it can be given
+a mathematical interpretation: we can think of $\frac{\der}{\der x}$ as
+meaning ``take the derivative of,'' in the same way that $\sqrt{\quad}$ means
+``take the square root of.'' We call $\frac{\der}{\der x}$ the
+\emph{operator} describing the operation of taking a function
+and giving back the function that is its derivative. Math teachers who dislike the historical
+connotations of the Leibniz notation in terms of infinitely small numbers
+will sometimes present the operator interpretation as the \emph{only} correct interpretation, but
+such a prescription robs the student of some of the utility of the notation,
+e.g., by making it impossible to do the kind of reasoning shown in example \ref{eg:pest}.
+<% end_sec('leibniz-operator') %>
+
+<% end_sec('leibniz-notation') %>
+
+<% marg(-300) %>
+<%
+  fig(
+    'approximating-tangent-line',
+    %q{The dotted line through P and Q is a good approximation to the tangent line through P.}
+  )  
+%>
+<% end_marg %>
+
+<% begin_sec("Approximations",nil,'approximations') %>\index{approximation!using the derivative}
+We saw in section \ref{subsec:when-derivative-is-needed} on p.~\pageref{subsec:when-derivative-is-needed}
+that the derivative can't be calculated as $\Delta y/\Delta x$ unless the derivative is constant, i.e., unless
+the function's graph is a line. In the Leibniz notation, this is
+\begin{equation*}
+  \frac{\der y}{\der x} \ne \frac{\Delta y}{\Delta x}\eqquad.
+\end{equation*}
+But if we take two points very close together on a graph, then the curvature doesn't matter too much,
+and the line through those points is a good approximation to the tangent line, as in figure
+\figref{approximating-tangent-line}. When then have the approximation
+\begin{equation*}
+  \frac{\der y}{\der x} \approx \frac{\Delta y}{\Delta x}\eqquad.
+\end{equation*}
+It may be of interest to use either side of this as an approximation to the other.
+
+<% begin_sec("Approximating the derivative",nil,'approximating-deriv') %>\index{approximation!to derivative}
+Suppose you can't remember that the derivative of $x^2$ is $2x$, but you need to find the
+value of the derivative at $x=1$. As in figure \figref{approximating-tangent-line}, let point P
+be
+\begin{equation*}
+  (1.0000,1.0000)\eqquad,
+\end{equation*}
+and let Q be the nearby point
+\begin{equation*}
+  (1.0100,1.0201)\eqquad.
+\end{equation*}
+We then have:
+\begin{align*}
+  \frac{\der y}{\der x} & \approx \frac{\Delta y}{\Delta x} \\
+           &= \frac{1.0201-1.0000}{1.0100-1.0000} \\
+           &= \frac{0.0201}{0.0100} \\
+           &= 2.01
+\end{align*}
+This is quite a good approximation to the exact answer, 2. If we needed a better approximation,
+we could take Q even closer to P. In reality we would use this technique in cases where we didn't
+know the exact answer, and we would then want to know how accurate our result was. To do this,
+we could redo the calculation with a smaller value of $\Delta x$, say 0.001, and look for the
+most significant decimal place that changed.
+<% end_sec('approximating-deriv') %>
+<% begin_sec("Approximating finite changes",nil,'approximating-changes') %>\index{approximation!finite changes}\index{propagation of errors}
+Sometimes we know the derivative and want to use it as an approximation to find out about
+finite changes in the variables. 
+For example,
+the Women's National Basketball Association says that balls used in its games should have
+a radius of 11.6 cm, with an allowable range of error of plus or minus 0.1 cm (one millimeter).
+How accurately can we determine the ball's volume?
+
+The equation for the volume of a sphere gives $V=(4/3)\pi r^3=6538\ \zu{cm}^3$ (about six and
+a half liters). We have a function $V(r)$, and we want to know how much of an effect will be
+produced on the function's output $V$ if its input $r$ is changed by a certain small amount.
+Since the amount by which $r$ can be changed is small compared to $r$, it's reasonable to
+apply the approximation
+\begin{equation*}
+  \frac{\Delta V}{\Delta r} \approx \frac{\der V}{\der r}\eqquad,
+\end{equation*}
+which gives
+\begin{align*}
+  \Delta V & \approx \frac{\der V}{\der r}\Delta r \\
+           &= 4\pi r^2 \Delta r\eqquad.
+\end{align*}
+(Note that the factor of $4\pi r^2$ can be interpreted as the ball's surface area.)
+Plugging in numbers, we find that the volume could be off by
+as much as $(4\pi r^2)(0.1\ \zu{cm})=170\ \zu{cm}^3$. The volume of the ball can therefore
+be expressed as $6500\pm 170\ \zu{cm}^3$, where the original figure of 6538 has been rounded off
+to the nearest hundred in order to avoid creating the impression that the 3 and the 8 actually
+mean anything --- they clearly don't, since the possible error is out in the hundreds' place.
+<% marg(100) %>
+<%
+  fig(
+    'basketball',
+    %q{How accurately can we determine the ball's volume?}
+  )  
+%>
+<% end_marg %>
+
+This calculation is an example of a very common situation that occurs in the sciences, and even
+in everyday life, in which we base a calculation on a number that has some range of uncertainty
+in it, causing a corresponding range of uncertainty in the final result. This is called
+propagation of errors. The idea is that the derivative expresses how sensitive the function's
+output is to its input.
+
+The example of the basketball could also have been handled without calculus, simply by recalculating the volume
+using a radius that was raised from 11.6 to 11.7 cm, and finding the difference between the two volumes.
+Understanding it in terms of calculus, however, gives us a different way of getting at the same
+ideas, and often allows us to understand more deeply what's going on. For example, we noticed in passing that
+the derivative of the volume was simply the surface area of the ball, which provides a nice geometric
+visualization. We can imagine inflating the ball so that its radius is increased by a millimeter. The amount of
+added volume equals the surface area of the ball multiplied by one millimeter, just as the amount of volume
+added to the world's oceans by global warming equals the oceans' surface area multiplied by the added depth.
+
+As another example of an insight that we would have missed if we hadn't applied calculus,
+consider how much error is incurred in the measurement of the width of a book if the ruler is
+placed on the book at a slightly incorrect angle, so that it doesn't form an angle of exactly 90 degrees with
+spine. The measurement has its minimum (and correct) value if the ruler is placed at exactly
+90 degrees. Since the function has a minimum at this angle, its derivative is zero. That means that
+we expect essentially no error in the measurement if the ruler's angle is just a tiny bit off.
+This gives us the insight that it's not worth fiddling excessively over the angle in this measurement.
+Other sources of error will be more important. For example, is the book a uniform rectangle? Are we using
+the worn end of the ruler as its zero, rather than letting the ruler hang over both sides of the book
+and subtracting the two measurements?
+<% end_sec('approximating-changes') %>
+<% begin_sec("Linear approximation to a curve",nil,'linear-approximation-to-a-curve') %>\index{approximation!best linear}
+Many people who, like me, learned to drive in the United States
+were taught that when following another car, we should leave space equal to one car length for
+every 10 miles per hour of speed. This rule has the advantage of being easy to compute in your head
+while you're on the freeway, but figure \figref{stopping-distance-new} shows that it's a poor
+approximation.
+This is an example of a situation that occurs over and over again in real life, which is that
+we would like to approximate a complicated nonlinear function using a simple linear one.
+The derivative is the slope of the tangent line, and the tangent line is the \emph{best}
+possible line to approximate a given function near a particular point.
+
+<% marg(-300) %>
+<%
+  fig(
+    'stopping-distance-new',
+    %q{Stopping distance in car lengths, as a function of initial speed in miles per hour.
+       The stopping distances were measured using professional drivers on a track. I've defined
+       a car length as 4.8 meters, which is the length of a Honda Accord.
+       The dotted line shows the traditional rule taught in schools in the US, one car length per 10 m.p.h. of speed.
+       The dashed line is the tangent at 60 miles per hour, which is the best linear approximation
+       for speeds near this one.}
+  )  
+%>
+<% end_marg %>
+
+Here is a general procedure for finding the best linear approximation to a nonlinear function:
+
+\begin{enumerate}
+\item Pick some point on the graph that is near the center of the region for which we're interested in getting
+  a linear approximation.
+\item Differentiate the function to find the slope of the tangent line through this point.
+\item Given a point on a line and the line's slope, we can find the equation of the line. One way to
+  do this is to write down the definition of the slope as $\Delta y/\Delta x$.
+\end{enumerate}
+
+\begin{eg}{Ice cream}
+\egquestion Fred drives an ice cream truck in Deadhorse, Alaska, where the average temperature in the summer
+is about 10 degrees Celsius. During the long Arctic winter nights, Fred has developed a mathematical
+model showing that his daily revenue $y$ in dollars is related to the Celsius temperature $x$ by the equation
+\begin{equation*}
+  y = -800+100x-x^2.
+\end{equation*}
+Find a useful linear approximation to this equation.
+
+\eganswer Since the average temperature in summer is about $x=10$, let's find the best linear approximation
+near this point. Differentiation gives $y'=100-2x$, and plugging in $x=10$ gives a slope
+\begin{equation*}
+  \frac{\Delta y}{\Delta x} = 80. \qquad \text{[slope of the tangent line]}
+\end{equation*}
+If we plug in the value $x=10$ to the equation for $y$ itself, we find that the point
+\begin{equation*}
+  (10,100) \qquad \text{[a point on the tangent line]}
+\end{equation*}
+is the one that we're trying to find the tangent line through. We therefore have
+\begin{equation*}
+  \frac{y-100}{x-10} = 80 \qquad \text{[point-slope form of the line]}
+\end{equation*}
+for the equation of the best linear approximation. Fred is interested in calculating his profits $y$, so he solves
+this for $y$ to find $y = -700 + 80 x$. As an approximation to the true (nonlinear) function, this is
+\begin{equation*}
+  y \approx -700 + 80 x. \qquad \text{[slope-intercept form]}
+\end{equation*}
+\end{eg}
+
+<% end_sec('linear-approximation-to-a-curve') %>
+
+\pagebreak
+
+
+<% end_sec('approximations') %>
+
+<% begin_sec("More about units",nil,'more-about-units') %>
+In section \ref{subsec:leibniz-shows-units} on p.~\pageref{subsec:leibniz-shows-units}, 
+we briefly discussed the idea of checking your calculus by
+analyzing the units of measurement.
+If you had a good high school chemistry or physics course, you may have already
+learned how to do this to check your algebra.
+If not, then you may find it helpful to study this section,
+which lays out the ideas in more detail.
+<% marg %>
+<%
+  fig(
+    'snake',
+    %q{A snake approximated as a box.}
+  )  
+%>
+<% end_marg %>
+
+Figure \figref{snake} shows a cute snake, along with its even cuter geometrical
+idealization as a rectangular box. The snake has
+\begin{align*}
+  & \text{length $\ell$, in units of meters (m)} \\
+  & \text{width $w$, in units of meters (m),}\\
+  & \text{mass $M$, in units of kilograms (kg).}
+\end{align*}
+(Some people would say ``in units of length,'' and ``in units of mass,'' but to be more concrete
+I'm using the SI units listed in box \ref{textbox:units} on p.~\pageref{textbox:units}.)
+
+It makes sense to manipulate these quantities in certain ways:
+\begin{align*}
+   4w,& \qquad           \text{the snake's waistline,} \\
+   w^2\ell,& \qquad      \text{its volume in cubic meters ($\zu{m}^3$),} \\
+   \frac{M}{w^2\ell},&   \qquad \text{its density in $\zu{kg}/\zu{m}^3$,} 
+\end{align*}
+or
+\begin{equation*}
+   2w+\ell\le1.14\ \zu{m},\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad
+\end{equation*}
+which tells us whether this snake is legal as carry-on luggage.
+
+But some combinations don't make sense:
+\begin{align*}
+  \ell+M \qquad        &\text{can't add meters to kilograms}\\
+  w\ell=w^2\ell \qquad &\text{can't equate area to volume}\\
+  \cos M \qquad        &\text{can't take the cosine of a mass}
+\end{align*}
+
+Some quantities are unitless. I have two dogs, and the 2 is a unitless 2; in general, a count is unitless.
+When we form a ratio between two numbers that have the same units, the result is unitless. For example,
+the rectangular snake in the figure has $\ell/w=12.6$, which is unitless; one way to tell that it's unitless
+is that if we enlarge or reduce the drawing, the quantities that have units grow or shrink, but the proportions
+such as $\ell/w$ stay the same.
+
+The following rules apply:
+\begin{enumerate}
+  \item In addition, subtraction, and comparisons, all terms must have the same units.
+  \item When you multiply or divide numbers, multiply or divide their units as well.
+  \item All the functions on your calculator that go beyond grade-school arithmetic require a unitless
+        input and give a unitless output. These functions include logs, exponentials, and trig functions,
+        and are referred to collectively as transcendental functions (sec.~\ref{subsec:transcendental-functions},
+        p.~\pageref{subsec:transcendental-functions}).
+\end{enumerate}
+
+\begin{eg}{Radians aren't units}\label{eg:radians-not-units}
+Using the notation shown in figure \figref{radian-measure}, the radian measure
+of the angle $\theta$ is defined as $s/r$. The arc length $s$ and radius $r$ both
+have units of meters, so by rule 2 their ratio is unitless. Therefore radians are
+not really a unit. This is required by rule 3 so that we can use them as inputs to
+trig functions.
+\end{eg}
+<% marg(10) %>
+<%
+  fig(
+    'radian-measure',
+    %q{Example \ref{eg:radians-not-units}.}
+  )  
+%>
+<% end_marg %>
+
+\begin{eg}{Cosine is unitless}
+The cosine is $\text{adjacent}/\text{hypotenuse}$, so it's unitless, as required 
+by rule 3.
+\end{eg}
+
+\begin{eg}{Frequency}
+The period $T$ of a vibration is defined as time it takes to go through one cycle.
+The frequency is defined as $f=1/T$,
+and by rule 2 it has units of $1/\zu{seconds}$ or $\zu{s}^{-1}$ (also known as Hz).
+\end{eg}
+
+\begin{eg}{Area, or volume?}
+\egquestion You remember that $4\pi r^2$ is the formula either for the volume of a sphere or for its surface area,
+but you can't remember which it is. Which one does it have to be based on units?
+
+\eganswer The $4\pi$ is unitless. By rule 2, the expression $4\pi r^2$ thus has units of $\zu{m}^2$, i.e.,
+square meters, or area.
+\end{eg}
+
+\begin{eg}{Square roots}
+A square root is not a transcendental function, so rule 3 doesn't apply to it.
+For example, our snake has a cross-sectional area $A=w^2$. We then have
+$w=\sqrt{A}$, and it's OK to feed the square root function a unitful input: $\zu{m}=\sqrt{\zu{m}^2}$.
+\end{eg}
+
+\begin{eg}{No units in the exponent}
+\egquestion We can compute $w^2$, where $w$ has units. Does that mean we can also calculate $2^w$?
+
+\eganswer No, because then $2^w=e^{\ln(2^w)}=e^{w\ln 2}$, but then the input to the
+exponential would have units, violating rule 3. I.e., the base-2 exponential is transcendental,
+just like the base-$e$ flavor.
+\end{eg}
+
+\begin{eg}{Radioactivity}
+\egquestion As a radioactive substance decays, the fraction of it that remains after time $t$
+is given by $f=e^{-t/k}$, where $k$ is a constant. Infer the units of $k$.
+
+\eganswer By rule 3, $t/k$ must be unitless, so $k$ is in seconds.
+\end{eg}
+
+<% end_sec('more-about-units') %>
+
+<% begin_hw_sec("Review problems") %>
+
+
+<% hw('review-point-and-slope-to-equation') %>
+<% hw('review-points-to-equation') %>
+<% hw('review-equation-to-slope') %>
+<% hw('review-equation-and-dx-to-dy') %>
+<% hw('review-galileo-p-vs-t',{'solution'=>true}) %>
+
+<%
+  fig(
+    'hw-review-galileo-p-vs-t',
+    %q{Pressure (in millibars, mb) versus temperature (in degrees Kelvin, K) of the
+       atmosphere of Jupiter, problem
+      \ref{hw:review-galileo-p-vs-t}. For
+      comparison, the atmospheric pressure and temperature at the earth's surface are about 1000 mb
+      and 300 K.
+      Although Jupiter is in the outer solar system and is in general very cold, the temperatures
+      in its tenuous upper atmosphere are, counterintuitively, very hot; this feature of the graph
+      is what would be referred to on earth as an ``inversion layer.''
+      Seiff \emph{et al.}, J.~Geophys.~Research 103 (1998) 22,857.},
+    {
+      'width'=>'wide',
+      'sidecaption'=>true
+    }
+  )
+%>
+
+<% hw('review-when-is-a-line-a-function',{'solution'=>true}) %>
+<% hw('review-which-are-functions',{'solution'=>true}) %>
+<% hw('review-rewrite-description-of-set',{'solution'=>true}) %>
+
+
+  <% hw_block(2) %>
+
+<% end_hw_sec %>
+
+<% begin_hw_sec %>
+
+<% hw('diff-monomials',{'solution'=>true}) %>
+
+<% hw('dummy-variable',{'solution'=>true}) %>
+
+<% hw('zero-value-nonzero-derivative',{'solution'=>true}) %>
+
+<% hw('perfectly-inelastic-demand') %>
+
+  <% hw_block(1) %>
+
+\begin{hwinstructions}
+In problems \ref{hw:diff-polynomial-simple}-\ref{hw:diff-polynomial-simple-4},
+a function is defined by giving an equation for $y$ in terms of $x$. Find the
+derivative of the function.
+\end{hwinstructions}
+
+<% hw('diff-polynomial-simple',{'solution'=>true}) %>
+<% hw('diff-polynomial-simple-1') %>
+<% hw('diff-polynomial-simple-2') %>
+<% hw('diff-polynomial-simple-3') %>
+<% hw('diff-polynomial-simple-4') %>
+
+\pagebreak
+  <% hw_block(1) %>
+
+\begin{hwinstructions}
+Problems \ref{hw:diff-polynomial-2}-\ref{hw:diff-polynomial-5} are each intended to be
+assigned randomly to one fourth of the students in a class.
+\end{hwinstructions}
+
+<% hw('diff-polynomial',{'solution'=>true}) %>
+<% hw('diff-polynomial-2') %>
+<% hw('diff-polynomial-3') %>
+<% hw('diff-polynomial-4') %>
+<% hw('diff-polynomial-5') %>
+
+<% hw('same-deriv',{'solution'=>true}) %>
+
+  <% hw_block(1) %>
+
+%%%%%%%%% f %%%%%%%%%%%%
+
+<% hw('diff-poly-symb-coeff-1') %>
+<% hw('diff-poly-symb-coeff-2') %>
+
+\pagebreak
+
+\begin{hwinstructions}
+In problems \ref{hw:diff-poly-rewrite-1}-\ref{hw:diff-poly-rewrite-3} you will need to
+start by rewriting the given expressions in a form that you know how to differentiate.
+(If you've had some previous exposure to calculus, you may already know the product rule or chain rule.
+Some of these problems can be done using those rules, but they can also be done without them.
+If you use them, explain that you're doing so.)
+\end{hwinstructions}
+
+<% hw('diff-poly-rewrite-1') %>
+<% hw('diff-poly-rewrite-2') %>
+<% hw('diff-poly-rewrite-3') %>
+
+<% hw('diff-poly-symbolic-exponent') %>
+
+  <% hw_block(1) %>
+
+<% hw('zoom-1') %>
+<% hw('zoom-2') %>
+<% hw('zoom-3') %>
+
+  <% hw_block(2) %>
+
+<% hw('diff-symbolic-const',{'solution'=>true}) %>
+
+<% hw('can-you-do-fractions-1') %>
+<% hw('can-you-do-fractions-2') %>
+
+\pagebreak
+
+<% hw('find-ranges-of-functions') %> % Robbin, p. 20, # 18
+<% hw('find-ranges-of-functions-2') %>
+
+\pagebreak
+
+  <% hw_block(2) %>
+
+<% hw('human-cylinder') %>
+<% hw('observable-universe') %>
+<% hw('car-ke-and-power') %>
+
+  <% hw_block(1) %>
+
+<% hw('deriv-props-add-implies-stretch',{'solution'=>true}) %>
+<% hw('deriv-props-line-implies-constant') %>
+<% hw('deriv-props-add-and-constant-imply-shift') %>
+<% hw('deriv-props-odd-even') %>
+
+  <% hw_block(1) %>
+
+
+<% hw('rancher-rick',{'solution'=>true}) %>
+<% hw('prove-n-extrema',{'solution'=>true}) %>
+<% hw('overtime') %>
+<% hw('immerse-sphere') %>
+
+  <% hw_block(1) %>
+
+\begin{hwinstructions}
+Problems \ref{hw:chain-rule-circle}-\ref{hw:chain-rule-triangle} are each intended to be
+assigned randomly to one third of the students in a class.
+\end{hwinstructions}
+
+<% hw('chain-rule-circle') %>
+<% hw('chain-rule-sphere') %>
+<% hw('chain-rule-triangle') %>
+
+  <% hw_block(1) %>
+
+<% hw('tree') %>
+<% hw('tank') %>
+
+  <% hw_block(1) %>
+
+<% hw('numerical-deriv-geometric',{'solution'=>true}) %>
+<% hw('numerical-deriv-cos-x-cubed') %>
+<% hw('numerical-deriv-sin-sqrt-x') %>
+<% hw('numerical-deriv-e-to-cos-x') %>
+<% hw('numerical-deriv-woods-saxon') %>
+
+  <% hw_block(1) %>
+
+<% hw('error-propagation-powers',{'solution'=>true}) %>
+<% hw('error-propagation-rocket-height',{'solution'=>true}) %>
+<% hw('error-propagation-paper-squares') %>
+
+  <% hw_block(1) %>
+
+<% hw('linear-approx-137th-power') %>
+<% hw('bogus-derivative-proof') %>
+<% hw('no-simple-product-rule') %>
+
+<% end_hw_sec %>
+
+<% end_chapter %>

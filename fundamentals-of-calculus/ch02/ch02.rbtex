@@ -1,0 +1,1666 @@
+%%chapter%% 02
+<%
+  require "./scripts/eruby_util.rb"
+%>
+
+<%
+  chapter(
+    '02',
+    %q{Limits; techniques of differentiation},
+    'ch:limits'
+  )
+%>
+
+In chapter \ref{ch:derivative} we started computing derivatives simply by appealing to
+a list of geometrically plausible properties (section \ref{subsec:properties-of-the-derivative},
+p.~\pageref{subsec:properties-of-the-derivative}). These properties are true, and by taking
+them as axioms we were able to prove rigorously that, for example, the derivative of $x^2$
+is $2x$ (section \ref{subsec:derivative-of-x-squared}, p.~\pageref{subsec:derivative-of-x-squared}).
+But there are many problems that are messy to solve by this limited toolbox of techniques, and 
+many others for which we need qualitatively different tools.
+
+Historically, the way Newton and\label{discard-dx-squared}
+Leibniz approached the problem was as follows. Suppose we want to take the derivative of
+$x^2$ at the point P where $x=1$. We already know that we can get a good numerical approximation to this
+derivative by taking a second point Q, close to P, and evaluating the slope of the line through P and
+Q. (See section \ref{subsec:approximating-deriv}, p.~\pageref{subsec:approximating-deriv}).
+Now instead of picking specific numbers, let's just take point Q to lie at $x=1+\der x$,
+where $\der x$ is very small. Then the slope of the line through P and Q is
+\begin{align*}
+  \text{slope of line PQ} &= \frac{\Delta y}{\Delta x} \\
+               &= \frac{(1+\der x)^2-1}{(1+\der x)-1} \\
+               &= \frac{2\der x+\der x^2}{\der x} 
+\end{align*}
+Now comes the crucial leap of faith, which mathematicians of later centuries began to
+feel was a little too sketchy.
+The number $\der x$ is supposed to be small, and when you square a small number you get an even smaller number.
+Since $\der x$ is supposed to be infinitely small, $\der x^2$ should be so small that it's utterly
+unimportant, even compared to $\der x$. Therefore we throw away the $\der x^2$ term and find that the slope
+of the tangent line is 2.\index{infinite and infinitesimal quantities!infinitesimals!discarding higher orders}
+
+<% marginbox(-300,'proof-by-contradiction','Ideas about proof: proof by contradiction',{},
+%q@
+The practice of throwing away the square of $\der x$ shows that many mathematicians, for over a century,
+were willing to believe in nonzero numbers whose squares were zero. 
+That contradicts what you learned in grade school, but it's not necessarily wrong.
+A proof has to be based on certain assumptions
+(box \figref{proof-assumptions}, p.~\pageref{fig:proof-assumptions}). Those mathematicians simply didn't
+assume the same list of properties that is now standard for the real number system
+(section \ref{sec:elementary-reals}, p.~\pageref{sec:elementary-reals}).
+
+Let's use those assumptions to prove that we can't have a nonzero $x$ such that $x^2=0$.
+Suppose that such an $x$ \emph{did} exist.
+Then since $x\ne0$, by the multiplicative inverse property there is a number $1/x$.
+Taking both sides of $x^2=0$ and multiplying by $1/x$ gives $x^2/x=0/x$, or $x=0$.
+But this contradicts the original claim that $x$ was nonzero.
+
+This is a \emph{proof by contradiction}. If we assume something is true, and can then,
+through valid reasoning, arrive at mutually contradictory results,
+then the initial assumption
+must have been false.\index{proof!by contradiction}
+      @
+   )
+%>
+
+<% begin_sec("The definition of the limit",nil,'limit') %>
+Starting in the 19th century, mathematicians became less and less satisfied with the logical justification
+for this style of doing calculus. The real number system had gradually become defined in
+a standardized way. It became clear that although
+one could have a number system that obeyed the axioms given in section \ref{sec:elementary-reals}
+(p.~\pageref{sec:elementary-reals}) and that included infinitely small 
+numbers,\footnote{For more on this topic, see 
+section \ref{sec:safe-handling-of-dx} on p.~\pageref{sec:safe-handling-of-dx}.}
+such a system would not be the same as the real numbers. 
+Furthermore one would have a problem with the procedure of
+treating a $\der x^2$ as if it were zero; one can prove from those axioms that zero itself is the
+only number whose square is zero (box \figref{proof-by-contradiction},
+p.~\pageref{fig:proof-by-contradiction}). For these reasons,
+mathematicians turned to a different way of
+defining the derivative, by using the new notion of a \emph{limit}.
+
+<% begin_sec("An informal definition",nil,'limit-informal') %>\index{limit!informal definition}
+While it is easy to define precisely in a few words what a square root is
+($\sqrt{a}$ is the positive number whose square is $a$) the definition of
+the limit of a function runs over several terse lines, and most people
+don't find it very enlightening when they first see it.
+So we postpone this momentarily and start by building up our intuition.
+
+\begin{lessimportant}[Definition of limit (first attempt)]
+If $f$ is some function then
+\[
+\lim_{x\to a} f(x) = L
+\]
+is read ``the limit of $f(x)$ as $x$ approaches $a$ is $L$.''  It means
+that if you choose values of $x$ which are close \emph{but not equal} to
+$a$, then $f(x)$ will be close to the value $L$; moreover, $f(x)$ gets
+closer and closer to $L$ as $x$ gets closer and closer to $a$.
+\end{lessimportant}
+
+The following alternative notation is sometimes used
+\[
+f(x)\to L \quad\text{ as } \quad x\to a;
+\]
+(read ``$f(x)$ approaches $L$ as $x$ approaches $a$'' or ``$f(x)$ goes to
+$L$ is $x$ goes to $a$''.)
+
+\begin{eg}{}
+If $f(x) = x+3$ then
+\[
+\lim_{x\to 4} f(x) = 7,
+\]
+is true, because if you substitute numbers $x$ close to $4$ in $f(x) = x+3$
+the result will be close to $7$.
+\end{eg}
+
+<% marg(0) %>
+\begin{tabular}{l|l}
+    \quad$x$ & \quad$f(x)$ \\
+    \hline
+    3.000000 & 0.600000\\
+    2.500000 & 0.555556\\
+    2.100000 & 0.512195\\
+    2.010000 & 0.501247\\
+    2.001000 & 0.500125\\
+  \end{tabular}
+\\\hspace{8mm}\formatlikecaption{Example \ref{eg:limit-by-sub-good}.}
+<% end_marg %>
+
+\begin{eg}{Substituting numbers to guess a limit}\label{eg:limit-by-sub-good}
+What (if anything) is
+\[
+\lim_{x\to 2}\frac{x^2 -2x}{x^2-4}?
+\]
+Here $f(x) = (x^2 - 2x)/(x^2-4)$ and $a=2$.
+
+We first try to substitute $x=2$, but this leads to
+\[
+f(2) = \frac{2^2 - 2\cdot2}{2^2-4} = \frac 00
+\]
+which does not exist.  Next we try to substitute values of $x$ close but
+not equal to $2$.  The table suggests that $f(x)$
+approaches $0.5$.
+\end{eg}
+
+
+\begin{eg}{Substituting numbers can suggest the wrong answer.}\label{eg:limit-by-sub-bad}
+Our first definition of ``limit'' was not
+very precise, because it said ``$x$ close to $a$,'' but how close is close
+enough?  Suppose we had taken the function
+\[
+g(x) = \frac{101\,000x}{100\,000x+1}
+\]
+and we had asked for the limit $\lim_{x\to0}g(x)$.
+Then substitution of some ``small values of $x$,'' as shown in the table,
+could lead us to believe
+that the limit was $1$.  Only when you substitute even smaller
+values do you find that the limit is zero!
+\end{eg}
+
+<% marg(80) %>
+  \begin{tabular}{l|l}
+    \quad$x$ & \quad$g(x)$ \\
+    \hline
+    1.000000 & 1.009990\\
+    0.500000 & 1.009980\\
+    0.100000 & 1.009899\\
+    0.010000 & 1.008991\\
+    0.001000 & 1.000000\\
+  \end{tabular}
+\\\noindent\formatlikecaption{Example \ref{eg:limit-by-sub-bad}.}
+<% end_marg %>
+
+<% end_sec('limit-informal') %>
+
+<% begin_sec("The formal, authoritative definition of the limit",nil,'limit-formal') %>\index{limit!formal definition}
+The informal description of the limit
+uses phrases like ``closer and closer'' and ``really very small.'' In the
+end we don't really know what they mean, although they are suggestive.
+Fortunately there is a better definition, i.e.~one which is unambiguous
+and can be used to settle any dispute about the question of whether or not
+$\lim_{x\to a} f(x)$ equals some number $L$. 
+
+\begin{important}[Definition of the limit]
+We say that $L$ is the limit of $f(x)$ as $x\to a$, if the following two conditions hold:
+\begin{enumerate}
+
+  \item The function $f(x)$ need not be defined at $x=a$, but it must be defined for all
+    other $x$ in some interval which contains $a$.
+
+  \item For every $\varepsilon>0$ there exists a $\delta>0$ such that 
+        for all values of $x$ in the domain of $f$ with $|x-a|<\delta$, we have
+      $|f(x) - L|<\varepsilon$ .
+\end{enumerate}
+\end{important}
+\noindent (The Greek letter ``$\delta$'' is lowercase delta, equivalent to the Latin ``d,''
+and ``$\epsilon$'' is epsilon, which is like Latin ``e.'')
+
+\emph{Why the absolute values?} The quantity $|x-y|$ is the distance
+between the points $x$ and $y$ on the number line, and one can measure how
+close $x$ is to $y$ by calculating $|x-y|$.  The inequality $|x-y|<\delta$
+says that ``the distance between $x$ and $y$ is less than $\delta$,'' or
+that ``$x$ and $y$ are closer than $\delta$.''
+
+\emph{What are $\varepsilon$ and $\delta$?} The quantity $\varepsilon$
+is how close you would like $f(x)$ to be to its limit $L$; the quantity
+$\delta$ is how close you have to choose $x$ to $a$ to achieve this.  To
+prove that $\lim_{x\to a} f(x) = L$ you must assume that someone has given
+you an unknown $\varepsilon>0$, and then find a positive $\delta$ for which
+$x$ values that close to $a$ result in values of $f$ that lie with the
+range the person has demanded.  The $\delta$ you find will depend on
+$\varepsilon$.
+<% marg(0) %>
+<%
+  fig(
+    'epsilon-delta',
+    %q{The value of $\varepsilon$ is imposed on us. We have succeeded in finding a value of $\delta$ 
+       small enough so that the outputs of the function do lie within the desired range. If we can
+       do this for \emph{every} value of $\varepsilon$, then the limit is $L$.}
+  )  
+%>
+<% end_marg %>
+
+\begin{eg}{}\label{eg:limit-of-linear-function}
+\egquestion Show that $\lim_{x\to5}2x+1=11$.
+
+\eganswer We have $f(x) = 2x+1$, $a=5$ and $L=11$, and the question we must answer is
+``how close should $x$ be to $5$ if want to be sure that $f(x)=2x+1$
+differs less than $\varepsilon$ from $L=11$?''
+
+To figure this out we try to get an idea of how big $|f(x)-L|$ is:
+\[
+|f(x)-L| = \bigl|(2x+1)-11\bigr| = |2x-10| = 2\cdot |x-5| = 2\cdot |x-a|.
+\]
+So, if $2|x-a|<\varepsilon$ then we have $|f(x)-L|<\varepsilon$, i.e.
+\[
+\text{if }|x-a|<\tfrac12\varepsilon \text{ then } |f(x)-L|<\varepsilon.
+\]
+We can therefore choose $\delta = \frac12\varepsilon$.  No matter what
+$\varepsilon>0$ we are given our $\delta$ will also be positive, and if
+$|x-5|<\delta$ then we can guarantee $|(2x+1) - 11|<\varepsilon$.  That
+shows that $\lim_{x\to 5}2x+1 = 11$.
+
+\end{eg}
+
+<% end_sec('limit-formal') %>
+
+\startdq
+
+\begin{dq}
+Figure \figref{epsilon-delta} on p.~\pageref{fig:epsilon-delta} shows an example where $\delta$ is small enough for the given
+value of $\varepsilon$. What would the figure look like in a case where the value of $\delta$
+was \emph{not} small enough?
+\end{dq}
+
+\begin{dq}
+Proof by contradiction was introduced in box \figref{proof-by-contradiction}
+on p.~\pageref{fig:proof-by-contradiction}. It can be considered as a specific mathematical
+version of an ancient technique of argument called \emph{reductio ad absurdum}, or reduction to
+asburdity, which means to disprove something by showing that if it were true, then one could
+arrive at ridiculous results. When we say, ``if that's true, then the Pope's not Catholic,''
+we're implying that we could give a \emph{reductio ad absurdum}. Suppose that Johnny
+insists on the obvious axiomatic truths
+(1) that monsters live under beds and inside closets;  and
+(2) that monsters come out of their hiding places when the lights are turned out.
+Johnny doesn't want to get eaten by a monster,
+and has therefore been sleeping with the lights on ever since he can remember.
+Taking Johnny's axioms as valid assumptions, convince him using a \emph{reductio ad absurdum}
+that monsters do not eat little boys.
+\end{dq}
+
+<% end_sec('limit') %>
+
+<% begin_sec("The definition of the derivative",nil,'def-of-derivative') %>
+The single most important application of the limit is that it gives us a
+way to formalize the idea of a derivative, which we have so far been using
+on an informal basis. We start from the Newton-Leibniz approach described on
+p.~\pageref{discard-dx-squared}, but modify it by using a limit to get rid of the questionable
+procedure of discarding the square of an infinitesimal number.
+
+\begin{important}[Definition of the derivative]\index{derivative!defined as a limit}
+The derivative of a function $f$ at a point $x$ is
+\begin{equation*}
+  f'(x) = \lim_{\Delta x\rightarrow 0} \frac{f(x+\Delta x)-f(x)}{\Delta x}\eqquad.
+\end{equation*}
+\end{important}
+
+\begin{eg}{The derivative of $x^2$, using limits}\label{eg:x-squared-with-limits}
+Let's use the definition to find the derivative of $x^2$ at $x=1$. We have
+\begin{align*}
+  f'(1) &= \lim_{\Delta x\rightarrow 0} \frac{(1+\Delta x)^2-1}{\Delta x} \\
+        &= \lim_{\Delta x\rightarrow 0} \frac{2\Delta x+\Delta x^2}{\Delta x} \\
+        &= \lim_{\Delta x\rightarrow 0} (2+\Delta x) 
+\end{align*}
+We've already shown in example \ref{eg:limit-of-linear-function} on p.~\pageref{eg:limit-of-linear-function}
+that this sort of limit of a linear function is just what you would expect by plugging in to the
+equation of the line, and therefore we have $f'(1)=2$.
+\end{eg}
+<% marg(300) %>
+<%
+  fig(
+    'x-squared-geometrically',
+    %q{A geometrical interpretation of the expression $2\Delta x+\Delta x^2$ occurring in
+       the second line of example \ref{eg:x-squared-with-limits}. The area gained by increasing
+       the size of the square equals the area of the two thin strips plus the area of the small square.}
+  )  
+%>
+<% end_marg %>
+
+\begin{eg}{The derivative of an exponential function, with limits}\label{eg:exponential-with-limits}
+In example \ref{eg:bunnies} on p.~\pageref{eg:bunnies}, we inferred using a simple geometrical trick
+that the derivative of an exponential function like $f(x)=2^x$ must be proportional to $f$ itself,
+\begin{equation*}
+  f' = k f\eqquad,
+\end{equation*}
+where the constant of proportionality $k$ depends on the base, such as 2. We can now prove the same
+fact using limits, and say something about the value of the constant. Since this fact is supposed
+to hold for all values of $x$, and $k$ is to be the same
+for any $x$, we can pick any convenient value for $x$, say $x=0$. For the derivative we have
+\begin{align*}
+  f'(0) &= \lim_{\Delta x\rightarrow 0} \frac{2^{0+\Delta x}-2^0}{\Delta x} \\
+        &= \lim_{\Delta x\rightarrow 0} \frac{2^{\Delta x}-1}{\Delta x}\eqquad.
+\end{align*}
+Since $f(0)=1$, we have
+\begin{equation*}
+  k = \lim_{\Delta x\rightarrow 0} \frac{2^{\Delta x}-1}{\Delta x}
+\end{equation*}
+We can get as good an approximation to this limit as we like by plugging in small enough values
+of $\Delta x$. For example, $\Delta x=10^{-4}$ gives $k\approx0.69317$,
+which seems to be an approximation to $\ln 2=0.69314\ldots$ This naturally leads
+us to conjecture that the derivative of $b^x$ equals $(\ln b) b^x$, and in particular
+that the derivative of $e^x$ is simply $e^x$. This is investigated further in section
+\ref{sec:derivative-of-exp}, p.~\pageref{sec:derivative-of-exp}.
+\end{eg}
+
+If the limit referred to in the definition of the derivative
+is undefined at a certain $x$, then the derivative is undefined there, and we
+say that $f$ is not \emph{differentiable} at $x$.\label{differentiability-brief}
+Differentiability is discussed in more detail in section \ref{sec:continuity-and-differentiability},
+p.~\pageref{sec:continuity-and-differentiability}.\index{differentiability}
+
+We seldom evaluate a derivative by directly applying its definition as a limit.
+Instead, we use a variety of other more convenient rules that follow from the
+definition. Some of these are the properties in section \ref{subsec:properties-of-the-derivative},
+p.~\pageref{subsec:properties-of-the-derivative}. In addition, we will learn two very
+important and useful rules, the product rule and the chain rule.
+<% end_sec('def-of-derivative') %>
+
+<% begin_sec("The product rule",nil,'product-rule') %>
+The idea behind the product rule is very similar to the geometrical intuition expressed by
+figure \figref{x-squared-geometrically} on p.~\pageref{fig:x-squared-geometrically} for
+the derivative of $x^2$. Suppose
+that instead of $x$ multiplied by $x$ to make $x^2$, we have some other
+function such as $(x^2+7)(x^3)$, which is also the product of two factors.
+Call these factors $u(x)$ and $v(x)$, so that the function we're differentiating
+is $f(x)=u(x)v(x)$. Then the expression we get by applying the definition of the
+derivative to $f$ can be written in terms of the rectangular areas in figure
+\figref{product-rule-geometrically} as
+\begin{equation*}
+  f'(x) = \lim_{\Delta x\rightarrow0} \frac{(\text{right strip})+(\text{top strip})
+           +(\text{tiny box})}{\Delta x}
+\end{equation*}
+One can prove from the definition of the limit that the limit of a sum is equal to the sum
+of the limits, provided that the individual limits exist (see section
+\ref{sec:properties-of-the-limit}, p.~\pageref{sec:properties-of-the-limit},
+property $P_3$), so:
+\begin{align*}
+  f'(x) =&\quad \lim_{\Delta x\rightarrow0} \frac{(\text{right strip})}{\Delta x} \\
+      &+\lim_{\Delta x\rightarrow0} \frac{(\text{top strip})}{\Delta x} \\
+      &+\lim_{\Delta x\rightarrow0} \frac{(\text{tiny box})}{\Delta x} 
+\end{align*}
+If the functions $u$ and $v$ are both well-behaved at $x$ (specifically, if both of them
+are differentiable), then the ``tiny box'' term will vanish upon application of the limit
+just as in example \ref{eg:x-squared-with-limits}. We then have
+\begin{align*}
+  f'(x) &= \lim_{\Delta x\rightarrow0} \frac{(\text{right strip})}{\Delta x} 
+           +\lim_{\Delta x\rightarrow0} \frac{(\text{top strip})}{\Delta x} \\
+     &= u'(x)v(x)+v'(x)u(x)\eqquad.
+\end{align*}
+We have the following extremely important and useful rule for differentiation:
+
+\begin{important}[Product rule]\index{product rule}\index{derivative!of a product}
+Let $f=uv$, where $f$, $u$, and $v$ are all functions. Then at any point where
+$u$ and $v$ are both differentiable,
+\begin{equation*}
+  f' = u'v+v'u\eqquad.
+\end{equation*}
+\end{important}
+
+<% marg(150) %>
+<%
+  fig(
+    'product-rule-geometrically',
+    %q{A geometrical interpretation of the product rule.}
+  )  
+%>
+<% end_marg %>
+
+\begin{eg}{The product rule for $x^3$}\label{eg:derivative-of-x-cubed}
+So far we have never actually proved any derivatives of powers of $x$ other than $x^2$;
+although the proofs can be done by the methods of ch.~\ref{ch:derivative}, they are tedious.
+These results come out much more easily by applying the product rule. We have already proved
+that the derivative of $x^2$ was $2x$. To get the derivative of $x^3$, we can simply
+rewrite it as the product $(x^2)\cdot(x)$. Applying the product rule then gives
+\begin{align*}
+  (x^3)' &= [(x^2)\cdot(x)]' \\
+         &= (x^2)'\cdot(x) + (x^2)\cdot(x)' \\
+         &= 2x\cdot x + x^2\cdot 1 \\
+         &= 3x^2\eqquad.
+\end{align*}
+\end{eg}
+
+\begin{eg}{A dirty trick for finding the derivative of $1/x$}\label{eg:derivative-of-one-over-x}
+How do we differentiate $1/x$? We can guess the right result by recalling that
+this expression can also be written as $x^{-1}$. (Exponents, including negative ones, will be reviewed more
+systematically in section \ref{sec:non-natural-exponents}, p.~\pageref{sec:non-natural-exponents}).
+If we then assume that the power rule $(x^n)'=nx^{n-1}$ applies to $n=-1$, then the result should
+be that the derivative of $1/x$ is $-x^{-2}$, or $-1/x^2$.
+
+But that's only a reasonable guess, not a proof. We can prove it by the following dirty trick.
+Write $1=(x)(1/x)$, and then differentiate on both sides. The left-hand side is a constant, so its
+derivative is zero. Applying the product rule to the right-hand side, we get $(x)'(1/x)+(x)(1/x)'$,
+and equating this to zero shows that indeed, $(1/x)'=-1/x^2$.
+\end{eg}
+
+<% end_sec('product-rule') %>
+
+<% begin_sec("The chain rule",nil,'chain-rule') %>
+<% begin_sec("Constant rates of change",nil,'chain-rule-constant-rates') %>
+In addition to the product rule, the other extremely important rule for differentiation is the chain
+rule. We start with three examples that illustrate the idea but don't require calculus.
+
+\begin{eg}{Burning calories}\label{eg:burning-calories}
+\egquestion Jane hikes 3 kilometers in an hour, and hiking burns 70 calories\footnote{Food calories
+are actually \emph{kilo}calories, 1 kcal=1000 cal.}
+per kilometer. At what rate
+does she burn calories?
+
+\eganswer We let $x$ be the number of hours she's spent hiking so far, $y$ the distance covered,
+and $z$ the calories spent. Then
+\begin{align*}
+  \frac{\Delta z}{\Delta x}
+          &= \frac{\Delta z}{\Delta y} \cdot \frac{\Delta y}{\Delta x} \\
+          &= \left(\frac{70\ \zu{cal}}{1\ \cancel{\zu{km}}}\right)
+                                     \left(\frac{3\ \cancel{\zu{km}}}{1\ \zu{hr}}\right) \\
+          &= 210\ \zu{cal}/\zu{hr}\eqquad.
+\end{align*}
+\end{eg}
+
+\begin{eg}{Clowns on seesaws}\label{eg:clowns}
+In figure \figref{clowns}, the clown on the left drops by $\Delta x$, causing the middle clown
+to go up by $\Delta y$. The ratio between these appears to be about $-3/2$ based on the
+lengths of the two lever arms, as determined by the position of the fulcrum. This then
+causes the right-hand clown to drop by $\Delta z$, where $\Delta z/\Delta y$ is about
+$-2$. The result is
+\begin{align*}
+  \frac{\Delta z}{\Delta x} &= \frac{\Delta z}{\Delta y}  \cdot \frac{\Delta y}{\Delta x} \\
+                        &=  (-2)(-\frac{3}{2}) \\
+                        &= 3\eqquad.
+\end{align*}
+\end{eg}
+<%
+  fig(
+    'clowns',
+    %q{Example \ref{eg:clowns}.},
+    {
+      'width'=>'wide',
+      'sidecaption'=>true
+    }
+  )
+%>
+
+\begin{eg}{Gear ratios}\label{eg:gear-ratio}
+\egquestion Figure \ref{fig:gear-ratio} shows a piece of farm equipment containing a train of
+gears with 13, 21, and 42 teeth. If the smallest gear is driven by a motor, relate the rate of
+rotation of the biggest gear to the rate of rotation of the motor.
+
+\eganswer
+Let $x$, $y$, and $z$ be the angular positions of the three gears. Then
+\begin{align*}
+  \frac{\Delta z}{\Delta x} &= \frac{\Delta z}{\Delta y}  \cdot \frac{\Delta y}{\Delta x} \\
+                        &= \frac{13}{21} \cdot \frac{21}{42} \\
+                        &= \frac{13}{42}\eqquad.
+\end{align*}
+\end{eg}
+
+
+These examples all used the following relationship among three rates of change:
+\begin{equation}\label{eqn:chain-rule-deltas}
+  \frac{\Delta z}{\Delta x} = \frac{\Delta z}{\Delta y}  \cdot \frac{\Delta y}{\Delta x} 
+\end{equation}
+Because the rates of change were stated to be constant, it was valid to measure them with
+expressions of the form $\Delta\ldots/\Delta\ldots$, and because the deltas were real numbers,
+it was valid to use the normal rules of algebra
+and cancel the factors $\Delta y$.
+<% end_sec('chain-rule-constant-rates') %>
+
+<% marg(0) %>
+<%
+  fig(
+    'gear-ratio',
+    %q{Example \ref{eg:gear-ratio}.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'russian-dolls',
+    %q{The chain rule allows us to differentiate expressions in which functions occur nested inside
+       other functions, like Russian dolls.}
+  )  
+%>
+<% end_marg %>
+
+<% begin_sec("Varying rates of change",nil,'chain-rule-varying-rates') %>
+The Leibniz notation makes it tempting to simply write down and
+believe the following analogous-looking expression involving derivatives:
+\begin{equation*}
+  \frac{\der z}{\der x} = \frac{\der z}{\der y}  \cdot \frac{\der y}{\der x} 
+\end{equation*}
+In problems \ref{hw:chain-rule-circle}-\ref{hw:chain-rule-triangle} on p.~\pageref{hw:chain-rule-circle}
+we verified that this seemed to work. But how do we know that this always works
+with derivatives? If we define the Leibniz notation as standing for a limit, then
+we need to show this:
+\begin{equation}\label{eg:chain-rule-limit-product}
+     \lim_{\Delta x\rightarrow0 }\frac{\Delta z}{\Delta x}
+   = \left(\lim_{\Delta y\rightarrow0 }\frac{\Delta z}{\Delta y}  \right)
+     \left(\lim_{\Delta x\rightarrow0 }\frac{\Delta y}{\Delta x} \right)
+\end{equation}
+Rather than giving a formal proof, I've briefly sketched in Box \figref{chain-rule-technical}
+the technical issues involved. These work out as our intuition suggests, and
+we therefore have:\index{chain rule}\index{derivative!chain rule}\\*
+\begin{important}[The chain rule]
+If $z$ is a function of $y$, and $y$ is a function of $x$, and if
+the derivatives $\der z/\der y$ and $\der y/\der x$ exist at a certain point,
+then at that point,
+\begin{equation*}
+  \frac{\der z}{\der x} = \frac{\der z}{\der y}  \cdot \frac{\der y}{\der x}\eqquad.
+\end{equation*}
+\end{important}
+
+<% marginbox(200,'chain-rule-technical',%q{A sketch of the technical issues behind the chain rule},{},
+%q@
+If all three derivatives in equation \eqref{eg:chain-rule-limit-product} exist, then
+the equation essentially works because the limit of a product is the product of a limit (provided
+that the limits exist); this is property $P_5$ of the limit, to be discussed more formally
+in section
+\ref{sec:properties-of-the-limit}, p.~\pageref{sec:properties-of-the-limit}.
+There are two other technical issues to worry about.
+
+First, equation \eqref{eqn:chain-rule-deltas}
+is not true if $\Delta y=0$, because we can't divide by zero, and if the derivative of
+$y$ with respect to $x$ happens to be zero somewhere, then it's reasonable to worry that
+this might be forced upon us for a certain value of $\Delta x$. Although we won't prove it
+here, this issue doesn't actually cause the chain rule to fail.
+
+The second issue is that in
+equation \eqref{eg:chain-rule-limit-product}, two of the limits involve $\Delta x\rightarrow 0$,
+but one has $\Delta y\rightarrow 0$. This turns out not to be a problem because, as discussed
+in ch.~\ref{ch:more-limits}, a differentiable function must be \emph{continuous} (i.e., there
+are no gaps in its graph), and therefore if, by assumption, $y$ is differentiable as
+a function of $x$, then
+$y$ is also continuous, and therefore taking $\Delta x\rightarrow 0$ also causes
+$\Delta y\rightarrow 0$.
+      @
+   )
+%>
+
+The chain rule is extremely useful in evaluating derivatives, because many of the
+expressions we want to differentiate have a structure in which a big formula is
+built out of smaller ones. For example, 
+in problem \ref{hw:numerical-deriv-geometric} on p.~\pageref{hw:numerical-deriv-geometric}, we found
+by numerical approximation that the derivative of the function
+\begin{equation*}
+  \frac{1}{1-x}\eqquad,
+\end{equation*}
+evaluated at $x=0$, was about 1.000. The chain rule gives us an easy way to get an exact result for any $x$.
+The structure of our formula is like this:
+
+\begin{center}
+\anonymousinlinefig{nested-expressions}
+\end{center}
+
+\noindent In silly notation, the chain rule says:
+
+\begin{center}
+\anonymousinlinefig{dbox-dbox}
+\end{center}
+
+Writing the boxes inside the equations is cumbersome, so let's call the big box $z$ and the
+small one $y$. Then
+\begin{align*}
+  z &= 1/y \qquad \text{and} \\
+  y &= 1-x\eqquad,
+\end{align*}
+which are both functions we know how to differentiate:
+\begin{align*}
+  \frac{\der z}{\der y} &= -y^{-2} \qquad \text{[example \ref{eg:derivative-of-one-over-x}, p.~\pageref{eg:derivative-of-one-over-x}]} \\
+  \frac{\der y}{\der x} &= -1
+\end{align*}
+In life, sometimes 
+our big goals (get married and raise a family) break down into smaller sub-goals
+(buy a ring, find a priest, placate the mother of the bride). The chain rule
+lets us apply this divide-and-conquer strategy to differentiation. Since we
+know how to differentiate $z$ with respect to $y$ and $y$ with respect to $x$,
+the chain rule lets us solve the larger problem of differentiating $z$ with
+respect to $x$:
+\begin{align*}
+  \frac{\der z}{\der x} &= \frac{\der z}{\der y}  \cdot \frac{\der y}{\der x} \\
+           &= (-y^{-2})(-1) \\
+           &= y^{-2} \\
+           &= (1-x)^{-2}\eqquad.
+\end{align*}
+Plugging in $x=0$, we verify that the derivative is exactly equal to 1, in agreement
+with the earlier numerical calculation.
+
+<% end_sec('chain-rule-varying-rates') %>
+
+<% marg(100) %>
+<%
+  fig(
+    'bucket-brigade',
+    %q{Composition of functions is like a bucket brigade. (The workers in the photo are salvaging
+       inventory from a warehouse after the 2010 earthquake in Haiti.)}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'composition-as-flowchart',
+    %q{The function $1/(1-x)$ can be viewed as a rule for a two-step computation in which the output of
+       the first computation is fed through as the input to the second stage.
+       }
+  )  
+%>
+<% end_marg %>
+
+<% begin_sec("Composition of functions",nil,'composition') %>
+A little more formally, we can view the chain rule as a rule for
+doing calculus on functions that are built by \emph{composition}\index{composition of functions}
+of other functions.
+The composition $g\circ h$ of functions $g$ and $h$ means the function that takes an input $x$
+and gives back an output $g(h(x))$. That is, we take the input $x$, stick it into $h$, take $h$'s output, put
+it in $g$, and finally take $g$'s output.
+
+The chain rule tells us how to differentiate a function built
+out of such a composition.
+In terms of this notation, suppose that $f(x)=g(h(x))$. Then the chain rule says that
+$f'(x)=g'(h(x))h'(x)$. Or, in a simpler but more abstract notation, we can write
+$(g\circ h)'=(g'\circ h)h'$.
+<% end_sec('composition') %>
+
+
+<% end_sec('chain-rule') %>
+
+<% begin_sec("Review: exponents that aren't natural numbers",nil,'non-natural-exponents') %>\index{exponent!that isn't a natural number}
+In section \ref{sec:power-rule-general} we will exploit the product and chain rules to
+prove the rule $(x^n)'=nx^{n-1}$ for all values of $n$ that are nonzero rational numbers.
+As preparation, we review in this section the basic idea of exponentiation, and then
+the interpretation of exponents that aren't natural numbers.
+
+<% begin_sec("Basic ideas",nil,'basic-ideas') %>
+We can represent repeated multiplication
+\begin{equation*}
+  2\times2\times2 = 8\eqquad,
+\end{equation*}
+using the notation for exponents,
+\begin{equation*}
+  2^3 = 8\eqquad.
+\end{equation*}
+Because multiplication is associative,
+\begin{equation*}
+  2\times2\times2\times2\times2\times2\times2 = 128
+\end{equation*}
+is the same as
+\begin{equation*}
+  (2\times2\times2)(2\times2\times2\times2)\eqquad,
+\end{equation*}
+so $2^7$ is the same as $(2^3)(2^4)$. In other words, multiplication is the same
+as adding exponents,
+\begin{equation}\label{eqn:add-exponents}
+  b^ub^v=b^{u+v}\eqquad.
+\end{equation}
+An important special case is scientific notation, which uses powers of 10.
+For example, $(10^2)(10^7)=10^9$.
+<% end_sec('basic-ideas') %>
+
+<% begin_sec('Zero as an exponent',nil,'exponent-zero') %>\index{exponent!zero as an}
+Suppose we compute the list of decreasing powers of
+a given base, for example $2^3=8$, $2^2=4$, and $2^1=2$. Each result is half
+as big as the previous one. Therefore if we want to continue reducing the exponent,
+we should clearly have $2^0=1$ in order to continue the pattern. In general,
+$b^0=1$ for any nonzero base $b$. (The special case $0^0$ is undefined.)
+<% end_sec('exponent-zero') %>
+
+<% begin_sec('Negative exponents',nil,'negative-exponents') %>\index{exponent!negative}
+Continuing this pattern, we must have $2^{-1}=1/2$.
+In general, negative exponents indicate the inverse of the corresponding positive
+exponent.
+<% end_sec('negative-exponents') %>
+
+<% begin_sec('Fractional exponents',nil,'fractional-exponents') %>\index{exponent!fractional}
+Our rules for zero and negative exponents were
+consistent with equation \eqref{eqn:add-exponents}. We can also define fractional
+exponents that obey this rule. For example, if $3^{1/2}$ is a number, then
+equation \eqref{eqn:add-exponents} requires that $(3^{1/2})(3^{1/2})=3$, so
+an exponent $1/2$ must mean the same thing as a square root.
+<% end_sec('fractional-exponents') %>
+
+<% begin_sec('Irrational exponents',nil,'irrational-exponents') %>\index{exponent!irrational}
+If we want to define an expression such as $2^\pi$, we can take it to be
+the limit of the list of numbers
+$2^3$, $2^{3.1}$,  $2^{3.14}$,  $2^{3.141}$, \ldots
+<% end_sec('irrational-exponents') %>
+
+<% end_sec('non-natural-exponents') %>
+
+<% begin_sec("Proof of the power rule in general",nil,'power-rule-general') %>\index{derivative!of powers!proof}
+In section \ref{sec:deriv-polynomial}, p.~\pageref{sec:deriv-polynomial},
+I presented the rule $(x^n)'=nx^{n-1}$ for all natural numbers $n$,  but only explicitly proved it
+for $n=1$ and 2.
+A good application of the product and chain rules is to extend
+the proof to all nonzero integers $n$ and to show that it also holds for fractional exponents.
+
+Only $n=0$ requires special treatment. Since $x^0=1$, its derivative should be zero.
+Our rule sort of, but not quite, works here, since it gives $0x^{-1}$, or $0/x$. This is certainly
+zero if $x\ne0$, but in the case where $x=0$ it gives $0/0$, which is undefined.
+
+<% begin_sec("Exponents that are natural numbers",nil,'natural-powers') %>
+Example \ref{eg:derivative-of-x-cubed} on p.~\pageref{eg:derivative-of-x-cubed} showed that
+the product rule can be used
+to prove special cases of the power rule.
+Since we knew the derivative of $x^2$,
+we were able to find the derivative of $x^3$ by rewriting it as $(x^2)(x)$ and
+applying the power rule. In the same way, we can prove the rule for any exponent $n$
+if it has already been established for $n-1$. We rewrite $x^n$ as $(x^{n-1})(x)$,
+differentiate using the product rule, and find:
+\begin{align*}
+  (x^n)' &= (x^{n-1})'(x)+(x^{n-1})(x)' \\
+         &= (n-1)x^{n-2}x+x^{n-1} \\
+         &= nx^{n-1}
+\end{align*}
+By establishing the fact for $n=1$, and then proving that it must hold for $n$ if it
+holds for $n-1$, we establish that it holds for all natural numbers $n$. This is
+called \emph{proof by induction} (box \figref{proof-by-induction}).\index{induction}\index{proof!by induction}\label{induction}
+
+<% marginbox(300,'proof-by-induction','Ideas about proof: proof by induction',{},
+%q@
+Proof by induction is a technique for proving an infinite number of facts without using
+infinitely many words. Call these facts, or \emph{propositions}, $P_1$, $P_2$, and so on.
+For example $P_n$ could be the claim that if we kick over the first
+in an infinite chain of dominoes, then the $n$th domino will fall as well.
+Induction requires two steps.
+
+(1) We establish that $P_1$ is true. For example, if we kick over the first domino,
+then $P_1$ is clearly true, since kicking it over causes it to fall. This is called the
+\emph{base case}.
+
+(2) We show that if $P_{n-1}$ holds, then $P_n$ is true as well. For example, if domino
+$n-1$ falls, then it will cause domino $n$ to fall as well.\index{proof!by induction}
+      @
+   )
+%>
+
+<% marg(-300) %>
+<%
+  fig(
+    'dominoes',
+    %q{Proof by induction is like an infinite chain of dominoes. If we topple the first domino, then
+       eventually every domino will fall.}
+  )  
+%>
+<% end_marg %>
+
+<% end_sec('natural-powers') %>
+<% begin_sec("Negative exponents",nil,'negative-powers') %>
+We saw in example \ref{eg:derivative-of-one-over-x} on p.~\pageref{eg:derivative-of-one-over-x} that
+$(1/x)'=-1/x^2$, which was exactly what we would have expected from applying the
+power rule to the exponent $-1$. It is then straightforward to extend the result
+to all negative integers by applying the chain rule to $(x^n)^{-1}$.
+<% end_sec('negative-powers') %>
+<% begin_sec("Exponents that aren't integers",nil,'fractional-powers') %>
+What about fractional exponents, such as $x^{1/2}$, i.e., the square root of $x$?
+We don't know what this derivative is yet, but let's
+give it a name. Call it $f$, i.e., $f(x)=(\sqrt{x})'$. Then
+\begin{align*}
+  1 &= x' \\
+    &= (\sqrt{x}\sqrt{x})' \\
+    &= f(x)\sqrt{x}+\sqrt{x}f(x) \\
+    &= 2f(x)\sqrt{x} \\
+  f(x) &= \frac{1}{2\sqrt{x}} \\
+       &= \frac{1}{2}x^{-1/2}
+\end{align*}
+This is exactly what we would have inferred from the power rule $(x^n)'=nx^{n-1}$, with $n=1/2$.
+A similar argument can be carried out for any fractional exponent, although recognizing this is not
+quite the same as writing a general proof; a general proof is given in
+example \ref{eg:power-law-frac-with-implicit-diff}, p.~\pageref{eg:power-law-frac-with-implicit-diff}.
+The generalization to irrational
+exponents is deferred until example \ref{eg:power-any-exponent} on p.~\pageref{eg:power-any-exponent}.
+<% end_sec('fractional-powers') %>
+
+\begin{eg}{Economic order quantity}\label{eg:order-quantity}\index{order quantity}\index{economic order quantity}
+Here is an extremely common problem in the business world. A retailer knows that there is
+a steady yearly demand $D$ for the widgets it sells; every year, customers buy $D$ widgets.
+They need to maintain an inventory of the product, and when they run out,
+they need to buy a quantity $q$ from their wholesaler. Ordering from the wholesaler
+costs a certain amount per widget plus a certain amount per order, and because of the per-order
+cost, the retailer would prefer that the quantity of widgets $q$ in each order be big.
+
+The retailer
+also has to pay a certain amount to store all the widgets in inventory. For example,
+if their inventory gets too big, they may have to buy or rent a new warehouse. This is
+a reason not to make $q$ too big.
+
+%%graph%% order-quantity func=1+9.0/x+x format=eps xlo=0 xhi=10 xtic_spacing=5 ylo=0 yhi=20 ytic_spacing=10 x=q y=C with=lines
+<% marg(300) %>
+<%
+  fig(
+    'order-quantity',
+    %q{Example \ref{eg:order-quantity}, with $c_1D=1$, $c_2D=9$, and $c_3=1$.}
+  )  
+%>
+<% end_marg %>
+
+We have the following model of the retailer's yearly costs:
+\begin{align*}
+  C &= c_1 D \qquad \text{[wholesale cost of the widgets, including shipping]} \\
+    &+ c_2\frac{D}{q} \qquad \text{[$D/q$=number of orders; $c_2$=fixed cost per order]} \\
+    &+ c_3 q \qquad \text{[cost of storing an inventory of $q$ widgets]} 
+\end{align*}
+We want to minimize the function $C(q)$, taking $D$, $c_1$, $c_2$, and $c_3$ as constants.
+If $q$ is too small, the second term dominates and becomes large, while the same happens
+with the third term if $q$ is too big. Therefore we know that the minimum of $C$ must
+occur at some finite value of $q$. The function is smooth, so this minimum must occur at
+a point where the derivative $\der C/\der q$ is zero
+(section \ref{subsec:optimization}, p.~\pageref{subsec:optimization}).
+Writing $1/q$ as $q^{-1}$ and applying the power rule, the derivative is
+\begin{equation*}
+  \frac{\der C}{\der q} = -c_2 D q^{-2} 
+       + c_3\eqquad,
+\end{equation*}
+and setting this equal to zero gives
+\begin{equation*}
+  q = \sqrt{\frac{c_2 D}{c_3}}\eqquad,
+\end{equation*}
+where only the positive square root has real-world significance. This answer makes sense because
+we respond to greater demand $D$ by making bigger orders, and likewise if the fixed cost per
+order $c_2$ is high, we will make bigger orders in order to reduce the number of orders.
+If the cost $c_3$ of warehousing a widget for a year is large (e.g., the widget is a jumbo
+jet), then we will order in smaller quantities.
+\end{eg}
+
+<% end_sec('power-rule-general') %>
+
+<% begin_sec("Quotients",4,'quotients') %>\index{derivative!of a quotient}
+Suppose that we want to differentiate the function
+\begin{equation*}
+  \frac{1}{x}\eqquad.
+\end{equation*}
+The product rule tells us how to differentiate an expression involving multiplication,
+but this one uses division. However, division by a certain number is the same as multiplication by its
+multiplicative inverse, so we can rewrite this function in a form that we know how to differentiate.
+\begin{align*}
+  \left(\frac{1}{x}\right)' &= \left(x^{-1}\right)' \\
+          &= -x^{-2} \qquad \text{[power rule]}
+\end{align*}
+If the expression in the denominator is more complicated, we can do the same thing, but use
+the chain rule as well:
+\begin{align*}
+  \left(\frac{1}{1+x^2}\right)' &= \left((1+x^2)^{-1}\right)' \\
+          &= -(1+x^2)^{-2}(2x)
+\end{align*}
+If the numerator is not just 1, then we also have to use the product rule:
+\begin{align*}
+  \left(\frac{x^3}{1+x^2}\right)' &= \left(x^3(1+x^2)^{-1}\right)' \\
+          &= (x^3)'(1+x^2)^{-1}+x^3\left[(1+x^2)^{-1}\right]' \qquad \text{[product rule]} \\
+          &= 3x^2(1+x^2)^{-1}+x^3\left[-(1+x^2)^{-2}(2x)\right] \\
+          &= \frac{x^4+3x^2}{\left(1+x^2\right)^2} \qquad \text{[simplify]}
+\end{align*}
+% calc -e "x=3.7; y=x^3/(1+x^2); dx=.001; x=x+dx; y2=x^3/(1+x^2); (y2-y)/dx; (x^4+3x^2)/(1+x^2)^2"
+% ... verifies that it's right
+
+The foregoing examples show a technique for differentiating quotients that works
+in all cases, and this is how I do that type of derivative. Some people, however,
+prefer to memorize the following rule, which can be proved by running through the steps
+above for a function $f=p/q$, where $p$ and $q$ can be any functions at all.
+
+\begin{lessimportant}[Quotient rule]
+Let $f=p/q$, where $f$, $p$, and $q$ are all functions. Then at any point where
+$p$ and $q$ are both differentiable and $q\ne0$,
+\begin{equation*}
+  f' = \frac{p'q-q'p}{q^2}\eqquad.
+\end{equation*}
+\end{lessimportant}
+
+In the examples above, the functions $p$ and $q$ happened to be polynomials. A function
+like $f$ that is formed in this way from the quotient of polynomials is 
+called a \emph{rational function}.\index{rational function}\label{rational-function-defined}
+
+<% end_sec('quotients') %>
+
+<% begin_sec("Continuity and differentiability",nil,'continuity-and-differentiability') %>
+<% begin_sec("Continuity",nil,'continuity') %>\index{continuity}
+Intuitively, a continuous function is one whose graph
+has no sudden jumps in it; the graph is all a single connected piece. 
+Such a function can be drawn without picking the pen up off of the paper.
+Formally, continuity is defined as follows.
+
+\begin{important}
+A function $g$ is \emph{continuous} at $a$ if
+\begin{equation}\label{eqn:continuity-def}
+  \lim_{x\to a} g(x) = g(a)
+\end{equation}
+A function is continuous if it is continuous at every $a$ in its
+domain.
+\end{important}
+
+<% marg(0) %>
+<%
+  fig(
+    'discontinuous',
+    %q{A discontinuous function.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'not-differentiable',
+    %q{The function is not differentiable at $x_1$ because it has a kink there, and is not differentiable
+       at $x_2$ because it has a sudden jump.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'caustic',
+    %q{Reflected light forms a geometrical curve inside a teacup. The curve has a kink
+       similar to the one at $x_1$ in figure \figref{not-differentiable}. This
+       kink is of a special type called a \emph{cusp}, in which the two branches are parallel
+       where they meet.\index{cusp}}
+  )  
+%>
+<% end_marg %>
+
+In most cases, there is no need to invoke the definition explicitly in order to check whether
+a function is continuous. Most of the functions we work with are defined by putting together
+simpler functions as building blocks. For example, let's say we're already convinced that the
+functions defined by $g(x)=3x$ and $h(x)=\sin x$ are both continuous.\footnote{The reader who
+has forgotten all of his/her trig is directed to the review in section \ref{sec:trig}.} Then if we encounter the
+function $f(x)=\sin(3x)$, we can tell that it's continuous because its definition corresponds
+to $f(x)=h(g(x))$. 
+The composition of two continuous functions is also continuous. Just watch out for division.
+The function $f(x)=1/x$ is continuous everywhere except at $x=0$, so for example $1/\sin(x)$
+is continuous everywhere except at multiples of $\pi$, where the sine has zeroes.
+
+<% end_sec('continuity') %>
+
+<% begin_sec("More about differentiability",nil,'differentiability') %>\index{differentiability}
+We mentioned briefly on p.~\pageref{differentiability-brief} that a function is defined to be
+differentiable or nondifferentiable at a particular point
+depending on the existence of the limit referred to in the definition
+of the derivative,
+\begin{equation*}
+  f'(x) = \lim_{\Delta x\rightarrow 0} \frac{f(x+\Delta x)-f(x)}{\Delta x}\eqquad.
+\end{equation*}
+Figure
+\figref{not-differentiable} shows two common reasons why a function would not be differentiable
+at a certain point:
+because it has a kink, or because it is discontinuous.
+If a function is discontinuous at a given point, then it is not differentiable at that point.
+
+Although differentiability implies continuity,
+a function can be continuous without
+being differentiable; see example \ref{eg:abs-not-differentiable}.
+
+We seldom have to resort to limits and epsilon-delta arguments in order to determine whether a
+function is differentiable at a particular point. 
+Here are three methods that, when they apply, are usually easier:
+
+\begin{enumerate}
+\item Graph the function and apply the informal definition of the derivative from
+      section \ref{subsec:informal-derivative}, p.~\pageref{subsec:informal-derivative}. That is,
+      imagine trying to zoom in on the point of interest until the curve appears straight, and then
+      measuring its slope. If something goes wrong in this process, then the function isn't 
+      differentiable.\label{differentiability-by-zooming}
+\item Often we deal with functions that have been defined by a formula, which means building it
+      out of other functions through arithmetic operations and composition. If all of these functions 
+      and operations are
+      differentiable at the point of interest, then the function 
+      is differentiable.\label{differentiability-by-composition}
+\item If the function $f$ has been defined by a formula, then it will usually be possible differentiate it
+      using the differentiation rules and write the result as a new formula for $f'$. Often there will be only
+      certain specific points where the formula for $f'$ is undefined, so these are the points where
+      $f$ wasn't differentiable.\label{differentiability-by-formula}
+\end{enumerate}
+
+%%graph%% absolute-value func=abs(x) format=eps xlo=-1 xhi=1 xtic_spacing=1 ylo=0 yhi=2 ytic_spacing=1 with=lines
+<% marg(0) %>
+<%
+  fig(
+    'absolute-value',
+    %q{Example \ref{eg:abs-not-differentiable}.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'not-differentiable-at-pole',
+    %q{Example \ref{eg:not-differentiable-at-pole}.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'differentiability-of-cube-root',
+    %q{Example \ref{eg:differentiability-of-cube-root}.}
+  )  
+%>
+<% end_marg %>
+\begin{eg}{The absolute value function}\label{eg:abs-not-differentiable}
+\egquestion Where is the function $y=|x|$ differentiable?
+
+\eganswer By visualizing the graph, figure \figref{absolute-value},
+and applying method \ref{differentiability-by-zooming}
+we can tell immediately that it's differentiable everywhere
+except at $x=0$. At $x=0$, there is a kink, and no matter how far we zoom in, the kink will never look
+like a line.
+\end{eg}
+
+%%graph%% not-differentiable-at-pole func=1/(x-1) format=eps xlo=-1 xhi=3 xtic_spacing=1 ylo=-10 yhi=10 ytic_spacing=5 with=lines
+\begin{eg}{Not differentiable when dividing by zero}\label{eg:not-differentiable-at-pole}
+\egquestion Where is the function $f(x)=1/(x-1)$ differentiable?
+
+\eganswer Let's use method \ref{differentiability-by-composition} above.
+This function can be built out of the composition of functions as $f(x)=g(h(x))$, where
+$g(x)=1/x$ and $h(x)=x-1$. Both of these functions are well-behaved everywhere, except that
+$g$ isn't differentiable where it blows up at $x=0$. Therefore the function $f$ is differentiable
+everywhere except at $x=1$, which is where $h(x)=0$ is the input to $g(x)$.
+\end{eg}
+
+%%graph%% differentiability-of-cube-root func=(abs(x)**0.333)*(x/abs(x)) format=eps xlo=-30 xhi=30 xtic_spacing=10 ylo=-3 yhi=3 ytic_spacing=1 with=lines
+
+\begin{eg}{Differentiability of the cube root}\label{eg:differentiability-of-cube-root}
+\egquestion Where is the function $y=x^{1/3}$ differentiable?
+
+\eganswer Let's use method \ref{differentiability-by-formula}.
+The power rule gives $y'=\frac{1}{3}x^{-2/3}$. This is well defined everywhere
+except at $x=0$, where it blows up to infinity. Therefore $y$ is differentiable everywhere
+except at $x=0$.
+\end{eg}
+
+\begin{eg}{Nondifferentiable ingredients, differentiable result}
+Method \ref{differentiability-by-composition} can prove that a function is
+differentiable, but cannot necessarily be used to prove it nondifferentiable.
+For example, consider the function $y=x^5(1+1/x)$. The second factor blows up
+to infinity at $x=0$, which makes us suspect that $y$ is not differentiable
+there. But in fact the formula can be rewritten as $y=x^5+x^4$, which is clearly
+differentiable everywhere. Although the second factor in the original form
+blows up at $x=0$, the first factor vanishes there so rapidly that the product
+also vanishes, and vanishes smoothly.
+\end{eg}
+
+<% end_sec('differentiability') %>
+<% begin_sec("Zero derivative at the extremum of a differentiable function",nil,'zero-deriv-at-extremum') %>
+We saw in section \ref{subsec:optimization}, p.~\pageref{subsec:optimization}, that although a searching
+for a zero derivative may be a good way to find an extremum, it doesn't always work. Looking at the
+zoo of possibilities in figure \figref{cases-of-extrema-first-reprise}, we see that both of the following
+statements are false:
+
+<% marg(0) %>
+<%
+  fig(
+    'cases-of-extrema-first-reprise',
+    %q{If point D is a maximum over the interval $[a,b]$, then $f'$ equals zero at D.}
+  )  
+%>
+<% end_marg %>
+\begin{enumerate}
+\item If a function has a local extremum, it must have a zero derivative there. (False:
+fails at A, E, and F.)
+\item If a function has a zero derivative somewhere, that must be a local extremum. (False:
+fails at H.)
+\end{enumerate}
+
+\noindent In mathematical jargon, we say that a zero derivative is neither a necessary (1) nor a sufficient (2)
+condition for a local extremum.
+
+We can, however, make a more restricted statement of 1 that is true.
+
+\begin{theorem}\label{extrema!zero derivative at}
+If a function $f$ is continuous on an interval $[a,b]$ and differentiable on $(a,b)$, and if
+there is a point $c\in(a,b)$ for which $f(c)$ is a maximum or minimum in the interval,
+then $f'(c)=0$.
+\end{theorem}
+
+Let's see why all the conditions are necessary. The assumption of continuity is needed because of
+points like E. We need differentiability because of F. We also needed to assume that $c$ was on the
+interior of the interval, since otherwise it would have been possible to choose $b$ so that
+point E lay at $x=b$.
+
+Proof: We prove the case where $f(c)$ is a maximum, as in figure \figref{cases-of-extrema-first-reprise};
+the other case is exactly analogous.
+Since $f$ is assumed to be differentiable, it's differentiable at $c$, and since $c$
+is on the interior of the interval, differentiability means that the derivative must have
+the same value regardless of whether we approach $c$ from the right or from the left. 
+(At a nondifferentiable point such as F, the two limits could be unequal.)
+Let's
+look at both of these limits. The limit from the left is
+\begin{equation*}
+  \lim_{h\nearrow0} \frac{f(c+h)-f(c)}{h}\eqquad.
+\end{equation*}
+But since we assumed $f(c)$ to be the greatest value on $[a,b]$, the quantity inside the limit
+is guaranteed to be greater than or equal to zero. The limit exists, since we assumed
+differentiability, so the limit must also be greater than or equal to zero. Similarly, the
+limit from the right
+\begin{equation*}
+  \lim_{h\searrow0} \frac{f(c+h)-f(c)}{h}
+\end{equation*}
+must exist and be \emph{less than} or equal to zero. Since the two limits are equal, they
+equal zero.\myqed
+
+<% end_sec('zero-deriv-at-extremum') %>
+<% end_sec('continuity-and-differentiability') %>
+
+<% begin_sec("Safe handling of $\\der y$ and $\\der x$",nil,'safe-handling-of-dx') %>
+\index{infinite and infinitesimal quantities!safe handling of}
+We've seen that although the real number system doesn't include infinitely big or infinitely small
+quantities, it can nevertheless be extremely useful to think of
+a notation like $\der y/\der x$ as the quotient of two infinitely small numbers.
+For example, it allows us to check our work in differentiation by checking the units
+of the result (example \ref{eg:pest}, p.~\pageref{eg:pest}), and it makes the chain rule
+look so obvious that there would never be any danger of forgetting it. 
+When the calculus was first invented, these infinitely small numbers were
+referred to as \emph{infinitesimal} numbers. The idea behind the word is that just as a decimal is
+one tenth, an infinitesimal is one ``infinitieth.''
+
+We now confront the
+question of when it's safe to treat $\der y$ and $\der x$ as if they were numbers.
+This kind of manipulation is like nuclear energy: it can be used for good and for evil,
+and if you want to use it safely, you have to know what you're doing.
+In this section we lay out some simple safety rules which, if followed, will prevent
+all nuclear meltdowns. Just as we enriched the set of natural numbers to make
+the rational numbers, and the rational numbers to make the reals, we continue the march of
+progress by making an even larger number system called the hyperreal numbers,
+which includes infinitesimals.
+For a more detailed exposition 
+at the freshman-calculus level, see the excellent free online book by Keisler,
+\emph{Elementary Calculus: An Approach Using Infinitesimals}.\index{hyperreal numbers}
+
+We start with two preliminary definitions.
+
+Definition:
+Suppose that for a certain nonzero number $d$, we have $|d|<1$, $|d|<1/(1+1)$, $|d|<1/(1+1+1)$, \ldots
+and so on for all inequalities of this 
+form.\footnote{Cf.~example \ref{eg:archimedean}, p.~\pageref{eg:archimedean}. For an application
+to economics, see rule 3, p.~\pageref{vnm-axioms}.}
+Then we say that $d$ is  \emph{infinitesimal}.\label{definition-of-infinitesimal}
+
+Definition: Let $H$ be a hyperreal number (which may or may not also be a real number).
+Suppose that there exists some real number $r$ such that $|H-r|$ is infinitesimal.
+Then we say that $r$ is the \emph{standard part} of $H$.
+
+\emph{Rule 1.} The hyperreal numbers obey all the same elementary axioms as the
+      real numbers (section \ref{sec:elementary-reals}, p.~\pageref{sec:elementary-reals}).
+
+The hyperreals numbers include at least one infinitesimal number, call it $d$.
+By rule 1, we can apply the multiplicative inverse axiom to $d$, so
+$1/d$ is also a well-defined hyperreal
+number, and clearly $1/d$ is bigger than $1$, bigger than $1+1$, and so on, so the hyperreal
+number system includes both infinitely big and infinitely small quantities.
+
+It can be proved from the elementary axioms that if $d$ is nonzero, then $2d\ne d$.
+Therefore the hyperreal number system includes a variety of sizes of infinitesimals.
+This is important, because if all infinitesimals were the same size, then $\der y/\der x$
+would always have to equal one!
+It also follows from the axioms that $1/d \ne 1/(2d)$, so infinite numbers come in different sizes as well.
+We therefore have:
+
+\emph{Rule 2.}  The symbol $\infty$ and the term ``infinity'' do not stand for any real number, and do
+      not stand for any specific hyperreal number. They are in fact not very useful in the context
+      of the hyperreals.\label{infinity-is-not-a-hyperreal}
+
+\begin{eg}{Breaking the rules gives a nuclear meltdown}
+Suppose that the universe is infinite, so that there are infinitely many animals in the universe
+that, like us, have two eyes. The number of left eyes is some infinite hyperreal number $H$, and $H$ is
+also the number of right eyes. The total number of eyes is then
+\begin{equation*}
+  H+H=2H\eqquad.
+\end{equation*}
+Everything is all right, and $2H$ is an infinite number that happens to be twice as big as $H$.
+
+But now suppose we break rule 2 and use the symbol $\infty$ indiscriminately for any positive, infinite
+quantity. Then we have
+\begin{equation*}
+  \infty+\infty=\infty\eqquad.
+\end{equation*}
+Applying the additive inverse axiom, we can cancel an $\infty$ from each side, giving
+\begin{equation*}
+  \infty=0\eqquad,
+\end{equation*}
+which is absurd.
+
+The paradox didn't result from talking about infinite numbers. It came from
+breaking one of the rules for manipulating them correctly.
+\end{eg}
+
+Historically, one of the main sources of confusion about infinitesimals was the
+sketchy practice of discarding the square of an infinitesimal (p.~\pageref{discard-dx-squared}).
+This is resolved as follows:
+
+\emph{Rule 3.} The derivative of $y$ with respect to $x$ is defined as the standard part of
+  $\der y/\der x$.
+
+Redoing the example from p.~\pageref{discard-dx-squared} according to this rule, we
+have the following calculation of the derivative of $y=x^2$ at $x=1$:
+\begin{align*}
+  \frac{\der y}{\der x} &= \frac{(1+dx)^2-1}{(1+dx)-1} \\
+                        &= 2+dx \\
+  y' &= \text{standard part of}\ 2+dx \\
+     &= 2
+\end{align*}
+Although this particular modern approach to calculus makes $\der y/\der x$ not
+a synonym for $y'$, the notational distinction is not assumed in a general context,
+since they were thought of as synonyms for hundreds of years.
+
+Ideas very much like rules 1 and 3 were in fact originally proposed 
+by Leibniz,\footnote{Blaszczyk, Katz, and Sherry, ``Ten misconceptions from the history of analysis and
+their debunking,'' \url{arxiv.org/abs/1202.4153}.} but
+not until the 1960s were they restated precisely
+enough to satisfy the mathematical community. In the interim, there was considerable
+suspicion of infinitesimals (Georg Cantor famously referred to them as ``infect[ing]
+mathematics'' like a ``cholera-bacillus''), and today many mathematicians dislike
+them, despite their logical rehabilitation, as a matter of taste.
+
+\begin{eg}{A not-quite proof of the chain rule}\label{eg:chain-rule-not-quite-proof}
+The Leibniz notation for the chain rule
+\begin{equation*}
+  \frac{\der z}{\der x} = \frac{\der z}{\der y}  \cdot \frac{\der y}{\der x}
+\end{equation*}
+makes it look as though its proof were a matter of trivial algebra: just cancel the
+factors of $\der y$.
+This isn't quite valid, however, as a rigorous proof, because the derivative is
+really not the quotient of two infinitesimals but the \emph{standard part} of that quotient.
+\end{eg}
+
+\restartLineNumbers
+\begin{eg}{A calculator for infinite and infinitesimal numbers}
+A web-based calculator at \url{lightandmatter.com/calc/inf} lets you play with
+infinite and infinitesimal numbers. 
+It provides one built-in infinitesimal number $d$ that satisfies the definition on
+p.~\pageref{definition-of-infinitesimal}. The following example shows some sample calculations.
+
+\begin{Code}
+  \ii 2+2
+  \oo{4}
+  \ii d+d
+  \oo{2d}
+  \ii d<1/1000
+  \oo{true}
+  \ii d>0
+  \oo{true}
+\end{Code}
+\finishcodeeg
+\end{eg}
+
+
+<% end_sec('safe-handling-of-dx') %>
+
+<% begin_sec("The factorial",nil,'factorial') %>
+In a number of places in this course, it will be helpful to know about a function
+called the \emph{factorial}.\index{factorial}
+The factorial of $n$, notated $n!$, is defined as the product of all the
+integers from 1 to $n$,
+\begin{equation*}
+  n!=1\cdot2\ldots n.
+\end{equation*}
+For example, $3!$, read as ``three factorial,'' is $1\cdot2\cdot3=6$. 
+As a special case, we define $0!$ to be 1 (not zero), for the reasons given in
+Box \ref{textbox:zero-factorial-is-one}.
+
+<% marginbox(-300,'zero-factorial-is-one','Why $0!$ equals 1',{},
+%q@
+We define $0!=1$, both because it turns out to be more convenient in all of our applications,
+and for the following logical reason.
+
+In the more usual
+case where $n\ge1$, $n!$ is defined as a product containing $n$ factors. If we start with a rubber band, then stretch it
+successively by all of these factors, we end up stretching it by a factor of $n!$ over all.
+
+In the case of $n=0$, we have no factors in our list, so we have nothing on our list of things
+to do to the rubber band. It is left at its original length. It has
+been stretched by a factor of 1, i.e., left alone.
+
+Note that exactly the same logic applies to exponents, and that's why we also define, for example, $7^0=1$.
+      @
+   )
+%>
+
+<% end_sec('factorial') %>
+
+<% begin_sec("Style",4,'style') %>
+
+\newcommand{\dictum}[1]{\noindent\begin{minipage}{170mm}#1\end{minipage}}
+\newenvironment{right-and-wrong}{%
+  \noindent\begin{tabular}{p{83mm}p{83mm}}
+}{%
+  \end{tabular}
+}
+\newenvironment{right-and-wrong-entry}{%
+  \begin{minipage}[t]{80mm}
+}{%
+  \end{minipage}
+}
+\newcommand{\rightwrongheader}{\emph{wrong} & \emph{right} \\}
+
+\dictum{Style is important. If you say true things in poor style, people
+will decide that you're stupid and ignore you.
+You know enough calculus to appreciate some examples.}
+
+\dictum{1. Use equals signs. State what it is that you're calculating.}
+
+\begin{right-and-wrong}
+  \rightwrongheader
+  \begin{right-and-wrong-entry}
+    $3x(x+4)$ \\
+    $3x^2+12x$ \\
+    $6x+12$
+  \end{right-and-wrong-entry}
+  &
+  \begin{right-and-wrong-entry}
+    $[3x(x+4)]'$ \\
+    $=[3x^2+12x]'$ \\
+    $=6x+12$
+  \end{right-and-wrong-entry}
+\end{right-and-wrong}
+
+\dictum{2. The Leibniz notations $\der$ and $\der/\der x$ are operations (like $\sqrt{\enspace}$), not numbers.}
+
+\begin{right-and-wrong}
+  \begin{right-and-wrong-entry}
+    Question: Differentiate $x^2$. \\
+    Wrong answer: $\der '=2x$ \\
+    Wrong answer: $\der/\der x=2x$
+  \end{right-and-wrong-entry}
+  &
+  \begin{right-and-wrong-entry}
+    Question: Differentiate $x^2$. \\
+    Right answer: $\der(x^2)/\der x=2x$ \\
+    Right answer: $\der(\ldots)/\der x=2x$
+  \end{right-and-wrong-entry}
+\end{right-and-wrong}
+
+\dictum{3. Immediately make obvious simplifications.}
+
+\begin{right-and-wrong}
+  \rightwrongheader
+  \begin{right-and-wrong-entry}
+    $(x^2+3)'$\\
+    $=2x^1+0$
+  \end{right-and-wrong-entry}
+  &
+  \begin{right-and-wrong-entry}
+    $(x^2+3)'$\\
+    $=2x^1+0$ \qquad [or don't write this at all]\\
+    $=2x$
+  \end{right-and-wrong-entry}
+\end{right-and-wrong}
+
+\dictum{4. Simplification should usually reduce the number of symbols.}
+
+\begin{right-and-wrong}
+  \rightwrongheader
+  \begin{right-and-wrong-entry}
+    $[(x^2+1)^3]'$\\
+    $=3(x^2+1)^2(2x)$ \\
+    $=3(x^4+2x^2+1)(2x)$ \qquad [uglification]
+  \end{right-and-wrong-entry}
+  &
+  \begin{right-and-wrong-entry}
+    $[(x^2+1)^3]'$\\
+    $=3(x^2+1)^2(2x)$ \\
+    $=6x(x^2+1)^2$ \qquad [simplification]
+  \end{right-and-wrong-entry}
+\end{right-and-wrong}
+
+\begin{right-and-wrong}
+  \rightwrongheader
+  \begin{right-and-wrong-entry}
+    $[1/\sqrt{1+x}]'$\\
+    $=[(1+x)^{-1/2}]'$ \\
+    $=-\frac{1}{2}(1+x)^{-3/2}$ \\
+    $=\frac{-1}{2(1+x)\sqrt{1+x}}$ \qquad [uglification]
+  \end{right-and-wrong-entry}
+  &
+  \begin{right-and-wrong-entry}
+    $[1/\sqrt{1+x}]'$\\
+    $=[(1+x)^{-1/2}]'$ \\
+    $=-\frac{1}{2}(1+x)^{-3/2}$ \qquad [Stop here.]
+  \end{right-and-wrong-entry}
+\end{right-and-wrong}
+
+\dictum{5. Don't use a complicated technique when a simple one will do.}
+
+\begin{right-and-wrong}
+  \rightwrongheader
+  \begin{right-and-wrong-entry}
+    $x'$ \\
+    $  = (x^1)'$ \\
+    $  = (1)x^0$ \\
+    $  = 1 $ \\
+  \end{right-and-wrong-entry}
+  &
+  \begin{right-and-wrong-entry}
+    $x'=1$ \qquad [known fact]
+  \end{right-and-wrong-entry}
+\end{right-and-wrong}
+
+\begin{right-and-wrong}
+  \rightwrongheader
+  \begin{right-and-wrong-entry}
+    $  \left(\frac{1}{x^2+1}\right)'$ \\
+    $  = \frac{(1)'(x^2+1)-(1)(x^2+1)'}{(x^2+1)^2}$ \qquad [quotient rule]\\
+    $  = \frac{(0)(x^2+1)-(2x)}{(x^2+1)^2}$ \\
+    $  = -\frac{2x}{(x^2+1)^2}$ \\
+  \end{right-and-wrong-entry}
+  &
+  \begin{right-and-wrong-entry}
+    $ \left(\frac{1}{x^2+1}\right)'$ \\
+    $ = [(x^2+1)^{-1}]'$ \\
+    $ = -2x(x^2+1)^{-2}$ \qquad [power and chain rules]
+  \end{right-and-wrong-entry}
+\end{right-and-wrong}
+
+<% end_sec('style') %>
+
+<% begin_hw_sec("Review problems") %>
+
+<% hw('review-add-exponents') %>
+<% hw('review-negative-exponents') %>
+<% hw('review-fractional-exponents') %>
+
+  <% hw_block(1) %>
+
+<% end_hw_sec %>
+
+<% begin_hw_sec %>
+
+\begin{hwinstructions}
+Example \ref{eg:limit-by-sub-good} on p.~\pageref{eg:limit-by-sub-good} demonstrates a way of
+guessing a limit by plugging in numbers and making a table of values. Do the same thing in problems
+\ref{hw:guess-limit-1}-\ref{hw:guess-limit-3}.
+\end{hwinstructions}
+
+<% hw('guess-limit-1') %>
+<% hw('guess-limit-2') %>
+<% hw('guess-limit-3') %>
+
+  <% hw_block(1) %>
+
+\begin{hwinstructions}
+In example \ref{eg:x-squared-with-limits} on p.~\pageref{eg:x-squared-with-limits} we found
+the derivative of the function $y(x)=x^2$ by directly applying the definition of the derivative     
+as a limit. In problems \ref{hw:apply-deriv-limit-def-x3}-\ref{hw:apply-deriv-limit-def-inv-x-offset}, apply
+the same brute-force technique to the given functions.
+\end{hwinstructions}
+
+
+<% hw('apply-deriv-limit-def-x3') %>
+<% hw('apply-deriv-limit-def-inv-x') %>
+<% hw('apply-deriv-limit-def-inv-x2') %>
+<% hw('apply-deriv-limit-def-inv-x-offset') %>
+
+  <% hw_block(2) %>
+
+% fractional exponents
+
+<% hw('cube-root',{'solution'=>true}) %>
+<% hw('thompson-sqrts',{'solution'=>true}) %>
+
+\pagebreak
+
+<% hw('everest-temp') %>
+
+% product rule
+
+<% hw('product-rule-vertical-stretch',{'solution'=>true}) %>
+
+  <% hw_block(2) %>
+
+\begin{hwinstructions}
+In problems \ref{hw:product-rule-two-methods} and \ref{hw:product-rule-two-methods-2},
+compute each derivative by two different methods: (a) by multiplying out the given expression
+and then differentiating, and (b) by using the product rule. Make sure that you get the same
+answer by both methods.
+\end{hwinstructions}
+
+<% hw('product-rule-two-methods') %>
+<% hw('product-rule-two-methods-2') %>
+
+\pagebreak
+
+  <% hw_block(2) %>
+
+<% hw('product-rule-xex') %>
+
+% chain rule
+
+<% hw('old-school',{'solution'=>true}) %>
+<% hw('hundredth',{'solution'=>true}) %>
+<% hw('one-and-two-hundred',{'solution'=>true}) %>
+<% hw('square-three-times',{'solution'=>true}) %>
+<% hw('chain-rule-units',{'solution'=>true}) %>
+
+\pagebreak
+
+  <% hw_block(1) %>
+
+\begin{hwinstructions}
+Compute the derivative of each of the functions
+in problems \ref{hw:chain-rule-two-methods} and \ref{hw:chain-rule-two-methods-2}
+by two different methods: (a) by multiplying out the given expression
+and then differentiating, and (b) by using the chain rule. Make sure that you get the same
+answer by both methods.
+\end{hwinstructions}
+
+<% hw('chain-rule-two-methods') %>
+<% hw('chain-rule-two-methods-2') %>
+
+  <% hw_block(1) %>
+
+\begin{hwinstructions}
+In problems \ref{hw:derivative-practice-1}-\ref{hw:derivative-practice-7}, differentiate the
+given function, and try to simplify your answer as much as possible.
+\end{hwinstructions}
+
+% Robbin p. 69, #4-10
+
+<% hw('derivative-practice-1') %>
+<% hw('derivative-practice-2') %>
+<% hw('derivative-practice-3') %>
+<% hw('derivative-practice-4') %>
+<% hw('derivative-practice-5') %>
+<% hw('derivative-practice-6') %>
+<% hw('derivative-practice-7') %>
+
+\pagebreak
+
+  <% hw_block(1) %>
+
+\begin{hwinstructions}
+In problems \ref{hw:chain-and-product-with-symbolic-constants-1}-\ref{hw:chain-and-product-with-symbolic-constants-1},
+$j$, $k$, $\ell$, and $m$, are constants.
+Calculate the given derivatives. Simplify answers where possible.
+\end{hwinstructions}
+
+
+<% hw('chain-and-product-with-symbolic-constants-1') %>
+<% hw('chain-and-product-with-symbolic-constants-2') %>
+<% hw('chain-and-product-with-symbolic-constants-3') %>
+<% hw('chain-and-product-with-symbolic-constants-4') %>
+
+
+  <% hw_block(1) %>
+
+<% hw('gamma-derivative') %>
+\pagebreak
+<% hw('doppler') %>
+
+  <% hw_block(1) %>
+
+<% hw('resonance',{'solution'=>true}) %>
+
+%%graph%% resonance func=1/sqrt(3*(x**2-1)**2+x**2) xlo=0 xhi=3 ylo=0 yhi=1.1 with=lines xtic_spacing=1 ytic_spacing=.5 format=eps
+<% marg(100) %>
+<%
+  fig(
+    'resonance',
+    %q{The function of problem \ref{hw:resonance}, with $a=3$, $b=1$, and $f_\zu{o}=1$.}
+  )  
+%>
+<% end_marg %>
+
+<% hw('cactus') %>
+
+\pagebreak
+
+<% hw('line-of-stability') %>
+<%
+  fig(
+    'hw-line-of-stability',
+    %q{Problem }+ref_workaround('hw:line-of-stability')+".",
+    {
+      'width'=>'fullpage'
+    }
+  )
+%>
+
+
+\pagebreak
+
+  <% hw_block(2) %>
+
+<% hw('car-aims-for-collision') %>
+<% hw('cobb-douglas') %>
+<% hw('pie-minimize-perimeter') %>
+<% hw('lens-minimize-length') %>
+
+  <% hw_block(2) %>
+
+\begin{hwinstructions}
+Problems \ref{hw:differentiability-1}-\ref{hw:differentiability-7} can be done
+using methods \ref{differentiability-by-zooming}-\ref{differentiability-by-formula} 
+on p.~\pageref{differentiability-by-zooming}.
+\end{hwinstructions}
+
+
+<% hw('differentiability-1',{'solution'=>true}) %>
+<% hw('differentiability-2',{'solution'=>true}) %>
+<% hw('differentiability-3',{'solution'=>true}) %>
+
+<% hw('differentiability-4') %>
+<% hw('differentiability-5') %>
+<% hw('differentiability-6') %>
+<% hw('differentiability-7') %>
+
+  <% hw_block(1) %>
+
+<% hw('tangent-to-parabola-through-point') %>
+<% hw('tangent-to-x3-through-point') %>
+<% hw('tangent-x2-and-x4') %>
+
+\pagebreak
+
+
+  <% hw_block(2) %>
+
+\begin{hwinstructions}
+Use the $\epsilon$-$\delta$ definition to prove the limits
+in problems \ref{hw:limit-prove-eps-delta-easy-01}-\ref{hw:limit-prove-eps-delta-easy-02}.
+The good news is that these limits were chosen to be the easiest possible examples
+to prove directly from the definition.
+The bad news is that these may feel like artificial exercises, since the functions are continuous
+and defined at the relevant points, so that the limits could have been more easily determined by
+simply plugging the number into the formula. The reason for doing them is that they will help you
+to understand the definition of the limit.
+\end{hwinstructions}
+% Robbin, p. 35, #4-14
+
+<% hw('limit-prove-eps-delta-easy-01') %>
+<% hw('limit-prove-eps-delta-easy-02') %>
+
+<% hw('limit-prove-eps-delta-x-sin-1-over-x') %>
+
+  <% hw_block(2) %>
+
+<% hw('product-rule-three-factors',{'solution'=>true}) %>
+<% hw('limit-implies-continuity') %>
+<% hw('no-least-number') %>
+<% hw('factorial-dominates-square') %>
+<% hw('binomial-coefficient-induction') %>
+<% hw('product-rule-n-factors') %>
+<% hw('nastiness') %>
+
+
+
+<% end_hw_sec %>
+
+<% end_chapter %>

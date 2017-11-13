@@ -1,0 +1,590 @@
+%%chapter%% 03
+<%
+  require "./scripts/eruby_util.rb"
+%>
+
+<%
+  chapter(
+    '03',
+    %q{The second derivative},
+    'ch:second-derivative'
+  )
+%>
+
+<% begin_sec("The rate of change of a rate of change",nil,'changing-change') %>
+
+On p.~\pageref{subsubsec:constant-acceleration} in section \ref{subsec:velocity},
+we briefly encountered the idea of the \emph{acceleration} of an object.
+The acceleration is the rate of change of velocity, while the velocity is the rate
+of change of position. That is, the acceleration is the rate of change \ldots of a rate of change!
+If that seems like a strange concept to you, then you're in good company.  After
+Newton and Leibniz invented the calculus, George Berkeley, Bishop of Cloyne, published
+a brutal critique called ``The analyst: a discourse addressed to an infidel mathematician.''
+Berkeley wrote:
+
+\begin{quotation}
+Our modern analysts are not content to consider only the differences of finite quantities:
+they also consider the differences of those differences, and the differences of the differences
+of the first differences. And so on \emph{ad infinitum}.
+
+But the velocities of the velocities, the second, third, fourth, and fifth velocities,
+etc., exceed, if I mistake not, all human understanding. The further the mind analyseth
+and pursueth these fugitive ideas the more it is lost and bewildered.
+\end{quotation}
+
+Although some of Berkeley's critique was in fact valid, there are many situations where it's
+perfectly natural to want to talk about a change in the rate of change. Figure \figref{beer}
+shows beer fermenting energetically at the Timmermans brewery in Belgium.
+Anyone who has watched this delightful process has
+seen the same story play itself out. A small population of dormant yeast cells is dumped into a
+delicious broth of malted barley. They find themselves in an ideal environment in
+which to raise children. At first the signs of fermentation are modest: a few bubbles as
+the small group of colonists starts to convert sugars to alcohol and carbon dioxide.
+But by the next morning the happy flood of procreation is going like crazy. A flood of foam is gushing
+out of the fermentation vessel.
+
+<% marg(0) %>
+<%
+  fig(
+    'beer',
+    %q{Beer is a natural food that is high in vitamin E.}
+  )  
+%>
+<% end_marg %>
+
+In this example there is nothing more natural than to say: the fermentation is \emph{speeding
+up}. Let  $y$ be the amount of carbon dioxide that has been produced so far. (We could just as
+well have defined $y$ as the amount of alcohol, but the $\zu{CO}_2$ bubbles are what we see.)
+Then the derivative of $y$ with respect to time, $y'$, is the rate of change of $y$.
+When we say that fermentation has sped up, we're talking about $y''$. At the time
+shown in figure \figref{beer} with a dotted line, $y''$ is large and positive. One way to tell this
+is that the slope of the $y'$ graph is large and positive at this moment. In this stack
+of three graphs, the \emph{slope} on each graph corresponds to the \emph{value} of the
+one below at any given time.
+
+In modern terminology, $y''$ is referred to as the second derivative of $y$.\index{derivative!second}
+
+<% end_sec('changing-change') %>
+
+<% begin_sec("Geometrical interpretation",nil,'second-deriv-geometrical') %>
+
+
+%%graph%% curvature func=x**2 format=eps xlo=-2 xhi=2 ylo=-1 yhi=8 with=lines x=t y=x samples=300 ytic_spacing=1 ; func=7*x**2 ; func=2*x
+
+The second derivative can be interpreted as a measure of the curvature of the graph,
+as shown in figure \figref{curvature}. The graph of the function $y=2x$ is a line,
+with no curvature. Its first derivative is 2, and its second derivative is zero.
+The function $x^2$ has a second derivative of $2$, and the more tightly curved
+function $7x^2$ has a bigger second derivative, $14$.
+<% marg(0) %>
+<%
+  fig(
+    'curvature',
+    %q{The functions $y=2x$, $x^2$ and $7x^2$.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'concavity',
+    %q{The functions $y=x^2$ and $3-x^2$.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'inflection',
+    %q{The functions $y=x^3$ has an inflection point at $x=0$.}
+  )  
+%>
+\spacebetweenfigs
+<% end_marg %>
+
+%%graph%% concavity func=x**2 format=eps xlo=-2 xhi=2 ylo=-1 yhi=4 with=lines x=t y=x samples=300 ytic_spacing=1 ; func=3-x**2
+
+A positive second derivative tells us that the function is like a cup: it holds water.
+A negative second derivative says that the function spills water, like a cup that's been turned
+upside-down. This distinction is referred to as the \emph{concavity} of the function.\index{concavity}
+In figure \figref{concavity},
+the function $x^2$ holds water. We say that it's ``concave up,'' and this
+corresponds to its positive second derivative. The function $3-x^2$, with a second derivative less than
+zero, is concave down. Another way of saying it is that if you're driving along a road shaped like $x^2$,
+going in the direction of increasing $x$, then your steering wheel is turned to the left, whereas on
+a road shaped like $3-x^2$ it's turned to the right.
+
+%%graph%% inflection func=x**3 format=eps xlo=-2 xhi=2 ylo=-8 yhi=8 with=lines x=t y=x samples=300 ytic_spacing=2
+
+Figure \figref{inflection} shows a third possibility. The function $x^3$ has a derivative $3x^2$ and
+a second derivative $6x$, which equals
+zero at $x=0$. This is called a point of inflection. The concavity of the graph is down on the left side, up on the right.
+The inflection point is where it switches from one concavity to the other. In the alternative description in
+terms of the steering wheel, the inflection point is where your steering wheel is crossing from right to left.\index{inflection point}\label{inflection}
+
+\begin{lessimportant}[Definition]
+A point of inflection is one at which the second derivative changes sign.
+\end{lessimportant}
+
+\begin{eg}{A circle}\label{eg:semicircle}
+Consider the set of all points $(x,y)$ at a fixed distance $r$ from the origin. This is a circle of radius $r$.
+Using the Pythagorean theorem, we find that this set of points is defined by
+$x^2+y^2=r^2$.
+It is not the graph of a function, since it fails the vertical line test. If we solve
+for $y$, we get $y=\pm\sqrt{r^2-x^2}$, and since we have both a positive and a negative
+square root, there are two possible values of $y$. But if we arbitrarily choose the positive root,
+we have the function
+\begin{equation*}
+  y = \sqrt{r^2-x^2}\eqquad,
+\end{equation*}
+which is the equation of the semicircle lying above the $x$ axis, figure \figref{semicircle}.
+
+To find the derivative $y'$, we can rewrite $y$ as $(r^2-x^2)^{1/2}$ and apply the
+power rule and the chain rule. The result is
+\begin{equation*}
+  y' = -x(r^2-x^2)^{-1/2}\eqquad.
+\end{equation*}
+The second derivative is
+\begin{equation*}
+  y'' = -(r^2-x^2)^{-1/2}-x^2(r^2-x^2)^{-3/2}\eqquad.
+\end{equation*}
+
+Let's evaluate the second derivative at $x=0$. The result is $y''=-1/r$. The negative sign tells
+us that the graph is concave down. The absolute value of the result is $1/r$, which is a measure
+of the curvature of the circle; a smaller radius indicates a stronger curvature.
+
+\end{eg}
+<% marg(50) %>
+<%
+  fig(
+    'semicircle',
+    %q{Example \ref{eg:semicircle}.}
+  )  
+%>
+<% end_marg %>
+
+%%graph%% inflection-raw-1 func=x**3 format=svg xlo=-1 xhi=1 ylo=-1 yhi=1 with=lines samples=100
+%%graph%% inflection-raw-2 func=x**4 format=svg xlo=-1 xhi=1 ylo=-1 yhi=1 with=lines samples=100
+
+When both $f'=0$ and $f''=0$, the second derivative test is inconclusive. All three of
+       the functions in figure \figref{inconclusive-2nd-deriv-test} have $f'(0)=0$ and $f''(0)=0$, but we can't tell purely from this
+       information what is going on. In one case it's a point of inflection, in one it's
+       a local minimum, and in one it's a local maximum.
+<%
+  fig(
+    'inconclusive-2nd-deriv-test',
+    %q{When both $f'=0$ and $f''=0$, the second derivative test is inconclusive.},
+    {
+      'width'=>'wide',
+      'sidecaption'=>true
+    }
+  )
+%>
+
+When the second derivative test is inconclusive, we need to find some other way to determine what's
+going on. One option is graphing. Another possibility is to determine whether the derivative changes
+sign at the point in question. For example, the function $x^4$ has as its derivative $4x^3$, and this
+changes sign from negative to positive at $x=0$, indicating a local minimum.
+
+<% end_sec('second-deriv-geometrical') %>
+
+
+<% begin_sec("Leibniz notation",4,'second-derivative-leibniz') %>\index{Leibniz notation!second derivative}
+The Leibniz notation for $y''$ is
+\begin{equation*}
+  \frac{\der^2 y}{\der x^2}\eqquad.
+\end{equation*}
+The seemingly inconsistent placement of the exponents on the top and bottom
+is actually exactly what we need if we want the units to make sense. To see this in a concrete
+example, consider the acceleration of an object expressed in terms of its position $x$:
+\begin{equation*}
+  a=\frac{\der^2 x}{\der t^2}\eqquad.
+\end{equation*}
+The units of $x$ are meters, and the units of $t$ are seconds. The velocity $\der x/\der t$
+has units of meters per second, m/s. The rate at which the velocity changes has units
+of meters per second per second, m/s/s or $\munit/\sunit^2$. This is exactly what is suggested
+by the Leibniz notation.
+<% end_sec('second-derivative-leibniz') %>
+
+<% begin_sec("Applications",nil,'second-derivative-applications') %>
+<% begin_sec("Extrema",nil,'second-derivative-for-extrema') %>
+When a function goes up and then smoothly turns around and comes back down again,
+it has zero slope at the top. A place where $y'=0$, then, could represent
+a place where $y$ was at a maximum. Or the function could be concave up,
+in which case we'd have a minimum.\index{extrema}
+Figure \figref{cases-of-extrema-reprise} reprises some of the possible types
+of extrema alluded to briefly in section \ref{subsec:optimization}, p.~\pageref{subsec:optimization}.
+By testing the second derivative, we can distinguish among cases B, D, and H, which
+represent, respectively, a minimum, a maximum, and a point of inflection. The test
+will not distinguish between D, which is a global maximum, and G, which is only a local maximum.
+<% marg(100) %>
+<%
+  fig(
+    'cases-of-extrema-reprise',
+    %q{A zero derivative often, but not always, indicates a local extremum. Sometimes we have
+       a zero derivative without a local extremum, and sometimes a local extremum with an
+       undefined or nonzero derivative.}
+  )  
+%>
+<% end_marg %>
+
+%%graph%% order-quantity-concavity func=1+9.0/x+x format=eps xlo=0 xhi=10 xtic_spacing=5 ylo=0 yhi=20 ytic_spacing=10 x=q y=C with=lines
+%%graph%% one-max-one-min func=1.0/x+x format=eps xlo=-5 xhi=5 xtic_spacing=10 ylo=-10 yhi=10 ytic_spacing=20 with=lines
+<% marg(-300) %>
+<%
+  fig(
+    'order-quantity-concavity',
+    %q{Example \ref{eg:order-quantity-concavity}.}
+  )  
+%>
+<% end_marg %>
+\begin{eg}{The second derivative test applied to order quantity}\label{eg:order-quantity-concavity}
+In example \ref{eg:order-quantity} on p.~\pageref{eg:order-quantity} we analyzed a situation
+in which a retailer, when it runs out of inventory, orders a quantity $q$ of widgets from the
+wholesale supplier. The result was that the retailer's yearly cost was given by a function of
+a certain form, of which an example is
+\begin{equation*}
+  C = 1+\frac{9}{q}+q\eqquad.
+\end{equation*}
+By setting the first derivative
+\begin{equation*}
+  \frac{\der C}{\der q} = -9q^{-2}+1
+\end{equation*}
+equal to zero and solving for $q$, we find $q=3$. This could be a minimum (good), a maximum (bad),
+or an inflection point. One way to tell is by applying the second derivative test.
+The second derivative is
+\begin{equation*}
+  \frac{\der^2 C}{\der q^2} = 18q^{-3}\eqquad.
+\end{equation*}
+Plugging in $q=3$, we find $\der^2 C/\der q^2=18/27$, which is positive. Therefore the function
+is concave up at $q=3$, and this is indeed a minimum. (In fact, this particular function happens to be
+concave up \emph{everywhere}. We only defined it for $q>0$, because a negative $q$ doesn't make
+sense in this context --- the retailer doesn't produce widgets, and can't sell them to the wholesaler.
+For any positive value of $q$, the second derivative is positive.)
+\end{eg}
+
+\begin{eg}{One minimum and one maximum}\label{eg:one-max-one-min}
+\egquestion Locate all extrema of the function
+\begin{equation*}
+  y=x^{-1}+x\eqquad.
+\end{equation*}
+Use the second derivative test
+to determine which are maxima and which are minima, and check your result by graphing.
+Are these global extrema, or only local ones?
+
+\eganswer This function is undefined at $x=0$ because $x^{-1}$ blows up
+as $x$ approaches zero. However, if there are extrema that occur at $x\ne0$, where the function
+is smooth, we should be able to find them by looking for places where $y'=0$. We have
+\begin{equation*}
+  y' = -x^{-2}+1\eqquad,  
+\end{equation*}
+which equals zero at $x=\pm1$. These points could be maxima, minima, or points of inflection.
+The second derivative is
+\begin{equation*}
+  y'' = 2x^{-3}\eqquad.
+\end{equation*}
+Plugging in $x=+1$ gives a positive result, so this is a minimum. Plugging in $x=-1$ gives
+a negative result, which means that it's a maximum.
+
+The graph, figure \figref{one-max-one-min}, verifies the results of the second derivative test.
+The function is odd, so it makes sense that we get a maximum and a minimum that are symmetrically
+disposed.
+The graph also reveals that the extrema we've found are only local ones. The function has no
+global extrema.
+\end{eg}
+
+<% marg(50) %>
+<%
+  fig(
+    'one-max-one-min',
+    %q{Example \ref{eg:one-max-one-min}.}
+  )  
+%>
+<% end_marg %>
+
+\pagebreak
+
+%%graph%% fruitless func=x**3-6*x**2+12*x format=eps xlo=0 xhi=4 xtic_spacing=2 ylo=0 yhi=18 ytic_spacing=5 with=lines
+<% marg(0) %>
+<%
+  fig(
+    'fruitless',
+    %q{Example \ref{eg:fruitless}.}
+  )  
+%>
+<% end_marg %>
+
+\begin{eg}{A fruitless search}\label{eg:fruitless}
+\egquestion Locate all local extrema of the function
+\begin{equation*}
+  y= x^3-6x^2+12 x\eqquad.
+\end{equation*}
+Use the second derivative test
+to determine which are maxima and which are minima.
+
+\eganswer The function is smooth everywhere, so any extrema must be at points where the derivative
+\begin{equation*}
+  y'= 3x^2-12x+12 
+\end{equation*}
+vanishes. The quadratic formula tells us that there is only one such point, $x=2$.
+The second derivative
+\begin{equation*}
+  y''= 6x-12
+\end{equation*}
+is zero at this point, so it's a point of inflection, not a maximum or minimum. This function
+has no local extrema. (The original function can in fact be rewritten as $y=(x-2)^3+8$, which
+gives more insight. It's simply the function $y=x^3$, shifted 2 units to the right and 8 units up.)
+\end{eg}
+
+<% end_sec('second-derivative-for-extrema') %>
+<% begin_sec("Newton's second law",nil,'newton-second-law') %>\index{Newton, Isaac!second law}
+The ancient Greek philosopher Aristotle\index{Aristotle} claimed that force was required in order to create motion,
+and this seemed reasonable to Europeans for a thousand years afterward, since it was in accord
+with everyday experience. Although Aristotle didn't use equations, we can imagine putting his theory
+into mathematical form like this:
+\begin{equation*}
+  F = m \frac{\der x}{\der t} \qquad [\text{``Aristotle's law of motion''}] 
+\end{equation*}
+Here $F$ is the force exerted on an object, $x$ is the object's position, and $m$ is a constant
+of proportionality, which would presumably be a measure of the object's size, mass, or inertia.
+
+Aristotle was wrong. What he didn't understand was that friction is a force as well. When objects
+``naturally'' slow down, it's not because that's their automatic tendency but rather because friction is
+acting. The moon doesn't experience any friction as it orbits the earth, so it doesn't slow down at all.
+<% marg(50) %>
+<%
+  fig(
+    'newton-portrait',
+    %q{Isaac Newton (1642-1727).}
+  )  
+%>
+<% end_marg %>
+
+Isaac Newton, who was also one of the inventors of the calculus, gave a correct account in the form
+of an equation now known as Newton's second law:
+\begin{equation*}
+  F = m \frac{\der^2 x}{\der t^2} \qquad [\text{Newton's second law}] 
+\end{equation*}
+A force causes an \emph{acceleration}, not a velocity. In Newton's second law, $F$ represents the
+\emph{sum} of all the forces acting on the object of interest. For example, when you drive on the
+freeway at constant speed, your acceleration is zero. This is because the total force acting on your
+car is zero. The forward force generated by the tires' traction on the road is canceled out by
+backward forces such as air resistance.
+<% end_sec('newton-second-law') %>
+
+<% begin_sec("Indifference curves",nil,'indifference-curves') %>\index{indifference curve!concavity of}
+The concept of an indifference curve was introduced in example
+\ref{eg:indifference-curve}, p.~\pageref{eg:indifference-curve}.
+To recapitulate briefly, the person whose indifference
+curve is drawn in figure \figref{indifference-curve-concavity}
+is equally happy having the combination of beer and sushi represented by any point on the curve.
+A very common assumption in economics is that indifference curves always have
+$y''>0$. This means that once you have a lot of something, you value it less.
+The large, negative slope at point P in figure \figref{indifference-curve-concavity} means that
+this person already has plenty of beer, and would trade a lot of beer for a small amount of
+sushi. The small negative slope at Q indicates the opposite.
+
+When an indifference curve has $y''=0$, it's a line. This indicates that each of the two commodities
+is a perfect substitute for the other. For example, most people don't care whether they buy an
+airline ticket from one airline or another.
+<% end_sec('indifference-curves') %>
+<% marg(50) %>
+<%
+  fig(
+    'indifference-curve-concavity',
+    %q{Indifference curves are concave up.}
+  )  
+%>
+<% end_marg %>
+
+\startdq
+
+\begin{dq}\label{dq:ball-at-top}
+Figure \figref{dq-ball-at-top} shows a person throwing a ball straight up in the air,
+with the corresponding graphs drawn below for the height $x$ and velocity $v$ as
+functions of time. True or false: at the top of the motion, the ball is at rest, so
+it has no motion; you can't have acceleration without motion, so the ball's acceleration
+equals zero at the top.
+\end{dq}
+
+<% end_sec('second-derivative-applications') %>
+
+<% marg(0) %>
+<%
+  fig(
+    'dq-ball-at-top',
+    %q{Discussion question \ref{dq:ball-at-top}.}
+  )  
+%>
+<% end_marg %>
+
+<% begin_sec("Higher derivatives",nil,'higher-derivatives') %>\index{derivative!higher}
+When we take the derivative of a function $f$, the derivative $f'$ is itself a function,
+so it made sense to apply the same operation again and find the second derivative $f''$.
+We can continue in this way. The
+derivative of the second derivative is called the third derivative, written
+$f'''$, and so on.
+
+The $n$th derivative of $f$ is denoted $f^{(n)}$.  Thus
+\[
+f^{(0)}=f,\qquad f^{(1)}=f',\qquad f^{(2)}=f'',\qquad
+f^{(3)}=f''',\ldots.
+\]
+Leibniz' notation for the $n$th derivative of $y=f(x)$ is
+\[
+\frac{\der^n y}{\der x^n}= f^{(n)}(x).
+\]\index{Leibniz notation!higher derivative}
+
+\begin{eg}{Jerk and damage}\label{eg:jerk}\index{jerk}
+Higher derivatives are often useful; for example, you will need them in your second-semester
+calculus course in order to compute Taylor series, which are often used in approximating functions.
+There are not many examples, however, in which $f^{(n)}$ has a direct, intuitive interpretation
+for $n>2$. The best example I know of is the following for $n=3$.
+
+It's very common for a mechanical system to be damaged by vibration. For example, when a human
+runs, the impact of the foot on the ground causes a shock wave to travel up the leg, and runners
+frequently suffer from injuries as a result. When a machine shop cuts metal, it's possible for
+the whole setup to start vibrating violently, and if the lathe or mill isn't shut down promptly,
+the result can be serious damage to the work or the machine.
+
+Mathematically, what is the variable that measures how likely damage is to occur in these examples?
+The motion of an object is described using its position as a function of time, $x(t)$.
+If $x$ is a constant, then the object is sitting still and clearly no damage can result, so this
+suggests taking a derivative. But if $x'$ is constant, we also expect no damage. This derivative
+measures the velocity, and velocity doesn't relate to force, acceleration $x''$ does
+(Newton's second law, section \ref{subsec:newton-second-law}, p.~\pageref{subsec:newton-second-law}).
+Even an acceleration, however, does not necessarily lead to damage. When your body is subject
+to a steady acceleration, it just feels like a steady pressure, or perhaps, depending on the
+direction of the acceleration, an increase in your weight. A steady acceleration will never cause
+an object to shake or vibrate. Such an effect can only happen if the \emph{third} derivative
+$x'''$ is nonzero. This quantity is sometimes called the ``jerk.''
+Cf.~example \ref{eg:cams}, p.~\pageref{eg:cams}.
+\end{eg}
+
+\begin{eg}{Two examples}
+If $f(x) = x^2-2x+3$ and $g(x) = x/(1-x)$ then
+\begin{align*}
+  f(x) &= x^2 - 2x + 3  & g(x)&= \frac{x} {1-x} \\
+  f'(x) &= 2x -2 & g'(x) &= \frac{1} {(1-x)^2} \\
+  f''(x) &= 2 & g''(x) &= \frac{2} {(1-x)^3} \\
+  f^{(3)}(x) &= 0 & g^{(3)}(x) &= \frac{2\cdot 3} {(1-x)^4}\\
+  f^{(4)}(x) &= 0 & g^{(4)}(x) &= \frac{2\cdot3\cdot4} {(1-x)^5}\\
+  &\vdots &&\vdots
+\end{align*}
+All further derivatives of $f$ are zero, but no matter how often we
+differentiate $g(x)$ we will never get zero.  Instead of multiplying the
+numbers in the numerator of the derivatives of $g$ we left them as
+``$2\cdot3\cdot4$.''  A good reason for doing this is that we can see
+a pattern in the derivatives, which would allow us to guess what (say) the
+$10$th derivative is, without actually computing ten derivatives:
+\[
+g^{(10)}(x) =
+\frac{2\cdot3\cdot4\cdot5\cdot6\cdot7\cdot8\cdot9\cdot10} {(1-x)^{11}}.
+\]
+\end{eg}
+
+In section \ref{sec:leibniz-notation} we introduced a variation on the Leibniz
+notation called the \emph{operator} notation, as in
+\[
+\frac{d(x^3-x)}{dx} = \frac{d}{dx} (x^3-x)= 3x^2-1.
+\]
+For higher derivatives one can write
+\[
+\frac{d^2y}{dx^2}
+= \frac{d} {dx} \frac{d} {dx}y
+= \left(\frac{d}{dx}\right)^2 y
+\]
+Be careful to distinguish the second derivative from the square of the first
+derivative. Usually
+\[
+\frac{d^2y}{dx^2}\ne\left(\frac{dy}{dx}\right)^2\text{!}
+\]
+
+<% end_sec('higher-derivatives') %>
+
+<% begin_hw_sec %>
+
+<% hw('2nd-deriv-polynomial',{'solution'=>true}) %>
+<% hw('2nd-deriv-polynomial-2') %>
+<% hw('2nd-deriv-polynomial-3') %>
+<% hw('2nd-deriv-polynomial-4') %>
+<% hw('2nd-deriv-polynomial-5') %>
+  <% hw_block(1) %>
+
+
+%%graph%% inflection-visual func=1/x+x**0.3333333 xlo=0 xhi=20 ylo=0 yhi=5 with=lines xtic_spacing=5 ytic_spacing=1 format=eps
+<% marg(0) %>
+<%
+  fig(
+    'inflection-visual',
+    %q{Problem \ref{hw:inflection-visual}.}
+  )  
+%>
+<% end_marg %>
+
+<% hw('inflection-visual') %>
+
+  <% hw_block(1) %>
+
+<% hw('inflection',{'solution'=>true}) %>
+<% hw('max-min-of-sum',{'solution'=>true}) %>
+<% hw('exponents-with-2nd-deriv-smooth') %>
+<% marg(0) %>
+<%
+  fig(
+    'hw-blimp',
+    %q{Problem \ref{hw:blimp}.}
+  )  
+%>
+<% end_marg %>
+<% hw('blimp') %>
+<% hw('odd-even-2nd-deriv') %>
+<% hw('average-minimizes-sum-of-squares') %>
+<% hw('resonance-overdamped') %>
+
+<% hw('partial-fractions-third-deriv') %>
+
+  <% hw_block(2) %>
+
+% Robbin p. 71, #2-5:
+\begin{hwinstructions}
+In problems \ref{hw:first-three-derivatives-1}-\ref{hw:first-three-derivatives-3},
+compute the first, second, and third derivatives of the given functions.
+\end{hwinstructions}
+
+
+<% hw('first-three-derivatives-1') %>
+<% hw('first-three-derivatives-2') %>
+<% hw('first-three-derivatives-3') %>
+
+  <% hw_block(2) %>
+
+% Robbin p. 71, #3:
+\begin{hwinstructions}
+In problems \ref{hw:tenth-derivative-1}-\ref{hw:tenth-derivative-6},
+find the derivatives of $10^\text{th}$ order of the given
+function. (The problems have been chosen so that after doing the
+first few derivatives in each case, you should start seeing a pattern
+that will let you guess the $10^{\text{th}}$ derivative without
+actually computing $10$ derivatives.) 
+You will find it convenient in most of these problems
+to express your results in terms of the notation $n!=1\cdot2\ldots n$
+introduced in sec.~\ref{sec:factorial}, p.~\pageref{sec:factorial}.
+The problems are in increasing
+order of difficulty. 
+\end{hwinstructions}
+
+
+<% hw('tenth-derivative-1') %>
+<% hw('tenth-derivative-2') %>
+<% hw('tenth-derivative-3') %>
+<% hw('tenth-derivative-4') %>
+<% hw('tenth-derivative-5') %>
+<% hw('tenth-derivative-6') %>
+
+<% hw('sneak-in-taylor-of-ex') %>
+
+<% hw('induction-nth-deriv-of-polynomial-vanishing') %>
+<% hw('induction-nth-deriv-harmonic') %>
+
+<% end_hw_sec %>
+
+<% end_chapter %>

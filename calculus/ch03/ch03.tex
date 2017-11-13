@@ -1,0 +1,748 @@
+%%chapter%% 03
+\chapter{Limits and continuity}\label{ch:limits}
+
+\section{Continuity}
+
+Intuitively, a continuous function is one whose graph
+has no sudden jumps in it; the graph is all a single connected piece. 
+Such a function can be drawn without picking the pen up off of the paper.
+Formally, a function $f(x)$ is defined to
+be continuous if for any real $x$ and any infinitesimal $\der x$, $f(x+\der x)-f(x)$ is infinitesimal.\label{def-continuity}\index{continuous function}
+
+\begin{eg}\label{eg:discontinuous}
+Let the function $f$ be defined by $f(x)=0$ for $x\le 0$, and $f(x)=1$ for $x>0$. Then $f(x)$ is
+discontinuous, since for $\der x>0$, $f(0+\der x)-f(0)=1$, which isn't infinitesimal.
+\end{eg}
+
+\smallfig{discontinuous}{Example \ref{eg:discontinuous}. The black dot indicates that the endpoint
+of the lower ray is part of the ray, while the white one shows the contrary for the ray on the top.}
+
+If a function is discontinuous at a given point, then it is not differentiable at that point.
+On the other hand, the example $y=|x|$ shows that a function can be continuous without
+being differentiable.
+
+In most cases, there is no need to invoke the definition explicitly in order to check whether
+a function is continuous. Most of the functions we work with are defined by putting together
+simpler functions as building blocks. For example, let's say we're already convinced that the
+functions defined by $g(x)=3x$ and $h(x)=\sin x$ are both continuous. Then if we encounter the
+function $f(x)=\sin(3x)$, we can tell that it's continuous because its definition corresponds
+to $f(x)=h(g(x))$. The functions $g$ and $h$ have been set up like a bucket brigade, so that
+$g$ takes the input, calculates the output, and then hands it off to $h$ for the final step
+of the calculation. This method of combining functions is called \emph{composition}.\index{composition}
+The composition of two continuous functions is also continuous. Just watch out for division.
+The function $f(x)=1/x$ is continuous everywhere except at $x=0$, so for example $1/\sin(x)$
+is continuous everywhere except at multiples of $\pi$, where the sine has zeroes.
+
+\subsection{The intermediate value theorem}
+
+Another way of thinking about continuous functions is given by the
+\emph{intermediate value theorem}.\index{intermediate value theorem}
+Intuitively, it says that if you are moving continuously along a road, 
+and you get from point A to point B, then you must also visit every other point
+along the road; only by teleporting (by moving discontinuously) could you
+avoid doing so. More formally, the theorem states
+that if $y$ is a continuous real-valued function on the real interval from $a$ to $b$,
+and if $y$ takes on values $y_1$ and $y_2$ at certain points within this interval, then for any $y_3$ between $y_1$ and
+$y_2$, there is some real $x$ in the interval for which $y(x)=y_3$.
+
+\fig{intermediate-value-theorem}{The intermediate value theorem states that if the function is continuous, it must pass through $y_3$.}
+
+The intermediate value theorem seems so intuitively appealing that if we want to
+set out to prove it, we may feel as though we're being asked to prove a proposition such as, ``a number greater than 10 exists.''
+If a friend wanted to bet you a six-pack that you couldn't prove this with complete mathematical rigor, you would have to
+get your friend to spell out very explicitly what she thought were the facts about
+integers that you were allowed to start with as initial assumptions. Are you allowed to assume that 1 exists?
+Will she grant you that if a number $n$ exists, so does $n+1$?
+The intermediate value theorem is similar. It's stated as a theorem about certain types
+of functions, but its truth isn't so much a matter of the properties of functions as
+the properties of the underlying number system. For the reader with a interest in pure
+mathematics, I've discussed this in more detail on page \pageref{detour:intermediate-value} and given
+an abbreviated proof.\label{intermediate-value-ref-to-detour}
+(Most introductory calculus texts do not prove it at all.)
+
+\begin{eg}
+\egquestion Show that there is a solution to the equation $10^x+x=1000$.
+
+\eganswer We expect there to be a solution near $x=3$, where the function $f(x)=10^x+x=1003$ is just a little too big.
+On the other hand, $f(2)=102$ is much too small. Since $f$ has values above and below 1000 on the interval from
+2 to 3, and $f$ is continuous, the intermediate value theorem proves that a solution exists between 2 and 3.
+If we wanted to find a better numerical approximation to the solution, we could do it using Newton's
+method, which is introduced in section \ref{sec:newtons-method}.
+\end{eg}
+
+\begin{eg}\label{eg:x-minus-cos-x}
+\egquestion Show that there is at least one solution to the equation $\cos x=x$, and give bounds on its location.
+
+\eganswer This is a transcendental equation, and no amount of fiddling with algebra and trig identities will
+ever give a closed-form solution, i.e., one that can be written down with a finite number of arithmetic
+operations to give an exact result. However, we can easily prove that at least one solution exists, by
+applying the intermediate value theorem to the function $x-\cos x$. The cosine function is bounded between
+$-1$ and 1, so this function must be negative for $x<-1$ and positive for $x>1$. By the intermediate value
+theorem, there must be a solution in the interval $-1 \le x \le 1$. The graph, \figref{x-minus-cos-x}, verifies
+this, and shows that there is only one solution.
+\end{eg}
+
+
+%%graph%% x-minus-cos-x func=(x-cos(x)) format=eps xlo=-8 xhi=8 ylo=-8 yhi=8 xtic_spacing=4 ytic_spacing=4
+\smallfig{x-minus-cos-x}{The function $x-\cos x$ constructed in example \ref{eg:x-minus-cos-x}.}
+
+
+\begin{eg}
+\egquestion Prove that every odd-order polynomial $P$ with real coefficients has at least one real root $x$, i.e., a
+point at which $P(x)=0$.
+
+\eganswer
+Example \ref{eg:x-minus-cos-x} might have given the impression that there was nothing
+to be learned from the intermediate value theorem that couldn't be determined by graphing,
+but this example clearly can't be solved by graphing, because we're trying to prove
+a general result for all polynomials.
+
+To see that the restriction to odd orders is necessary, consider the polynomial $x^2+1$, which has no real roots
+because $x^2>0$ for any real number $x$.
+
+To fix our minds on a concrete example for the odd case, consider the polynomial $P(x)=x^3-x+17$.
+For large values of $x$, the linear and constant terms will be negligible compared to the $x^3$ term,
+and since $x^3$ is positive for large values of $x$ and negative for large negative ones, it follows
+that $P$ is sometimes positive and sometimes negative.
+
+Making this argument more general and rigorous,
+suppose we had a polynomial of odd order $n$ that always had the same sign for real $x$. Then by the transfer principle
+the same would hold for any hyperreal value of $x$. Now if $x$ is infinite then the lower-order terms
+are infinitesimal compared to the $x^n$ term, and the sign of the result is determined entirely by the
+$x^n$ term, but $x^n$ and $(-x)^n$ have opposite signs, and therefore $P(x)$ and $P(-x)$ have opposite signs.
+This is a contradiction, so we have disproved the assumption that $P$ always had the same sign for real $x$.
+Since $P$ is sometimes negative and sometimes positive, we conclude by the intermediate value theorem that
+it is zero somewhere.
+\end{eg}
+
+\begin{eg}\label{eg:x-minus-sin-1-over-x}
+\egquestion Show that the equation $x=\sin 1/x$ has infinitely many solutions.
+
+\eganswer  This is another example that can't be solved by graphing; there is
+clearly no way to prove, just by looking at a graph like \figref{x-minus-sin-1-over-x}, that it crosses the
+$x$ axis \emph{infinitely} many times. The graph does, however, help us to gain intuition for what's
+going on. As $x$ gets smaller and smaller, $1/x$ blows up, and $\sin 1/x$ oscillates more and more
+rapidly. The function $f$ is undefined at 0, but it's continuous everywhere else, so we can apply the
+intermediate value theorem to any interval that doesn't include 0.
+
+We want to prove that for any positive $u$, there exists an $x$ with $0<x<u$ for which $f(x)$ has
+either desired sign. Suppose that this fails for some real $u$. Then by the transfer principle the nonexistence
+of any real $x$ with the desired property also implies the nonexistence of any such hyperreal $x$.
+But for an infinitesimal $x$ the sign of $f$ is determined entirely by the sine term, since the sine
+term is finite and the linear term infinitesimal. Clearly $\sin 1/x$ can't have a single sign for
+all values of $x$ less than $u$, so this is a contradiction, and the proposition succeeds for any $u$.
+It follows from the intermediate value theorem that there are infinitely many solutions to the equation.
+\end{eg}
+
+%%graph%% x-minus-sin-1-over-x func=(x-sin(1/x)) format=eps xlo=-2 xhi=2 ylo=-2 yhi=2 xtic_spacing=1 ytic_spacing=1
+\smallfig{x-minus-sin-1-over-x}{The function $x-\sin 1/x$.}
+
+\subsection{The extreme value theorem}
+
+In chapter \ref{ch:rates-of-change}, we saw that locating maxima and minima of functions may in general
+be fairly difficult, because there are so many different ways in which a function can attain an extremum:
+e.g., at an endpoint, at a place where its derivative is zero, or at a nondifferentiable kink. The following
+theorem allows us to make a very general statement about all these possible cases, assuming only continuity.
+
+The \emph{extreme value theorem}\label{extreme-value-theorem}
+states that if $f$ is a continuous real-valued function on the real-number
+interval defined by $a \le x \le b$, then $f$ has maximum and minimum values on that interval, which are
+attained at specific points in the interval.\index{extreme value theorem}
+
+Let's first see why the assumptions are necessary. If we weren't confined to a finite interval, then
+$y=x$ would be a counterexample, because it's continuous and doesn't have any maximum or minimum value.
+If we didn't assume continuity, then we could have a function defined as $y=x$ for $x < 1$, and $y=0$ for
+$x \ge 1$; this function never gets bigger than 1, but it never attains a value of 1 for any specific value of $x$.
+
+The extreme value theorem is proved, in a somewhat more general form, on page \pageref{detour:extreme-value}.
+
+\vfill\pagebreak
+
+\begin{eg}
+\egquestion Find the maximum value of the polynomial $P(x)=x^3+x^2+x+1$ for $-5 \le x \le 5$.
+
+\eganswer Polynomials are continuous, so the extreme value theorem guarantees that such a
+maximum exists. Suppose we try to find it by looking for a place where the derivative is zero.
+The derivative is $3x^2+2x+1$, and setting it equal to zero gives a quadratic equation, but application of the
+quadratic formula shows that it has no real solutions. It appears that the function doesn't have a maximum
+anywhere (even outside the interval of interest) that looks like a smooth peak. Since it doesn't have kinks or
+discontinuities, there is only one other type of maximum it could have, which is a maximum at one
+of its endpoints. Plugging in the limits, we find $P(-5)=-104$ and $P(5)=156$, so we conclude that
+the maximum value on this interval is 156.
+\end{eg}
+
+\vfill\pagebreak
+
+\section{Limits}\label{sec:limits}
+
+Historically, the calculus of infinitesimals as created by Newton and Leibniz was reinterpreted
+in the nineteenth century by Cauchy, Bolzano, and Weierstrass in terms of limits. All mathematicians
+learned both languages, and switched back and forth between them effortlessly, like the lady I
+overheard in a Southern California supermarket telling her mother, ``Let's get that one, \emph{con los} nuts.''
+Those who had been trained in infinitesimals might hear a statement using the language of limits, but
+translate it mentally into infinitesimals; to them, every statement about limits was really a statement
+about infinitesimals. To their younger colleagues, trained using limits, every statement about infinitesimals
+was really to be understood as shorthand for a limiting process. When Robinson laid the rigorous foundations
+for the hyperreal number system in the 1960's, a common objection was that it was really nothing new, because
+every statement about infinitesimals was really just a different way of expressing a corresponding statement
+about limits; of course the same could have been said about Weierstrass's work of the preceding century!
+In reality, all practitioners of calculus had realized all along that different approaches worked better for
+different problems; problem \ref{hw:holditch} on page \pageref{hw:holditch} is an example of a result that
+is much easier to prove with infinitesimals than with limits.
+
+The Weierstrass definition of a limit is this:\index{limit!definition!Weierstrass}
+\begin{important}[Definition of the limit]
+We say that $\ell$ is the limit of the function $f(x)$ as $x$ approaches $a$, written
+\begin{equation*}
+  \lim_{x\rightarrow a} f(x) = \ell\eqquad,
+\end{equation*}
+if the following is true: for any real number $\epsilon$, there exists another real number
+$\delta$ such that for all $x$ in the interval $a-\delta\le x \le a+\delta$,
+the value of $f$ lies within the range from $\ell-\epsilon$ to $\ell+\epsilon$.
+\end{important}
+Intuitively, the idea is that if I want you to make $f(x)$ close to $\ell$, I just have
+to tell you how close, and you can tell me that it will be that close as long as
+$x$ is within a certain distance of $a$.
+
+In terms of infinitesimals, we have:\index{limit!definition!infinitesimals}
+\begin{important}[Definition of the limit]
+We say that $\ell$ is the limit of the function $f(x)$ as $x$ approaches $a$, written
+\begin{equation*}
+  \lim_{x\rightarrow a} f(x) = \ell\eqquad,
+\end{equation*}
+if the following is true: for any infinitesimal number $\der x$, 
+the value of $f(a+\der x)$ is finite, and the standard
+part of $f(a+\der x)$ equals $\ell$.
+\end{important}
+
+The two definitions are equivalent. As remarked previously, the derivative $\der x/\der t$
+can be defined as the limit $\lim_{\Delta t\rightarrow0} (\Delta x/\Delta t)$, and if we
+use the Weierstrass definition of the limit, this means that the derivative can be defined
+entirely in terms of the real number system, without the user 
+of hyperreal numbers.\index{derivative!defined using a limit}
+
+Sometimes a limit can be evaluated simply by plugging in numbers:
+
+\begin{eg}
+\egquestion Evaluate
+\begin{equation*}
+  \lim_{x\rightarrow 0} \frac{1}{1+x}\eqquad.
+\end{equation*}
+
+\eganswer Plugging in $x=0$, we find that the limit is 1.
+\end{eg}
+
+In some examples, plugging in fails if we try to do it directly, but
+can be made to work if we massage the expression into a different form:
+
+\begin{eg}\label{eg:infty-infty-indet-form-by-massaging}
+\egquestion Evaluate
+\begin{equation*}
+  \lim_{x\rightarrow 0} \frac{\frac{2}{x}+7}{\frac{1}{x}+8686}\eqquad.
+\end{equation*}
+
+\eganswer Plugging in $x=0$ fails because division by zero is undefined.
+
+Intuitively, however, we expect that the limit will be well defined, and will
+equal 2, because for very small values of $x$, the numerator is dominated
+by the $2/x$ term, and the denominator by the $1/x$ term, so the 7 and 8686 terms
+will matter less and less as $x$ gets smaller and smaller.
+
+To demonstrate this more rigorously, a trick that works is to multiply both the top and the bottom by $x$, giving
+\begin{equation*}
+  \frac{2+7x}{1+8686x}\eqquad,
+\end{equation*}
+which equals 2 when we plug in $x=0$, so we find that the limit is zero.
+
+This example is a little subtle, because
+when $x$ \emph{equals} zero, the function is not defined, and moreover it would
+not be valid to multiply both the top and the bottom by $x$. In general, it's not
+valid algebra to multiply both the top and the bottom of a fraction by 0, because the
+result is $0/0$, which is undefined. But we \emph{didn't} actually multiply both the
+top and the bottom by zero, because we never let $x$ equal zero. Both the Weierstrass
+definition and the definition in terms of infinitesimals only refer to the properties of
+the function in a region very close to the limiting point, not at the limiting point itself.
+
+This is an example in which the function was not well defined at a certain point, and
+yet the limit of the function was well defined as we approached that point. In a case like
+this, where there is only one point missing from the domain of the function, it is natural
+to extend the definition of the function by filling in the ``gap tooth.'' Example \ref{eg:limit-two-sides}
+below shows that this kind of filling-in procedure is not always possible.
+\end{eg}
+
+%%graph%% no-limit func=x**-2 format=eps xlo=-2 xhi=2 ylo=0 yhi=4 with=lines xtic_spacing=1 ytic_spacing=1 more_space_below=5
+\smallfig{no-limit}{Example \ref{eg:no-limit}, the function $1/x^2$.}
+
+
+\begin{eg}\label{eg:no-limit}
+\egquestion Investigate the limiting behavior of $1/x^2$ as $x$ approaches 0, and 1.
+
+\eganswer At $x=1$, plugging in works, and we find that the limit is 1.
+
+At $x=0$, plugging in doesn't work, because division by zero is undefined.
+Applying the definition in terms of infinitesimals to the limit as $x$ approaches 0, we need to find
+out whether $1/(0+\der x)^2$ is finite for infinitesimal $\der x$, and if so, whether it always has the same standard
+part. But clearly $1/(0+\der x)^2=\der x^{-2}$ is always infinite, and we conclude that this limit is undefined.
+\end{eg}
+
+%%graph%% limit-two-sides-raw func=atan(1/x) format=svg xlo=-6 xhi=6 ylo=-2 yhi=2 with=lines xtic_spacing=2 ytic_spacing=1 more_space_below=5
+\smallfig{limit-two-sides}{Example \ref{eg:limit-two-sides}, the function $\tan^{-1}(1/x)$.}
+
+\begin{eg}\label{eg:limit-two-sides}
+\egquestion Investigate the limiting behavior of $f(x)=\tan^{-1}(1/x)$ as $x$ approaches 0.
+
+\eganswer Plugging in doesn't work, because division by zero is undefined.
+
+In the definition of the limit in terms of infinitesimals, the first requirement is that $f(0+\der x)$ be
+finite for infinitesimal values of $\der x$. The graph makes this look plausible, and indeed we can prove that
+it is true by the transfer principle. For any real $x$ we have $-\pi/2 \le f(x) \le \pi/2$, and
+by the transfer principle this holds for the hyperreals as well, and therefore $f(0+\der x)$ is finite.
+
+The second requirement is that the standard part of $f(0+\der x)$ have a uniquely defined value.
+The graph shows that we really have two cases to consider, one on the right side of the graph, and one on the left.
+Intuitively, we expect that the standard part of $f(0+\der x)$ will equal $\pi/2$ for positive $\der x$, and
+$-\pi/2$ for negative, and thus the second part of the definition will not be satisfied. For a more formal proof,
+we can use the transfer principle.
+For real $x$ with $0<x<1$, for example, $f$ is always positive and greater than 1, so we conclude based on the transfer principle
+that $f(0+\der x)>1$ for positive infinitesimal $\der x$. But on similar grounds we can be sure that  $f(0+\der x)<-1$
+when $\der x$ is negative and infinitesimal. Thus the standard part of $f(0+\der x)$ can have different values for
+different infinitesimal values of $\der x$, and we conclude that the limit is undefined.
+
+In examples like this, we can define a kind of one-sided limit, notated like this:
+\begin{align*}
+  \lim_{x\rightarrow 0^{-}} \tan^{-1}\frac{1}{x} &= -\frac{\pi}{2} \\
+  \lim_{x\rightarrow 0^{+}} \tan^{-1}\frac{1}{x} &= \frac{\pi}{2}\eqquad,
+\end{align*}
+where the notations $x\rightarrow 0^{-}$ and $x\rightarrow 0^{+}$ are to be read ``as $x$ approaches zero from
+below,'' and ``as $x$ approaches zero from above.''
+\end{eg}
+
+\section{L'H\^{o}pital's rule}\label{lhospital-simple}\index{l'H\^{o}pital's rule!simplest form}
+
+Consider the limit
+\begin{equation*}
+  \lim_{x\rightarrow 0} \frac{\sin x}{x}\eqquad.
+\end{equation*}
+
+Plugging in doesn't work, because we get $0/0$. Division by zero is undefined, both in the real number
+system and in the hyperreals. A nonzero number divided by a small number gives a big
+number; a nonzero number divided by a very small number gives a very big number; and a nonzero
+number divided by an infinitesimal number gives an infinite number. On the other hand,
+dividing \emph{zero} by zero means looking for a solution to the equation $0=0q$, where $q$ is
+the result of the division. But any $q$ is a solution of this equation, so even speaking
+casually, it's not correct to say that $0/0$ is infinite; it's not infinite, it's anything
+we like.
+
+Since plugging in zero didn't work, let's try estimating the limit by plugging in a number for
+$x$ that's small, but not zero. On a calculator,
+\begin{equation*}
+  \frac{\sin 0.00001}{0.00001} = 0.999999999983333\eqquad.
+\end{equation*}
+It looks like the limit is 1. We can confirm our conjecture to higher precision using Yacas's
+ability to do high-precision arithmetic:
+\begin{Code}
+  \ii N(Sin(10^-20)/10^-20,50)
+  \oo{  0.99999999999999999}
+  \oo{  9999999999999999999}
+  \oo{  99998333333333}
+\end{Code}
+It's looking pretty one-ish. This is the idea of the Weierstrass definition of a limit:
+it seems like we can get an answer as close to 1 as we like, if we're willing to make $x$ as close
+to 0 as necessary. The graph helps to make this plausible.
+
+%%graph%% sin-x-over-x func=sin(x)/x format=eps xlo=-20 xhi=20 ylo=-0.5 yhi=1.1 with=lines xtic_spacing=10 ytic_spacing=0.5
+\smallfig{sin-x-over-x}{The graph of $\sin x/x$.}
+
+The general idea here is that for small values of $x$, the small-angle approximation $\sin x\approx x$ obtains,
+and as $x$ gets smaller and smaller, the approximation gets better and better, so $\sin x/x$ gets closer and closer
+to 1.
+
+But we still haven't proved rigorously that the limit is exactly 1.
+Let's try using the definition of the limit in terms of
+infinitesimals.
+\begin{align*}
+  \lim_{x\rightarrow 0} \frac{\sin x}{x} &= \st\left[\frac{\sin (0+\der x)}{0+\der x}\right] \\
+            &= \st\left[\frac{\der x+\ldots}{\der x}\right]\eqquad,\\
+\intertext{where we've used the identity $\sin(p+q)=\sin p \cos q+\sin q\cos p$, and
+\ldots stands for terms of order $\der x^2$. So}
+  \lim_{x\rightarrow 0} \frac{\sin x}{x} &= \st\left[1+\frac{\ldots}{\der x}\right]\eqquad,\\
+                                         &= 1\eqquad.
+\end{align*}
+In fact, this limit is the same one we would use if we were evaluating the derivative of
+the sine function, applying the definition of the derivative as a limit.
+
+We can check our work using Inf:
+\begin{Code}
+  \ii : (sin d)/d
+  \oo{1+(-0.16667)d^2+...}
+\end{Code}
+(The \verb@...@ is where I've snipped trailing terms from the output.)
+
+Our example involving the limit of $\sin x/x$
+is a special case of the following rule for calculating limits involving $0/0$:
+
+\begin{important}[L'H\^{o}pital's rule (simplest form)]
+If $u$ and $v$ are functions with $u(a)=0$ and $v(a)=0$, the derivatives $\dot{v}(a)$ and $\dot{v}(a)$ are defined,
+and the derivative $\dot{v}(a)\ne 0$,
+then
+\begin{align*}
+  \lim_{x\rightarrow a} \frac{u}{v} &= \frac{\dot{u}(a)}{\dot{v}(a)}\eqquad.
+\end{align*}
+\end{important}
+
+Proof: Since $u(a)=0$, and the derivative $\der u/\der x$ is defined at $a$, $u(a+\der x)=\der u$ is infinitesimal, and likewise for $v$. By the definition
+of the limit, the limit is the standard part of
+\begin{equation*}
+  \frac{u}{v} = \frac{\der u}{\der v} = \frac{\der u/\der x}{\der v/\der x}\eqquad,
+\end{equation*}
+where by assumption the numerator and denominator are both defined (and finite, because the derivative
+is defined in terms of the standard part). The standard part of a quotient like $p/q$ equals the quotient of the
+standard parts, provided that both $p$ and $q$ are finite (which we've established), and $q \ne 0$ (which is
+true by assumption). But the standard part of $\der u/\der x$ is the definition of the derivative $\dot{u}$, and
+likewise for  $\der v/\der x$, so this establishes the result.
+
+We will generalize L'H\^{o}pital's rule on p.~\pageref{lhospital-general}.
+
+By the way, the housetop accent on the ``\^{o}'' in l'H\^{o}pital means that in Old
+French it used to be spelled and
+pronounced ``l'Hospital,'' but the ``s'' later became silent, so they stopped writing it. So yes, it is the
+same word as ``hospital.''
+
+\begin{eg}
+As remarked above, the example of $\lim{x\rightarrow0} \sin x/x$ is in some sense circular, since the limit
+is equivalent to the definition of the derivative of the sine function, so we already need to know
+the limit in order to evaluate the limit! As an example that isn't circular, let's evaluate
+\begin{equation*}
+  \lim_{x\rightarrow 0} \frac{\sin x}{x+x^3}
+\end{equation*}
+The derivative of the top is $\cos x$, and the derivative of the bottom is $1+3x^2$.
+Evaluating these at $x=0$ gives 1 and 1, so the answer is $1/1=1$.
+\end{eg}
+
+\begin{eg}
+\egquestion Evaluate
+\begin{equation*}
+  \lim_{x\rightarrow 0} \frac{e^x-1}{x}
+\end{equation*}
+
+\eganswer Taking the derivatives of the top and bottom, we find $e^x/1$, which equals 1 when
+evaluated at $x=0$.
+\end{eg}
+
+\begin{eg}
+\egquestion Evaluate
+\begin{equation*}
+  \lim_{x\rightarrow 1} \frac{x-1}{x^2-2x+1}
+\end{equation*}
+
+\eganswer Plugging in $x=1$ fails, because both the top and the bottom are zero.
+Taking the derivatives of the top and bottom, we find $1/(2x-2)$, which blows up to
+infinity when $x=1$. To symbolize the fact that
+the limit is undefined, and undefined because it blows up to infinity, we write
+\begin{equation*}
+  \lim_{x\rightarrow 1} \frac{x-1}{x^2-2x+1} = \infty
+\end{equation*}
+\end{eg}
+
+
+\section{Another perspective on indeterminate forms}
+
+An expression like $0/0$, called an indeterminate form,\index{indeterminate form}
+can be thought of in a different way in terms of
+infinitesimals. Suppose I tell you I have two infinitesimal numbers $d$ and $e$ in my
+pocket, and I ask you whether $d/e$ is finite, infinite, or infinitesimal.
+You can't tell, because $d$ and $e$ might not be infinitesimals of the same order of
+magnitude. For instance, if $e=37d$, then $d/e=1/37$ is finite; but if
+$e=d^2$, then $d/e$ is infinite; and if $d=e^2$, then $d/e$ is infinitesimal.
+Acting this out with numbers that are small but not infinitesimal,
+\begin{align*}
+  \frac{.001}{.037} &= \frac{1}{37} \\
+  \frac{.001}{.000001} &= 1000 \\
+  \frac{.000001}{.001} &= .001\eqquad.
+\end{align*}
+
+On the other hand, suppose I tell you I have an infinitesimal number $d$ and a
+finite number $x$, and I ask you to speculate about $d/x$. You know for sure
+that it's going to be infinitesimal. Likewise, you can be sure that $x/d$ is
+infinite. These aren't indeterminate forms.
+
+We can do something similar with infinite numbers. If $H$ and $K$ are both
+infinite, then $H-K$ is indeterminate. It could be infinite, for example, if
+$H$ was positive infinite and $K=H/2$. On the other hand, it could be finite
+if $H=K+1$. Acting this out with big but finite numbers,
+\begin{align*}
+  1000-500 &= 500 \\
+  1001-1000 &= 1\eqquad.
+\end{align*}
+
+\begin{eg}
+\egquestion If $H$ is a positive infinite number, is $\sqrt{H+1}-\sqrt{H-1}$
+finite, infinite, infinitesimal, or indeterminate?
+
+\eganswer Trying it with a finite, big number, we have
+\begin{align*}
+  \sqrt{1000001}-&\sqrt{999999} \\
+    = 1.000000&00020373\times 10^{-3}\eqquad,
+\end{align*}
+which is clearly a wannabe infinitesimal.
+We can verify the result using Inf:
+\begin{Code}
+  \ii : H=1/d
+  \oo{d^-1}
+  \ii : sqrt(H+1)-sqrt(H-1)
+  \oo{d^1/2+0.125d^5/2+...}
+\end{Code}
+For convenience, the first line of input defines an infinite number $H$ in terms of the calculator's
+built-in infinitesimal $d$. The result has only positive powers of $d$, so it's clearly infinitesimal.
+
+More rigorously, we can rewrite
+the expression as $\sqrt{H}(\sqrt{1+1/H}-\sqrt{1-1/H})$. Since the derivative
+of the square root function $\sqrt{x}$ evaluated at $x=1$ is 1/2, we can
+approximate this as
+\begin{align*}
+  \sqrt{H}&\left[1+\frac{1}{2H}+\ldots-\left(1-\frac{1}{2H}+\ldots\right)\right] \\
+    &= \sqrt{H}\left[\frac{1}{H}+\ldots\right] \\
+    &= \frac{1}{\sqrt{H}}\eqquad,
+\end{align*}
+which is infinitesimal.
+\end{eg}
+
+\section{Limits at infinity}
+
+The definition of the limit in terms of infinitesimals extends immediately to limiting
+processes where $x$ gets bigger and bigger, rather than closer and closer to some
+finite value. For example, the function $3+1/x$ clearly gets closer and closer to
+3 as $x$ gets bigger and bigger. If $a$ is an infinite number, then the definition
+says that evaluating this expression at $a+\der x$, where $\der x$ is infinitesimal,
+gives a result whose standard part is 3. It doesn't matter that $a$ happens to be
+infinite, the definition still works. We also note that in this example, it doesn't
+matter what infinite number $a$ is; the limit equals 3 for \emph{any} infinite $a$.
+We can write this fact as
+\begin{equation*}
+   \lim_{x\rightarrow \infty} \left(3+\frac{1}{x}\right) =3\eqquad,
+\end{equation*}
+where the symbol $\infty$ is to be interpreted as ``nyeah nyeah, I don't even care
+what infinite number you put in here, I claim it will work out to 3 no matter what.''
+The symbol $\infty$ is \emph{not} to be interpreted as standing for any specific
+infinite number. That would be the type of fallacy that lay behind the bogus proof
+on page \pageref{bogus-proof} that $1=1/2$, which assumed that all infinities had to be
+the same size.
+
+A somewhat different example is the arctangent function. The arctangent of 1000 equals
+approximately $1.5698$, and inputting bigger and bigger numbers gives answers that appear
+to get closer and closer to $\pi/2\approx1.5707$. But the arctangent
+of -1000 is approximately $-1.5698$, i.e., very close to $-\pi/2$.
+From these numerical
+observations, we conjecture that
+\begin{equation*}
+   \lim_{x\rightarrow a} \tan^{-1} x
+\end{equation*}
+equals $\pi/2$ for positive infinite $a$, but $-\pi/2$ for negative infinite $a$.
+It would not be correct to write
+\begin{equation*}
+   \lim_{x\rightarrow \infty} \tan^{-1} x = \frac{\pi}{2} \qquad \text{[wrong]}\eqquad,
+\end{equation*}
+because it \emph{does} matter what infinite number we pick. Instead we write
+\begin{align*}
+   \lim_{x\rightarrow +\infty} \tan^{-1} x &= \frac{\pi}{2} \\
+   \lim_{x\rightarrow -\infty} \tan^{-1} x &= -\frac{\pi}{2}\eqquad.
+\end{align*}
+
+Some expressions don't have this kind of limit at all. For example, if you take the
+sines of big numbers like a thousand, a million, etc., on your calculator, the results
+are essentially random numbers lying between $-1$ and 1. They don't settle down to any
+particular value, because the sine function oscillates back and forth forever.
+To prove formally that $\lim_{x\rightarrow +\infty} \sin x$ is undefined, consider that the sine function, defined on the real
+numbers, has the property that you can always change its result by at least $0.1$ if you
+add either $1.5$ or $-1.5$ to its input. For example, $\sin(.8)\approx 0.717$, and $\sin(.8-1.5)\approx-0.644$.
+Applying the transfer principle to this statement, we find that the same is true
+on the hyperreals. Therefore there cannot be any value $\ell$ that differs infinitesimally
+from $\sin a$ for all positive infinite values of $a$.
+
+Often we're interested in finding the limit as $x$ approaches infinity of an expression
+that is written as an indeterminate form like $H/K$, where both  $H$ and $K$ are infinite.
+
+\begin{eg}\label{eg:a-limit-at-infinity}
+\egquestion Evaluate the limit
+\begin{equation*}
+  \lim_{x\rightarrow \infty} \frac{2x+7}{x+8686}\eqquad.
+\end{equation*}
+
+\egquestion Intuitively, if $x$ gets large enough the constant terms will be negligible, and
+the top and bottom will be dominated by the $2x$ and $x$ terms, respectively, giving an
+answer that approaches 2.
+
+One way to verify this is to divide both the top and the bottom by $x$, giving
+\begin{equation*}
+  \frac{2+\frac{7}{x}}{1+\frac{8686}{x}}\eqquad.
+\end{equation*}
+If $x$ is infinite, then the standard part of the top is 2, the standard part of the
+bottom is 1, and the standard part of the whole thing is therefore 2.
+
+Another approach is to use l'H\^{o}pital's rule. The derivative
+of the top is 2, and the derivative of the bottom is 1, so the limit is 2/1=2.
+\end{eg}
+
+
+\section{Generalizations of l'H\^{o}pital's rule}\label{lhospital-general}\index{l'H\^{o}pital's rule!general form}
+
+Mathematical theorems are sometimes like cars. I own a Honda Fit that is about as bare-bones as you can get
+these days, but persuading a dealer to sell me that car was like pulling teeth. The salesman was absolutely
+certain that any sane customer would want to pay an extra \$1,800 for such crucial amenities as
+floor mats and a chrome tailpipe. L'H\^{o}pital's rule in its most general form is a much fancier piece of machinery
+than the stripped down model described on p.~\pageref{lhospital-simple}. The price you pay for the deluxe model
+is that the proof becomes much more complicated than the one-liner that sufficed for the simple version.
+
+\subsection{Multiple applications of the rule}\label{lhospital-multiple}
+In the following example, we have to use l'H\^{o}pital's rule twice before we get an answer.
+
+\begin{eg}\label{eg:lhospital-differentiating-twice}
+\egquestion Evaluate
+\begin{equation*}
+  \lim_{x\rightarrow \pi} \frac{1+\cos x}{(x-\pi)^2}
+\end{equation*}
+
+\eganswer Applying  l'H\^{o}pital's rule gives
+\begin{equation*}
+  \frac{-\sin x}{2(x-\pi)}\eqquad,
+\end{equation*}
+which still produces $0/0$ when we plug in $x=\pi$. Going again, we get
+\begin{equation*}
+  \frac{-\cos x}{2} = \frac{1}{2}\eqquad.
+\end{equation*}
+\end{eg}
+
+The reason that this always works is outlined on p.~\pageref{detour:lhospital-proofs}.
+
+\subsection{The indeterminate form $\infty/\infty$}
+Consider an example like this:
+\begin{equation*}
+  \lim_{x\rightarrow 0} \frac{1+1/x}{1+2/x}\eqquad.
+\end{equation*}
+This is an indeterminate form like $\infty/\infty$ rather than the $0/0$ form for which we've already
+proved l'H\^{o}pital's rule. As proved on p.~\pageref{lhospital-inf-inf}, l'H\^{o}pital's rule applies to examples like this as
+well.
+
+\begin{eg}
+\egquestion Evaluate
+\begin{equation*}
+  \lim_{x\rightarrow 0} \frac{1+1/x}{1+2/x}\eqquad.
+\end{equation*}
+
+\eganswer Both the numerator and the denominator go to infinity. Differentiation of the top
+and bottom gives $(-x^{-2})/(-2x^{-2}) = 1/2$. We can see that the reason the rule
+worked was that (1) the constant terms were irrelevant because they become negligible as
+the $1/x$ terms blow up; and (2) differentiating the blowing-up $1/x$ terms makes them into
+the same $x^{-2}$ on top and bottom, which cancel.
+
+Note that we could also have gotten this result without l'H\^{o}pital's rule, simply by
+multiplying both the top and the bottom of the original expression by $x$ in order to rewrite it
+as $(x+1)/(x+2)$.
+\end{eg}
+
+\subsection{Limits at infinity}
+It is straightforward to prove a variant of l'H\^{o}pital's rule that allows us to
+do limits at infinity.
+The general proof is left as an exercise (problem \ref{hw:lhospital-at-infinity}, p.~\pageref{hw:lhospital-at-infinity}).
+The result is that l'H\^{o}pital's rule is equally valid when the limit is at $\pm\infty$ rather than at some
+real number $a$.
+
+\begin{eg}
+\egquestion Evaluate
+\begin{equation*}
+  \lim_{x\rightarrow \infty} \frac{2x+7}{x+8686}\eqquad.
+\end{equation*}
+
+\egquestion 
+We could use a change of variable to make this into example \ref{eg:infty-infty-indet-form-by-massaging} 
+on p.~\pageref{eg:infty-infty-indet-form-by-massaging}, which was solved using an \emph{ad hoc} and
+multiple-step procedure. But having established the more general form of l'H\^{o}pital's rule, we can
+do it in one step.
+Differentiation of the top and bottom produces
+\begin{equation*}
+  \lim_{x\rightarrow \infty} \frac{2x+7}{x+8686} = \frac{2}{1} = 1\eqquad.
+\end{equation*}
+\end{eg}
+
+\begin{hwsection}
+
+\begin{hwwithsoln}{limit-of-sum}
+(a) Prove, using the Weierstrass definition of the limit, that if $\lim_{x\rightarrow a} f(x) = F$ and $\lim_{x\rightarrow a} g(x) = G$ both exist,
+them $\lim_{x\rightarrow a} [f(x)+g(x)] = F+G$, i.e., that the limit of a sum is the sum of the limits. (b) Prove the same thing using the
+definition of the limit in terms of infinitesimals.
+\end{hwwithsoln}
+
+\begin{hwwithsoln}{limits-with-exp-one-over-x}
+Sketch the graph of the function $e^{-1/x}$, and evaluate the following four limits:
+\begin{align*}
+  \lim_{x\rightarrow 0^{+}} & e^{-1/x} \\
+  \lim_{x\rightarrow 0^{-}} & e^{-1/x} \\
+  \lim_{x\rightarrow +\infty} & e^{-1/x} \\
+  \lim_{x\rightarrow -\infty} & e^{-1/x} 
+\end{align*}
+\end{hwwithsoln}
+
+\begin{hwwithsoln}{granville-lhospital}
+Verify the following limits.
+\begin{align*}
+  \lim_{s\rightarrow 1} & \frac{s^3-1}{s-1} = 3 \\
+  \lim_{\theta\rightarrow 0} & \frac{1-\cos\theta}{\theta^2} = \frac{1}{2} \\
+  \lim_{x\rightarrow \infty} & \frac{5x^2-2x}{x} = \infty \\
+  \lim_{n\rightarrow \infty} & \frac{n(n+1)}{(n+2)(n+3)} = 1 \\
+  \lim_{x\rightarrow \infty} & \frac{ax^2+bx+c}{dx^2+ex+f} = \frac{a}{d}
+\end{align*}
+\granville
+\end{hwwithsoln}
+
+\begin{hwwithsoln}{lhospital-cos-exp}
+Evaluate 
+\begin{equation*}
+  \lim_{x\rightarrow 0} \frac{x\cos x}{1-2^x}
+\end{equation*}
+exactly, and check your result by numerical approximation.
+\end{hwwithsoln}
+
+\begin{hwwithsoln}{lhospital-applied-incorrectly}
+Amy is asked to evaluate
+\begin{equation*}
+  \lim_{x\rightarrow 0} \frac{e^x}{x}\eqquad.
+\end{equation*}
+She applies l'H\^{o}pital's rule, differentiating top and bottom to find
+$1/e^x$, which equals 1 when she plugs in $x=0$. What is wrong with her reasoning?
+\end{hwwithsoln}
+
+\begin{hwwithsoln}{lhospital-twice}
+Evaluate 
+\begin{equation*}
+  \lim_{u\rightarrow 0} \frac{u^2}{e^u+e^{-u}-2}
+\end{equation*}
+exactly, and check your result by numerical approximation.
+\end{hwwithsoln}
+
+\begin{hwwithsoln}{lhospital-not-at-zero}
+Evaluate 
+\begin{equation*}
+  \lim_{t\rightarrow \pi} \frac{\sin t}{t-\pi}
+\end{equation*}
+exactly, and check your result by numerical approximation.
+\end{hwwithsoln}
+
+\begin{hwwithsoln}{lhospital-at-infinity}
+Prove a form of l'H\^{o}pital's rule stating that
+\begin{equation*}
+\lim_{x\rightarrow\infty}\frac{f(x)}{g(x)}
+\end{equation*}
+is equal to the limit of $f'/g'$ at infinity. Hint: change to some 
+new variable $u$ such that $x\rightarrow\infty$ corresponds to $u\rightarrow0$.
+\end{hwwithsoln}
+
+
+\begin{hwwithsoln}{line-is-continuous}
+Prove that the linear function $y=ax+b$, where $a$ and $b$ are real, is continuous, first using the definition of
+continuity in terms of infinitesimals, and then using the definition in terms of
+the Weierstrass limit.
+\end{hwwithsoln}
+
+
+
+\end{hwsection}

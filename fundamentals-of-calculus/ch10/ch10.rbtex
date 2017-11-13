@@ -1,0 +1,493 @@
+%%chapter%% 10
+<%
+  require "./scripts/eruby_util.rb"
+%>
+
+<%
+  chapter(
+    '10',
+    %q{Applications of the integral},
+    'ch:integration-applications'
+  )
+%>
+
+<% begin_sec("Probability",nil,'probability') %>\index{probability}
+  <% begin_sec("Introduction to probability",nil,'probability-intro') %>
+    <% begin_sec("Measurement of probabilities",nil,'probability-meas') %>
+Defining randomness is a difficult problem, tied up with classical philosophical
+issues such as determinism and free will. Mathematicians sidestep this question
+by simply using numbers between 0 and 1 to represent probabilities. A zero probability represents
+an event that can't happen, a probability of 1 an event than is guaranteed to happen.
+In between we have things that might or might not happen. A
+flipped coin comes up heads with probability 1/2.
+    <% end_sec('probability-meas') %>
+    <% begin_sec("Statistical independence",nil,'independence') %>\index{independence, statistical}
+<% marg(30) %>
+<%
+  fig(
+    'slot-machine',
+    %q{%
+      The probability that one wheel on the slot machine will give a cherry is 1/10. If the three
+      probabilities are independent, then the
+      probability that all three wheels will give cherries is $1/10\times1/10\times1/10$.
+    }
+  )
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'globe',
+    %q{%
+      The earth's surface is 30\% land and 70\% water. If we spin a globe and pick a random point,
+      the probabilities of hitting land and water are 0.3 and 0.7. Normalization requires that these
+      two probabilities add up to 1.
+    }
+  )
+%>
+<% end_marg %>
+
+When ordinary people say that an event is ``random,'' they usually mean not just
+that it has a probability greater than 0 and less than 1, but also that it can't be
+predicted, because there is no way of finding a connection with another event that caused it.
+This lack of connection is considered by mathematicians to be separate from randomness itself,
+and is defined as follows.
+
+\begin{lessimportant}[Definition of statistical independence]
+Events A and B are said to be statistically independent if
+the probability that they will both happen is given by the product of
+the two probabilities.
+\end{lessimportant}
+
+Events can be random but not independent. It might or might not rain tomorrow, and there might or
+might not be a forest fire. These events are both random, but they are not independent, since rain
+makes fire less likely.
+
+    <% end_sec('independence') %>
+    <% begin_sec("Normalization",nil,'normalization') %>\index{normalization}
+
+Suppose that we are able to exhaustively list all of the possible outcomes A, B, C, \ldots of some
+situation, and that these outcomes are mutually exclusive. Then exactly one of these outcomes must
+occur, so the probabilities must add up to one. For example, suppose that we flip a coin, and A is
+the event that the coin comes up heads, B tails. Then $P_A+P_B=\frac{1}{2}+\frac{1}{2}=1$. This
+property is called \emph{normalization}.\index{normalization}
+
+    <% end_sec('normalization') %>
+
+
+  <% end_sec('probability-intro') %>
+  <% begin_sec("Continuous random variables",nil,'continuous-random-variables') %>
+When numerical values are assigned to outcomes, the result is called a \emph{random variable}.
+The sum of the rolls of two dice is a random variable, and we can assign probabilities to
+the different results. For example, the probability of rolling 2 is $1/36$, since the probability
+of getting a 1 on the first die is $1/6$, and similarly for the second die. All of the relevant
+information about probabilities can be summarized by the discrete function shown in figure \figref{two-dice}.
+<% marg(300) %>
+<%
+  fig(
+    'dice',
+    %q{%
+      The sum of the two dice is a random variable with possible values running from 2 to 12.
+    }
+  )
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'two-dice',
+    %q{%
+      The histogram shows the probabilities of the various outcomes when rolling two dice.
+    }
+  )
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'human-height',
+    %q{%
+      A probability distribution for height of human adults. (Not real data.)
+    }
+  )
+%>
+<% end_marg %>
+
+But when a random variable is continuous rather than discrete, we usually cannot make
+a useful graph of the probabilities, because the probability of any particular real number
+is typically zero. For example, there is zero probability that a person's height $h$ will be
+160 cm, since there are
+infinitely many possible results that are close to that value, such as
+159.999999999999996876876587658465436 cm. What \emph{is} useful to talk about is
+the probability that $h$ will be \emph{less than} a certain value. The probability of
+$h<160\ \zu{cm}$ is about 0.5. In general, we define the \emph{cumulative probability distribution}
+$P(x)$ of a random variable to be the probability that the variable is less than or equal to $x$.
+We can then define the \emph{probability distribution} of 
+the variable to be\index{cumulative probability distribution}\index{probability distribution}
+\begin{equation}
+  D(x) = P'(x)\eqquad.
+\end{equation}
+Figure \figref{human-height} shows an approximate probability distribution for human height.
+Suppose we want to know the probability that our random variable lies within the range from $a$ to
+$b$. This is $P(b)-P(a)$. By the fundamental theorem of calculus, this can be calculated from
+the definite integral of the distribution,
+\begin{equation}
+  P(b)-P(a) = \int_a^b D(x)\:\der x\eqquad.
+\end{equation}
+That is, areas under the probability distribution correspond to probabilities. If the random
+variable has some units, say centimeters, then the units of the probability distribution $D$ are the
+inverse of those units, e.g., $\zu{cm}^{-1}$ in our example. In this example, $D$ can be
+interpreted as the probability \emph{per centimeter}. A \emph{uniform} distribution is one
+for which $D$ is a constant throughout the range of possible values of $x$.
+
+An extremely common bell-shaped probability distribution is
+\begin{equation*}
+ D(x)=\frac{2}{\sqrt{\pi}} e^{-x^2}\eqquad,
+\end{equation*}
+called the ``normal'' or ``Gaussian'' distribution, which we encountered in
+section \ref{subsec:function-defined-by-integral}, 
+p.~\pageref{subsec:function-defined-by-integral}.\index{normal distribution}\index{erf}\index{error function}
+
+If there are definite lower and upper limits $L$ and $U$ for the possible values of the random
+variable, then normalization requires that
+\begin{equation}
+  1 = \int_L^U D(x)\:\der x\eqquad.
+\end{equation}
+
+The average $\bar{x}$ of a variable that takes on one of two discrete values with equal probability is
+$(x_1+x_2)/2$, which is the same as $x_1P_1+x_2P_2$. Generalizing this to a continuous random
+variable, we have\index{average of a continuous variable}
+\begin{equation}\label{eqn:average-defined}
+  \bar{x} = \int_L^U x D(x)\:\der x\eqquad.
+\end{equation}
+The average is also known as the \emph{mean}, \emph{expectation}, or the \emph{expected value} of $x$.
+
+The standard deviation $\sigma_x$ of a random variable $x$ is a measure of how much it varies around
+its average value. The symbol $\sigma$ is the lowercase Greek ``sigma.'' (Recall that uppercase
+sigma is $\Sigma$.) The standard deviation of a continuous random variable is defined by
+\begin{equation}\index{standard deviation of a continuous variable}
+  \sigma_x = \sqrt{\int_L^U (x-\bar{x})^2 D(x)\:\der x}\eqquad.
+\end{equation}
+  <% end_sec('continuous-random-variables') %>
+
+  <% begin_sec("One variable related to another",nil,'probability-related-variables') %>
+It often happens that one random variable $y$ is defined by some function of some other
+random variable $x$. In an experiment, for example, one may measure $x$ directly, and the
+value of $x$ is a random variable because of the finite precision of the measurement. If one
+calculates the result of the experiment using some function $y(x)$, then the result is also
+a random variable. Let the corresponding probability distributions and
+cumulative probability distributions be $D_x$, $D_y$, and let $P$ be the cumulative probability
+for a given $x$ or $y$. Then $D_y$ can be
+determined from $D_x$ by the chain rule:
+\begin{align*}
+  D_y &= \frac{\der P}{\der y} \qquad \text{[definition of $D$]} \\
+      &= \frac{\der P}{\der x} \cdot \frac{\der x}{\der y} \qquad \text{[chain rule]} \\
+      &= D_x \cdot \frac{\der x}{\der y} \qquad \text{[definition of $D$]} \\
+      &= \frac{D_x}{y'(x)} \qquad \text{[derivative of the inverse of a function]}
+\end{align*}
+
+\begin{eg}{A random goblin}
+Often in computer simulations or games one wants to produce a random number with some
+desired distribution. For example, in a fantasy adventure game, we might wish to generate
+an opponent such as a goblin whose strength statistic $y$ is distributed according to some
+bell-shaped curve $D_y$ with a given mean and standard deviation. The random number generators
+supplied in computer programming libraries usually output a number $x$ with a uniform distribution
+from 0 to 1, so that $D_x=1$. We then have $y'(x)=1/D_y$. Integrating both sides of this equation
+allows us to find a function $y(x)$ that determines the strength of the goblin.
+\end{eg}
+
+  <% end_sec('probability-related-variables') %>
+<% end_sec('probability') %>
+
+<% begin_sec("Economics",4,'economics') %>\index{economics!applications of the integral}
+<% marginbox(0,'economics-applications','Applications to economics',{},
+%q~
+The following is an index of applications of calculus to economics
+that occur throughout this book.
+
+\noindent\begin{tabular}{lp{16mm}p{15mm}}
+\emph{p.} & \emph{application} & \\\\
+\pageref{eg:indifference-curve} & marginal rate of substitution & derivative \\\\
+\pageref{eg:order-quantity} & economic order quantity & extrema \\\\
+\pageref{subsubsec:laffer-curve} & the Laffer curve & Rolle's theorem \\\\
+\pageref{eg:supply-and-demand} & supply and demand & intermediate value theorem 
+\end{tabular}
+      ~
+   )
+%>
+In 1882, at the age of 46, William Stanley Jevons\index{Jevons!William Stanley}
+went swimming in the ocean and drowned.
+As a pioneer of classical economics,
+Jevons developed mathematical models that treated
+humans as rational actors seeking to maximize their happiness.
+His choice to go swimming that day was presumably based on the fact that swimming would
+cause him to be happy, and on the conscious or unconscious expectation that his risk of death would be low.
+But how do we define ``rational'' and ``happiness'' mathematically? 
+Believe it or not, economists did produce 
+definitions of these ideas, but in the process the word ``happiness'' changed to ``utility,''
+and the concepts morphed into forms that were very different from their original meanings.
+They are central to modern economics.
+
+A 1947 paper by John von Neumann\index{von Neumann!John}
+and Oskar Morgenstern\index{Morgenstern!Oskar}\index{rationality}
+(VNM) introduces four axioms defining
+rationality, which I'll describe here in English rather than equations:
+\begin{enumerate}\label{vnm-axioms}
+\item Preferences are consistent.
+\item Preferences are transitive: if you like outcome A more than B, and B more than C, then you like
+       A more than C.
+\item No outcome is infinitely good or bad. For example, if Jevons had believed that death was infinitely
+       bad, he might have been unwilling to accept \emph{any} risk of drowning. 
+       (Cf. example \ref{eg:archimedean}, p.~\pageref{eg:archimedean}.)
+\item A preference for A over B holds regardless of whether some other outcome exists. For example,
+       if you like Bach more than bebop, this is true regardless of whether it rains.
+\end{enumerate}
+VNM prove that if these axioms hold, it is possible to assign
+a real number $u(x)$, called the utility function,
+to any outcome $x$ such that a rational actor always maximizes the expected
+value of $u$ as defined by equation \eqref{eqn:average-defined}, p.~\pageref{eqn:average-defined}.
+The utility function can be rescaled
+or have a constant added to it, but is otherwise unique.\index{utility function}
+
+Although I've described this in terms of human preferences, the axioms may fail for humans or hold
+for non-humans. It only matters if the actor behaves \emph{as if} it were acting rationally, as defined
+by the axioms. Milton Friedman writes:
+%``Essays in positive economics,'' University of Chicago Press (1953), 1970, p.~3
+
+\begin{quote}
+I suggest the hypothesis that the leaves [on a tree] are positioned as if each leaf deliberately sought
+ to maximize the amount of sunlight it receives, given the position of its neighbors, as if it
+ knew the physical laws determining the amount of sunlight that would be received in various positions and
+ could move rapidly or instantaneously from any one position to any other desired and unoccupied position.
+\end{quote}
+
+\noindent Daniel Kahneman,\index{Kahneman, Daniel}
+on the other hand, won the Nobel prize for his work showing
+that humans often violate the VNM definition of rationality, but
+in ways that can be described scientifically. For instance, he showed in experiments that subjects
+were willing to pay one price for a trinket such as a mug, but that if they were
+given the mug, they demanded a different and systematically higher price to sell it. This violates axiom 1.
+Axiom 1 was implicitly assumed in the description of the indifference curve in example
+\ref{eg:indifference-curve}, p.~\pageref{eg:indifference-curve}.
+
+%%graph%% lottery func=1-exp(-x) format=eps xlo=-1 xhi=1 ylo=-2 yhi=1 y=u ytic_spacing=1
+
+<% marg(-20) %>
+<%
+  fig(
+    'lottery',
+    %q{%
+      The utility function of example \ref{eg:lottery}.
+    }
+  )
+%>
+<% end_marg %>
+
+
+\begin{eg}{Playing the lottery}\label{eg:lottery}
+Joe is broke and homeless. He currently has an amount of money $x=0$. Joe's utility function is given
+by
+\begin{equation*}
+  1-e^{-x}\eqquad,
+\end{equation*}
+where $x$ is in some appropriate units such as thousands of dollars. The shape of this function is
+shown in figure \figref{lottery}. It is concave down, which is a feature that is almost always
+realistic for a utility function that depends on how much money someone has. 
+If Joe is broke and gains \$10, he's really happy, whereas if Bill Gates saw a \$10 bill on the sidewalk,
+he probably wouldn't bother to bend over and pick it up.
+
+Joe knows of a lottery in which each player receives a random amount of money
+uniformly distributed on the interval from 0 to 1. What price $L$ should Joe be willing to pay for
+the lottery ticket, if he has the opportunity to borrow the price from his mother?
+
+If Joe enters and receives the minimum payout of 0, he will have $x=-L$, i.e., he will
+be in debt to his mother for the price of the ticket and have nothing to show for it. If he
+gets the maximum reward of 1, he will have $x=1-L$. Since this interval has width 1,
+and the result is uniformly distributed, normalization requires that $D(x)=1$ within the interval.
+We find
+his expected utility.
+\begin{align*}
+  \bar{u} &= \int_{-L}^{1-L} u(x)D(x)\:\der x = \int_{-L}^{1-L} (1-e^{-x})\:\der x \\
+          &= \left.x+e^{-x}\right]_{-L}^{1-L} = 1-\left(1-e^{-1}\right)e^L
+\end{align*}
+Joe's current utility function is $u(0)=0$, so it is rational for him to pay any amount $L$
+that gives him $\bar{u}>0$. The result is
+\begin{equation*}
+  L < -\ln\left(1-e^{-1}\right) \approx 0.46\eqquad.
+\end{equation*}
+If Joe's utility function had been $u(x)=x$, then he should have been willing to pay 0.5 units
+of money for a chance to win between 0 and 1 units. But because his utility function is nonlinear,
+he is willing to pay less than that; he is risk-averse.
+\end{eg}
+
+<% end_sec('economics') %>
+
+<% begin_sec("Physics",nil,'physics') %>\index{physics!applications of the integral}
+A \emph{conservation law}\index{conservation law} is a physical law stating that the total amount of a certain quantity
+stays constant. (This usage of ``conservation'' doesn't have the usual connotation of not
+using something up. In this context, the word implies that you \emph{couldn't} use it up
+if you tried, because the total amount can't go down!) Some important examples of conserved
+quantities are mass, energy,\footnote{According to
+Einstein's famous $E=mc^2$, mass and energy are equivalent or interconvertible, so they
+aren't separately conserved. Their separate conservation is however a good approximation
+in ordinary life, where relativistic effects are negligible.} momentum, electric charge,
+and angular momentum (a measure of rotational motion).
+Conservation laws  play a central role in physics. They are more fundamental
+than Newton's laws of motion. For example, a ray of light can be described by conservation
+of energy, but we get nonsense if we try to apply Newton's laws to it ($m=0$, so we can't
+compute $a=F/m$).
+
+<% marginbox(300,'physics-applications','Applications to physics',{},
+%q~
+The following is an index of applications of calculus to physics
+that occur throughout this book.
+
+\noindent\begin{tabular}{lp{17mm}p{17mm}}
+\emph{p.} & \emph{application} & \\\\
+\pageref{subsubsec:defining-velocity} & velocity  &  derivative \\\\
+\pageref{hw:line-of-stability} & nuclear stability  &  extrema \\\\
+\pageref{sec:changing-change} & acceleration  &  2nd derivative \\\\
+\pageref{subsec:newton-second-law} & Newton's 2nd law  &  2nd derivative \\\\
+\pageref{eg:jerk} & jerk and damage  &  3rd derivative \\\\
+\pageref{sec:related-rates} & lever  &  related rates \\\\
+\pageref{sec:implicit-differentiation} & pulley  &  implicit differentiation \\\\
+\pageref{eg:tractor-doing-work} & work  &  definite integral \\\\
+\pageref{eg:falling-rock-integral-symbolic} & constant-acceleration motion  &  indefinite integral \\\\
+\end{tabular}
+      ~
+   )
+%>
+
+Calculus deals with rates of change and the accumulation of change, so it would seem to have
+no application to variables that are guaranteed never to change! But conserved quantities can
+be transferred or transformed at some rate. For example, we estimated in example
+\ref{eg:burning-calories}, p.~\pageref{eg:burning-calories}, that hiking burns about 200
+calories per hour. The calorie is a unit of energy.\footnote{Food calories 
+are actually \emph{kilo}calories, 1 kcal=1000 cal. The SI unit is not the calorie but the
+joule.} This number represents the rate at which food energy is being transformed into
+other forms of energy such as body heat. For each conserved quantity, it's of interest to
+define a name, symbol, and unit for its rate of transfer or transformation. We then have
+two variables, which are related to one another as integral and derivative with
+respect to time. In the following
+table, the conserved quantity is given on top along with its symbol and SI unit.
+Its derivative is the variable below.\index{mass}\index{energy}\index{momentum}\index{angular momentum}\index{charge}
+
+\noindent\begin{tabular}{lllll}
+\hline
+     &        &          & angular & electric \\
+mass & energy & momentum & momentum & charge \\
+$m$  & $E$    & $p$      & $L$      & $q$ \\
+kg   & joule, J & $\nunit\unitdot\sunit$ & $\nunit\unitdot\munit\unitdot\sunit$ & coulomb, C \\
+\hline
+     & power  & force    & torque   & current \\
+     & $P$    & $F$      & $\tau$   & $I$ \\
+\kgunit/\sunit & watt, W & newton, N & $\nunit\unitdot\munit$ & ampere, A\\
+\hline
+\end{tabular}
+
+\noindent Since the SI unit of time is the second ($\sunit$), we have the following implied relationships between
+some of the units: W=J/s and A=C/s.
+
+The \emph{definitions} of the conserved quantities are ultimately operational definitions, meaning
+definitions that state the operations needed in order to \emph{measure} them. This may seem unsatisfactory,
+but history has shown that every attempt at a ``pure'' conceptual or mathematical definition has
+had to be revised. We can however give rough conceptual definitions that are valid
+within the field of mechanics, i.e., the study of material objects:
+\begin{description}
+  \item[Mass] is a measure of inertia. How hard is it to change the motion of a certain object?
+  \item[Momentum] is a measure of the motion of an object. Suppose our object hits another object,
+        the ``target.'' Knowing the momentum allows us to predict how
+        strongly a standard target will recoil. Momentum has a direction in space.
+  \item[Energy] comes in various forms such as kinetic energy (energy of motion), heat (which is
+        random motion at the atomic level), and electrical energy (such as the chemical energy in food).
+        Energy has no direction.
+\end{description}
+Box \figref{conserved-quantities} gives some examples of equations for conserved quantities.
+
+<% marginbox(0,'conserved-quantities','Examples of equations for conserved quantities',{},
+%q~
+Let a material object of mass $m$ be moving at a velocity $v$ that is small compared to the speed of
+light. Then experiments show that its momentum and kinetic energy are approximately $p=mv$ and $E=(1/2)mv^2$.
+
+If a ray of light has energy $E$, then its momentum is $p=E/c$, where $c$ is the speed of light.
+This momentum is too small to matter in everyday life.
+
+If a material object moves at a speed that is \emph{not} small compared to $c$, then
+it has $p=mv/\sqrt{1-v^2/c^2}$.
+
+Let a ring with mass $m$ and radius $r$
+rotate about its own axis so that each point on it moves at speed $v$. Then
+its angular momentum is $\pm mvr$, with the sign indicating the direction of rotation.
+      ~
+   )
+%>
+
+\begin{eg}{Energy of an accelerating car}
+\egquestion A car of mass $m$ starts moving from rest with a constant acceleration $a$. If the speed
+is small enough, then air resistance is negligible, and the power required from the engine
+at time $t$ is
+\begin{equation*}
+  P = kma^2 t\eqquad,
+\end{equation*}
+where the unitless fudge factor $k$ accounts for inefficiency of the engine and frictional heating in the tires,
+and is assumed to be constant. Find the energy expended by burning gas as a function of time.
+
+\eganswer Because the power isn't constant, we can't simply multiply ``the'' power by the time $t$.
+The integral is needed here as the correct generalization of multiplication 
+(section \ref{subsec:integral-generalizes-multiplication}, 
+p.~\pageref{subsec:integral-generalizes-multiplication}).
+\begin{align*}
+  E &= \int P\:\der t \qquad \text{[integral-derivative relationship of $E$ and $P$]} \\
+    &= \int kma^2 t\:\der t \\
+    &= kma^2 \int t\:\der t \\
+    &= \frac{1}{2}kma^2 t^2 \qquad \text{[let initial energy consumption=0]} 
+\end{align*}
+For motion with constant acceleration, $v=at+v_\zu{o}$, where $v_\zu{o}=0$ here because the car
+starts from rest. The result can therefore be rewritten as
+$(1/2)kmv^2$. The factor $(1/2)mv^2$ is called the kinetic energy of the car. If the car
+was perfectly efficient, we would have $k=1$, and all the energy expended would go into
+kinetic energy, rather than frictional heating.
+\end{eg}
+
+<% end_sec('physics') %>
+
+<% begin_hw_sec %>
+
+<% hw('sd-of-uniform-variable') %>
+
+<% marg(0) %>
+<%
+  fig(
+    'hw-spin-the-laser',
+    %q{
+      Problem \ref{hw:spin-the-laser}.
+    }
+  )
+%>
+<% end_marg %>
+
+<% hw('spin-the-laser') %>
+<% hw('difference-of-uniform-variables') %>
+
+<% hw_block(2) %>
+
+<% marg(-80) %>
+<%
+  fig(
+    'hw-running-momentum',
+    %q{
+      Problem \ref{hw:running-momentum}.
+    }
+  )
+%>
+<% end_marg %>
+
+<% hw('running-momentum') %>
+
+<% hw_block(2) %>
+
+
+
+<% hw('cancer-lottery') %>
+
+<% end_hw_sec %>
+\addtocontents{toc}{\protect\vspace{10mm}} % separate end-matter visually from ch 10
+
+<% end_chapter %>

@@ -1,0 +1,376 @@
+%%chapter%% 06
+<%
+  require "./scripts/eruby_util.rb"
+%>
+
+<%
+  chapter(
+    '06',
+    %q{Indeterminate forms and L'H\^{o}pital's rule},
+    'ch:indeterminate-forms'
+  )
+%>
+
+<% begin_sec("Indeterminate forms",nil,'indeterminate-forms') %>\index{indeterminate form}
+<% begin_sec("Why 1/0 and 0/0 are not morally equivalent",nil,'0-over-0-vs-1-over-0') %>
+If you enter $1/0$ and $0/0$ into your calculator, it probably flashes the same error message
+in both cases. You learned in grade school that division by zero is ``undefined.'' But there
+are completely different reasons why these two types of division by zero are undefined.
+Briefly:
+
+\begin{itemize}
+\item $1/0$ is undefined as a real number because it would have to be infinite, and the real number
+         system doesn't include infinite numbers.\footnote{
+         See section \ref{sec:safe-handling-of-dx}, p.~\pageref{sec:safe-handling-of-dx}, and
+         example \ref{eg:archimedean}, p.~\pageref{eg:archimedean}.}
+\item $0/0$ is undefined because writing this expression doesn't give enough information to
+         say what it equals.
+\end{itemize}
+
+Suppose that for some real number $x$, we had
+\begin{equation*}
+  \frac{0}{0} = x\eqquad.
+\end{equation*}
+Multiplying by $0$ on both sides gives a condition
+\begin{equation*}
+  0 = 0x
+\end{equation*}
+that $x$ should satisfy. But \emph{every} real number has this property, so writing $0/0$ doesn't
+give enough information to say whether $x$ is defined and, if so, what its value is.
+Expressions of this ``not-enough-information'' type are called \emph{indeterminate forms}.
+<% end_sec('0-over-0-vs-1-over-0') %>
+
+<% marginbox(100,'more-indeterminate-forms','More indeterminate forms',{},
+%q~
+We will mainly be concerned with the indeterminate form $0/0$, but there are other ones
+as well. Suppose we try to evaluate the limit 
+\begin{equation*}
+  \lim_{\theta\nearrow\pi/2} \left(\frac{\pi}{2}-\theta\right)\tan\theta
+\end{equation*}
+by plugging in $\theta=\pi/2$. This fails because the first factor goes to zero, but the
+tangent factor blows up to infinity. This is an example of the indeterminate form $0\cdot\infty$.
+The limit is defined and equals 1, but plugging in won't tell us that.
+% calc -e "dx=.0001; x=pi/2-dx; (pi/2-x)tan x"
+
+The limit
+\begin{equation*}
+  \lim_{x\rightarrow\infty} \sqrt{x+1}-\sqrt{x-1}
+\end{equation*}
+is an example of the indeterminate form $\infty-\infty$. It equals zero.
+      ~
+   )
+%>
+
+<% begin_sec("Indeterminate forms from brute force on a limit",nil,'indeterminate-forms-from-limits') %>
+When we try to evaluate a limit, usually our first attempt is simply to plug in and see if
+a number comes out. For example, if we want to evaluate
+\begin{equation*}
+  \lim_{x\rightarrow0}\frac{1+x}{3+x}\eqquad,
+\end{equation*}
+we will naturally try plugging in $x=0$, get the result $1/3$, and we're done. This is not an
+indeterminate form. But, for example, suppose that $f(x)=x^2$ and we want to evaluate $f'(1)$.
+The definition of the derivative in terms of a limit gives
+\begin{equation*}
+  \lim_{h\rightarrow0}\frac{(1+h)^2-1}{h}\eqquad,
+\end{equation*}
+and attempting to plug in $h=0$ results in the indeterminate form $0/0$. This limit is well
+defined; it equals 2. But the indeterminate form tells us that the brute-force technique was
+too crude, and we needed to handle the calculation a little more delicately.
+
+The indeterminate form $0/0$ can also be undefined. For example, 
+$\lim_{x\searrow0}\frac{\sqrt{x}}{x^2}=\infty$.
+<% end_sec('indeterminate-forms-from-limits') %>
+
+<% end_sec('indeterminate-forms') %>
+<% begin_sec("L'H\\^{o}pital's rule in its simplest form",nil,'lhospital-simple') %>
+Every derivative, if defined, can be seen as a case of the indeterminate form
+$0/0$. Conversely, we can often convert a $0/0$-type limit into a problem in evaluating
+derivatives. Suppose that we want to calculate a limit of the form
+\begin{equation*}
+  \lim_{x\rightarrow a} \frac{u(x)}{v(x)}\eqquad,
+\end{equation*}
+where $u(a)=0$ and $v(a)=0$. Then $\Delta u=u(x)-u(a)$ means the same thing as $u$, and
+similarly, $\Delta v$ equals $v$. So we can rewrite our limit as
+\begin{equation*}
+  \lim_{x\rightarrow a} \frac{\Delta u}{\Delta v}\eqquad,
+\end{equation*}
+or
+\begin{equation*}
+  \lim_{x\rightarrow a} \frac{\Delta u/\Delta x}{\Delta v/\Delta x}\eqquad.
+\end{equation*}
+If $v'(a)\ne 0$, then by property $P_6$ of the limit, p.~\pageref{subsec:limits-of-sum-prod-quot},
+our limit becomes
+\begin{equation*}
+  \frac{\lim_{x\rightarrow a} \Delta u/\Delta x}{\lim_{x\rightarrow a} \Delta v/\Delta x}\eqquad,
+\end{equation*}
+which equals
+\begin{equation*}
+  \frac{u'(a)}{v'(a)}\eqquad.
+\end{equation*}
+We have proved the following.
+
+<%
+  fig(
+    'lhospital-portrait',
+    %q~
+Guillaume de L'H\^{o}pital (1661-1704) was a French marquis. Born into a military family, he
+       eventually became a mathematician because of bad eyesight. He wrote the first
+       calculus textbook. As acknowledged in the preface, the results given in the book
+       originated with Leibniz and the Bernoulli brothers, but L'H\^{o}pital's own name has become attached
+       to the theorem known as L'H\^{o}pital's rule.
+When students meet the Marquis, they always wonder about his name, which looks like the English
+word ``hospital.'' Actually, he spelled it with an ``s,'' and it is the same word in French.
+The ``H'' is silent, and the accent is on the ``a.''
+As French people gradually stopped pronouncing the ``s,'' they stopped writing it, but put
+the housetop accent on the ``\^{o}'' to show what they were leaving out.
+The family name probably comes from an early association with a ``hospital,'' a word that in
+medieval times had a broader meaning, encompassing institutions such as guest-houses for
+pilgrims and what we would today call subsidized public housing.
+~,
+    {'narrowfigwidecaption'=>true}
+  )  
+%>
+
+\begin{theorem}[Theorem: L'H\^{o}pital's rule (simplest form)]\index{L'H\^{o}pital's rule!simplest form}
+If $u$ and $v$ are functions with $u(a)=0$ and $v(a)=0$,
+the derivatives $u'(a)$ and $v'(a)$ are defined,
+and the derivative $v'(a)\ne 0$,
+then
+\begin{align*}
+  \lim_{x\rightarrow a} \frac{u}{v} &= \frac{u'(a)}{v'(a)}\eqquad.
+\end{align*}
+\end{theorem}
+\noindent We will generalize L'H\^{o}pital's rule in section \ref{sec:lhospital-fancy},
+p.~\pageref{sec:lhospital-fancy}.
+
+\begin{eg}{}
+\egquestion Evaluate
+\begin{equation*}
+  \lim_{x\rightarrow 0} \frac{\sin x}{x+x^3}
+\end{equation*}
+
+\egquestion Attempting to plug in $x=0$ gives the indeterminate form $0/0$,
+and this suggests applying L'H\^{o}pital's rule.
+The derivative of the top is $\cos x$, and the derivative of the bottom is $1+3x^2$.
+Evaluating these at $x=0$ gives 1 and 1, so the answer is $1/1=1$.
+\end{eg}
+
+\begin{eg}{}
+The limit
+\[
+\lim_{x\to 1} \frac{3x^2-x-2} {x^2-1}
+\]
+is of the form $\frac{0} {0}$, so we can try to apply l'H\^{o}pital's rule.  We
+get
+\begin{equation*}
+\lim_{x\to 1} \frac{3x^2-x-2} {x^2-1}
+=
+ \frac{6x-1} {2x} = \frac{5}{2}
+\end{equation*}
+\end{eg}
+
+<% end_sec('lhospital-simple') %>
+
+<% begin_sec("Fancier versions of L'H\\^{o}pital's rule",4,'lhospital-fancy') %>
+Mathematical theorems are sometimes like cars. I own a Honda Fit that is about as bare-bones as you can get
+these days, but persuading a dealer to sell me that car was like pulling teeth. The salesman was absolutely
+certain that any sane customer would want to pay an extra \$1,800 for such crucial amenities as
+upgraded floor mats and a chrome tailpipe. L'H\^{o}pital's rule in its most general form is a much fancier piece of machinery
+than the stripped-down model described in section \ref{sec:lhospital-simple}.
+The price you pay for the deluxe model
+is that the proof becomes much more complicated. I'll state the fancier versions of L'H\^{o}pital's rule
+below and give examples, but relegate the proofs to a later section and, in one case, a homework problem.
+<% begin_sec("Multiple applications of the rule",nil,'lhospital-multiple') %>\index{L'H\^{o}pital's rule!multiple applications}
+In the following example, we have to use l'H\^{o}pital's rule twice before we get an answer.
+
+\begin{eg}{}\label{eg:lhospital-differentiating-twice}
+\egquestion Evaluate
+\begin{equation*}
+  \lim_{x\rightarrow \pi} \frac{1+\cos x}{(x-\pi)^2}
+\end{equation*}
+
+\eganswer Applying  l'H\^{o}pital's rule gives
+\begin{equation*}
+  \frac{-\sin x}{2(x-\pi)}\eqquad,
+\end{equation*}
+which still produces $0/0$ when we plug in $x=\pi$. Going again, we get
+\begin{equation*}
+  \frac{-\cos x}{2} = \frac{1}{2}\eqquad.
+\end{equation*}
+\end{eg}
+
+This works because of the following generalization of L'H\^{o}pital's rule
+
+\begin{theorem}[Theorem: L'H\^{o}pital's rule (first generalization)]
+If $u$ and $v$ are functions with $u(a)=0$ and $v(a)=0$,
+and the derivatives $u'(a)$ and $v'(a)$ are defined,
+then
+\begin{align*}
+  \lim_{x\rightarrow a} \frac{u}{v} &= \lim_{x\rightarrow a} \frac{u'(x)}{v'(x)}\eqquad.
+\end{align*}
+\end{theorem}
+\noindent The difference from the original form of the theorem is that we no longer
+require $v'(a)\ne0$, and the right-hand side has a limit. In cases where $v'(a)\ne0$,
+the original form would have been good enough, but the general form also works, since
+the limit on the right-hand side can be evaluated simply by
+plugging in. We will prove this more general form of the rule in section
+\ref{subsec:lhospital-proofs}, p.~\pageref{subsec:lhospital-proofs}.
+
+<% end_sec('lhospital-multiple') %>
+<% begin_sec("The indeterminate form $\\infty/\\infty$",nil,'lhospital-infty-over-infty') %>\index{L'H\^{o}pital's rule!$\infty/\infty$}
+Consider an example like this:
+\begin{equation*}
+  \lim_{x\rightarrow 0} \frac{1+1/x}{1+2/x}\eqquad.
+\end{equation*}
+This is an indeterminate form like $\infty/\infty$ rather than the $0/0$ form for which we've already
+proved l'H\^{o}pital's rule. L'H\^{o}pital's rule applies to examples like this as
+well. This can be proved by rewriting an expression like $\lim u/v$, where both $u$ and $v$
+blow up, in terms of new variables $U=1/u$ and $V=1/v$. The result is to reduce the $\infty/\infty$
+form to the $0/0$ form. The proof is carried through in section \ref{subsec:lhospital-proofs},
+p.~\pageref{subsec:lhospital-proofs}.
+
+\begin{eg}{}
+\egquestion Evaluate
+\begin{equation*}
+  \lim_{x\rightarrow 0} \frac{1+1/x}{1+2/x}\eqquad.
+\end{equation*}
+
+\eganswer Both the numerator and the denominator go to infinity. Differentiation of the top
+and bottom gives $(-x^{-2})/(-2x^{-2}) = 1/2$. We can see that the reason the rule
+worked was that (1) the constant terms were irrelevant because they become negligible as
+the $1/x$ terms blow up; and (2) differentiating the blowing-up $1/x$ terms makes them into
+the same $x^{-2}$ on top and bottom, which cancel.
+
+Note that we could also have gotten this result without l'H\^{o}pital's rule, simply by
+multiplying both the top and the bottom of the original expression by $x$ in order to rewrite it
+as $(x+1)/(x+2)$.
+\end{eg}
+<% end_sec('lhospital-infty-over-infty') %>
+<% begin_sec("Limits at infinity",nil,'lhospital-at-infty') %>\index{infinite and infinitesimal quantities!limits at infinity!l'H\^{o}pital's rule}
+It is straightforward to prove a variant of l'H\^{o}pital's rule that allows us to
+do limits at infinity. We use a change of variable to change a limit like $\lim_{x\rightarrow\infty} u(x)/v(x)$
+to a new limit stated in terms of a variable $X=1/x$.
+The proof is left as an exercise (problem \ref{hw:lhospital-at-infty}, p.~\pageref{hw:lhospital-at-infty}).
+The result is that l'H\^{o}pital's rule is equally valid when the limit is at $\pm\infty$ rather than at some
+real number $a$.
+
+\begin{eg}{Acme or Glutco?}
+\egquestion 
+You have some money, and two choices of what to invest it in. A share in Acme, Inc.,
+costs \$7, and returns a dividend of \$1 per year. A share of Glutco costs \$30 and gives
+a dividend of \$2 per year. If we want to compare the long-term value of the two investments,
+a natural way to do it is with the limit
+\begin{equation*}
+ \lim_{t\rightarrow\infty}\frac{-7+t}{-30+2t}\eqquad.
+\end{equation*}
+The top represents the net return on Acme, the bottom Glutco.
+If this limit is greater than 1, then Acme is the better long-term investment.
+What is the value of this limit?
+
+\eganswer
+Differentiation of the top gives $1$, and differentiation of the bottom gives $2$.
+The limit is therefore $1/2$, and you're wiser to invest in Glutco.
+The interpretation is that
+the constant terms are irrelevant, and in the long run the competition between the numerator and
+denominator is determined by which one \emph{grows} faster.
+\end{eg}
+<% end_sec('lhospital-at-infty') %>
+<% begin_sec("Proofs",4,'lhospital-proofs') %>
+The simplest form of l'H\^{o}pital's rule was proved in section \ref{sec:lhospital-simple},
+p.~\pageref{sec:lhospital-simple}.
+In this section we prove the generalizations of l'H\^{o}pital's rule
+claimed in sections \ref{subsec:lhospital-multiple}-\ref{subsec:lhospital-at-infty}.
+<% begin_sec("Change of variable",nil,'lhospital-change-of-variable') %>
+As described briefly in sections \ref{subsec:lhospital-infty-over-infty} and
+\ref{subsec:lhospital-at-infty}, two of the added features of the generalized
+l'H\^{o}pital's rule (the form $\infty/\infty$ and limits at infinity) can be proved by a change of variable.
+To demonstrate
+how this works, let's imagine that we were starting from an even more stripped-down
+version of l'H\^{o}pital's rule
+than the one in section
+\ref{sec:lhospital-simple}, p.~\pageref{sec:lhospital-simple}. Say
+we only knew how to do limits of the form $x\rightarrow0$ rather than
+$x\rightarrow a$ for an arbitrary real number $a$. We could then evaluate $\lim_{x\rightarrow a} u/v$ simply
+by defining $t=x-a$ and reexpressing $u$ and $v$ in terms of $t$.
+
+\begin{eg}
+\egquestion
+Reduce
+\begin{equation*}
+  \lim_{x\rightarrow \pi}\frac{\sin x}{x-\pi}
+\end{equation*}
+to a form involving a limit at 0.
+
+\eganswer
+Define $t=x-\pi$. Solving for $x$ gives $x=t+\pi$. We substitute into the above expression
+to find
+\begin{equation*}
+  \lim_{x\rightarrow \pi}\frac{\sin x}{x-\pi} =   \lim_{t\rightarrow 0}\frac{\sin (t+\pi)}{t}\eqquad.
+\end{equation*}
+If all we knew was the $\rightarrow0$ form of l'H\^{o}pital's rule, then this would suffice
+to reduce the problem to one we knew how to solve. In fact, this kind of change of variable works in
+all cases, not just for a limit at $\pi$, so rather then going through a laborious change of variable
+every time, we could simply establish the more general form in section
+\ref{sec:lhospital-simple}, p.~\pageref{sec:lhospital-simple}, with
+$\rightarrow a$.
+\end{eg}
+<% end_sec('lhospital-change-of-variable') %>
+<% begin_sec("The form $\\infty/\\infty$",nil,'lhospital-proofs-infty-over-infty') %>
+To prove that l'H\^{o}pital's rule works in general for $\infty/\infty$ forms, 
+we do a change of variable on the \emph{outputs} of the functions $u$ and $v$
+rather than their inputs. Suppose that our original problem is of the form
+\begin{equation*}
+  \lim \frac{u}{v}\eqquad,
+\end{equation*}
+where both functions blow up.\footnote{Think about what happens when only $u$ blows up,
+or only $v$.} We then define $U=1/u$ and $V=1/v$. We now have
+\begin{equation*}
+  \lim \frac{u}{v} = \lim \frac{1/U}{1/V} =\lim \frac{V}{U}\eqquad,
+\end{equation*}
+and since $U$ and $V$ both approach zero, we have reduced the problem to one that can be solved
+using the version of l'H\^{o}pital's rule already proved
+for the indeterminate form $0/0$:
+\begin{equation*}
+  \lim \frac{u}{v} = \lim \frac{V'}{U'}
+\end{equation*}
+Differentiating and applying the chain rule, we have
+\begin{equation*}
+  \lim \frac{u}{v} = \lim \frac{-v^{-2}v'}{-u^{-2}u'}\eqquad.
+\end{equation*}
+Since $\lim ab=\lim a \lim b$ provided that $\lim a$ and $\lim b$ are both defined
+(property $\zu{P}_5$, p.~\pageref{subsec:limits-of-sum-prod-quot}), we can rearrange
+factors to produce the desired result.
+<% end_sec('lhospital-proofs-infty-over-infty') %>
+<% begin_sec("Limits at infinity",nil,'lhospital-proofs-at-infinity') %>
+As briefly outlined in section \ref{subsec:lhospital-at-infty}, this proof can be done
+by using a change of variables of the form $X=1/x$.
+The proof is left as an exercise (problem \ref{hw:lhospital-at-infty}, p.~\pageref{hw:lhospital-at-infty}).
+<% end_sec('lhospital-proofs-at-infinity') %>
+<% end_sec('lhospital-proofs') %>
+<% end_sec('lhospital-fancy') %>
+
+<% begin_hw_sec %>
+
+<% hw('granville-lhospital',{'solution'=>true}) %>
+<% hw('lhospital-cos-exp',{'solution'=>true}) %>
+<% hw('lhospital-applied-incorrectly',{'solution'=>true}) %>
+<% hw('lhospital-twice',{'solution'=>true}) %>
+<% hw('lhospital-not-at-zero',{'solution'=>true}) %>
+
+\pagebreak
+
+  <% hw_block() %>
+% Most of the following are from Robbin.
+<% hw('lhospital-simple-computation') %>
+<% hw('lhospital-find-the-integer') %>
+<% hw('lhospital-not-finite') %>
+<% hw('lhospital-bogus-converse') %>
+<% hw('lhospital-no-help-on-derivatives') %>
+
+  <% hw_block('z') %>
+
+<% hw('lhospital-at-infty') %>
+
+<% end_hw_sec %>
+
+<% end_chapter %>

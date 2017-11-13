@@ -1,0 +1,857 @@
+%%chapter%% 05
+<%
+  require "./scripts/eruby_util.rb"
+%>
+
+<%
+  chapter(
+    '05',
+    %q{More derivatives},
+    'ch:more-derivatives'
+  )
+%>
+
+<% begin_sec("Transcendental numbers and functions",nil,'transcendental-numbers-and-functions') %>
+<% begin_sec("Transcendental numbers",nil,'transcendental-numbers') %>
+Historically, the motivation for expanding the rational numbers to form the reals
+came from the desire to be able to discuss numbers like $\sqrt{2}$ or $\sqrt[3]{7}$.
+(The decision was not without controversy. Legend has it that
+Hippasus of Metapontum, who lived in the fifth century B.C., proved $\sqrt{2}$ to be
+irrational, and that the gods punished him by causing him to drown at sea.)
+We've already seen that the completeness property of the reals (section \ref{sec:completeness},
+p.~\pageref{sec:completeness}) guarantees that $\sqrt{2}$ is a real number, and more generally
+one can use the intermediate value theorem to prove that roots of polynomials are real.
+
+<% marginbox(300,'liouville',%q{A transcendental number},{},
+%q~
+The first number proved to be transcendental, by Liouville
+in 1844, was:
+\begin{equation*}
+  0.110001000000000000000001\ldots
+\end{equation*}
+The first one occurs in the 1st decimal place, the next in the 2nd decimal place,
+the next in the 6th, and so on, with the sequence of numbers being 1, $1\cdot2=2$,
+$1\cdot2\cdot3=6$, \ldots Without going into the formal proof, it's not hard to get an intuitive
+feel for why this number is transcendental. Since the list of numbers 1, 2, 6, \ldots
+grows extremely rapidly, we find that as we continue to write the decimal expansion,
+it gets extremely sparse. It's so sparse that if we try to cook up a polynomial such
+as $P(x)=x^2+9x-1$ with Liouville's number $x$ as a root, we are bound to fail; $x^2$ and all higher
+powers of $x$ are also extremely sparse, and this makes it impossible to get them to cancel out
+and give $P(x)=0$.
+% calc -e "x=0.1100010000000000000000010000; x^2+9x-1"
+For a proof, see the Wikipedia article ``Liouville number.''
+   ~
+  )  
+%>
+
+However, there are also numbers that cannot be defined as roots of polynomials having
+rational-number coefficients. These are called \emph{transcendental} numbers.\index{transcendental!number}
+In some sense nearly all real numbers are transcendental. For example, suppose we generate
+a random digit by some method such as rolling dice, and we let this be the first digit in
+a decimal. Continuing in this way, we keep on generating more and more decimal places. If we
+could continue generating the digits indefinitely, then there would be a 100\% probability
+that our number would be transcendental.
+The important mathematical constants $\pi$ and $e$ (the base of natural logarithms) are
+transcendental. Although transcendental numbers are the most common kind of real number,
+\emph{proving} whether or not a particular number is transcendental can be difficult.
+Box \figref{liouville} describes the first number that was ever proved to be transcendental.
+It was not until 44 years later that $\pi$ was proved to be transcendental.
+
+An important property of transcendental numbers is that they can't be written
+using any finite number of symbols in terms of rational numbers and the basic operations of arithmetic:
+addition, subtraction, multiplication, division, and roots. This is the reason for the name;
+transcendental numbers ``transcend'' arithmetic. For example, the number
+\begin{equation*}
+  \frac{-9+\sqrt{85}}{2} = 0.1098\ldots
+\end{equation*}
+% calc -e "x=(-9+sqrt(85))/2; x^2+9x-1"
+is \emph{not} transcendental, since it is written in terms of rational numbers and four of
+the basic operations. (It is a root of the polynomial $P$ given in box \figref{liouville}.)
+The converse is not true: not all non-transcendental numbers can be written
+using these operations. For example, the polynomial $x^5 - x + 1$ has a root
+$x\approx -1.17$, which cannot be expressed in terms of arithmetic.
+<% end_sec('transcendental-numbers') %>
+<% begin_sec("Transcendental functions",nil,'transcendental-functions') %>\index{transcendental!function}
+Similarly, we have \emph{functions} that are transcendental or not transcendental.
+For example, the function
+\begin{equation*}
+  f(x) = \frac{-9+\sqrt{x}}{2}
+\end{equation*}
+is not transcendental because it can be written using the same basic operations of
+arithmetic. The techniques developed in chapter \ref{ch:limits} are sufficient to differentiate
+any function that is not transcendental. The purpose of the present chapter is to see how
+to differentiate some functions that \emph{are} transcendental.
+
+Since the numbers $\pi$ and $e$ are transcendental, it is not surprising that the following
+closely related functions are transcendental:
+\begin{align*}
+  \sin x \\
+  \cos x \\
+  e^x \\
+  \ln x
+\end{align*}
+Although the distinction between transcendental and non-transcend\-ental \emph{numbers} is
+of little practical significance (e.g., no real-world measurement will tell us whether a
+stick's length is transcendental or not), the distinction becomes an important one when
+we come to functions, because the methods we know so far will not suffice to differentiate
+a transcendental function. Most of this chapter will be concerned with how to extend
+our methods of differentiation to cover these functions.
+<% end_sec('transcendental-functions') %>
+<% end_sec('transcendental-numbers-and-functions') %>
+
+<% marginbox(300,'other-e-def',%q{A different definition of $e$},{},
+%q~
+Some people like lagers better than ales, Chicago better than Paris, and the following better
+than equation \eqref{eqn:derivative-of-ex-is-ex} as a definition of $e$:
+\begin{equation}\label{eqn:define-e-as-limit}
+  e = \lim_{n\rightarrow\infty} \left(1+\frac{1}{n}\right)^{n}
+\end{equation}
+% calc -e "n=1000; (1+1/n)^n"
+The story-line behind \eqref{eqn:define-e-as-limit} is something like this. Suppose your bank account
+carries an interest rate of 100\%; the second 1 in the equation is 100/100. If the interest is compounded
+yearly, then your balance goes up every year by a factor of $(1+1/1)^1=2$. If it's compounded monthly
+at an interest rate of $100\%/12$, then the yearly increase is a factor of $(1+1/12)^{12}=2.6$. If we let
+the 12 become a variable $n$ that approaches infinity, then the 2.6 becomes $e$.
+
+Let's connect this to equation \eqref{eqn:derivative-of-ex-is-ex}. 
+Applying the approximation $\der y/\der x\approx \Delta y/\Delta x$ to $y=e^x$,
+we have
+\begin{equation*}
+  e^x\approx 1+x
+\end{equation*}
+for small values of $x$. Let $x=1/n$, where $n$ is large. Then $e^{1/n}\approx 1+1/n$,
+so $e\approx(1+1/n)^n$, which is consistent with equation \eqref{eqn:define-e-as-limit}.
+      ~
+   )
+%>
+
+<% begin_sec("Derivatives of exponentials",nil,'derivative-of-exp') %>\index{exponential!derivative of}\index{derivative!of exponential}
+In example \ref{eg:bunnies} on p.~\pageref{eg:bunnies} and
+example \ref{eg:exponential-with-limits} on p.~\pageref{eg:exponential-with-limits}
+we found that the derivative of an exponential is an exponential: the more
+bunnies you have, the faster you produce baby bunnies; the more credit-card debt you have,
+the faster your debt grows. Furthermore, we were led to the conjecture that in the case of
+``the'' exponential function $e^x$, the constant of proportionality between the function and
+its derivative was simply one:
+\begin{equation}\label{eqn:derivative-of-ex-is-ex}
+  (e^x)' = e^x
+\end{equation}
+There is no way to prove this unless we adopt some \emph{definition} of $e$. In fact
+equation \eqref{eqn:derivative-of-ex-is-ex} serves as a perfectly good definition of $e$.
+Box \figref{other-e-def} connects this to another popular definition.
+
+Adopting equation \eqref{eqn:derivative-of-ex-is-ex}
+as a definition, application of the identity $b^x = e^{(\ln b)x}$
+(see equation \eqref{eqn:convert-exponential-to-ex}, p.~\pageref{eqn:convert-exponential-to-ex}) and the chain
+rule gives the more general rule
+\begin{equation}\label{eqn:derivative-of-exponential-base-b}
+  (b^x)' = (\ln b)b^x
+\end{equation}
+for any base $b$.
+
+\begin{eg}{Caffeine}\label{eg:caffeine}
+\egquestion The concentration of a foreign substance in the bloodstream generally falls off exponentially
+with time as $c=c_{\zu{o}}e^{-t/a}$, where $c_{\zu{o}}$ is the initial concentration, and $a$ is a constant.
+For caffeine in adults, $a$ is typically about 7 hours. An example is shown in figure \figref{caffeine}. Differentiate the concentration with respect
+to time, and interpret the result. Check that the units of the result make sense.
+
+\eganswer Using the chain rule,
+\begin{align*}
+  \frac{\der c}{\der t} &= c_{\zu{o}}e^{-t/a}\cdot\left(-\frac{1}{a}\right) \\
+                        &= -\frac{c_{\zu{o}}}{a}e^{-t/a}
+\end{align*}
+
+This can be interpreted as the rate at which caffeine is being removed from the blood and
+broken down by the liver. It's
+negative because the concentration is decreasing.
+According to the original expression for $x$, a substance with a large $a$ will take a long time to reduce its concentration,
+since $t/a$ won't be very big unless we have large $t$ on top to compensate for the large $a$ on the bottom.
+In other words, larger values of $a$ represent substances that the body has a harder time getting rid of efficiently.
+The derivative has $a$ on the bottom, and the interpretation of this is that for a drug that is hard to eliminate,
+the rate at which it is removed from the blood is low.
+
+It makes sense that $a$ has units of time, because the exponential function has to have a unitless argument, so the units
+of $t/a$ have to cancel out. The units of the result come from the factor of $c_{\zu{o}}/a$, and
+it makes sense that the units are concentration divided by time, because the result
+represents the rate at which the concentration is changing.
+\end{eg}
+
+%%graph%% caffeine func=2*exp(-x/7) format=eps xlo=0 xhi=24 ylo=0 yhi=2.1 with=lines x=t y=c xtic_spacing=6 ytic_spacing=.5 more_space_below=5
+
+<% marg(200) %>
+<%
+  fig(
+    'caffeine',
+    %q{ A typical graph of the concentration of caffeine in the blood, in units of milligrams per
+        liter, as a function of time, in hours.}
+  )  
+%>
+<% end_marg %>
+
+\begin{eg}{A base-10 exponential}
+\egquestion Find the derivative of the function $y=10^x$, verifying equation
+\eqref{eqn:derivative-of-exponential-base-b} directly in the case $b=10$.
+
+\eganswer In general, one of the tricks to doing calculus is to rewrite functions in forms that
+you know how to handle. This one can be rewritten as a base-$e$ exponent:
+\begin{align*}
+  y &= 10^x \\
+  \ln y &= \ln\left(10^x\right) \\
+  \ln y &= x \ln 10 \\
+  y &= e^{x\ln 10}
+\end{align*}
+Applying the chain rule, we have the derivative of the exponential, which is just the same
+exponential, multiplied by the derivative of the inside stuff:
+\begin{align*}
+  \frac{\der y}{\der x} &= e^{x\ln 10} \cdot \ln 10 \\
+                        &= (\ln10)10^x
+\end{align*}
+\end{eg}
+
+
+
+<% end_sec('derivative-of-exp') %>
+
+<% begin_sec("Review: the trigonometric functions",nil,'trig') %>\index{trigonomety}
+Before we talk about how to differentiate trig functions, here's an opportunity to refresh
+your memory on what trig functions are in the first place.
+<% begin_sec("Radian measure",nil,'radian-measure') %>
+The presence of numbers like 60 and 360 in our units of measurement for time and angles
+dates back to the ancient Babylonians. The reason for splitting larger quantities
+into these numbers of subdivisions is that 60 and 360 are divisible by many small integers, including
+2, 3, 5, 10, and 12. For practical purposes it's fine for a carpenter to define a right angle
+as $90\degunit$. But it turns out to be much less cumbersome when doing calculus to
+adopt the radian as our unit of angle, as defined in figure \figref{radian-measure}. A
+right angle is $\pi/2$ radians, a full circle $2\pi$. From the definition we observe that
+a number with ``units'' of radians is in fact the unitless ratio of two distances.
+<% marg(0) %>
+<%
+  fig(
+    'radian-measure',
+    %q{The radian measure of the angle $\theta$ is $s/r$.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'sine-and-cosine',
+    %q{The sine of $\theta$ is $y/r$, the cosine $x/r$.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'unit-circle',
+    %q{The sine and cosine defined on the unit circle, for any angle $\theta$.}
+  )  
+%>
+<% end_marg %>
+<% end_sec('radian-measure') %>
+
+<% begin_sec("Sine and cosine",nil,'sine-and-cosine') %>
+Figure \figref{sine-and-cosine} shows a right triangle. The sine and cosine of the angle $\theta$
+are defined as the ratios
+\begin{align*}
+  \sin\theta &= \frac{y}{r} \qquad \text{and}\\
+  \cos\theta &= \frac{x}{r}\eqquad.
+\end{align*}
+Since these ratios are the same for any two similar triangles, the definitions
+depend only on $\theta$, not on the triangle.
+
+<% end_sec('sine-and-cosine') %>
+
+<% begin_sec("Arbitrary angles",nil,'arbitrary-angles') %>
+Since the above definition assumes a right triangle, it is restricted to angles $\theta$ that are
+between 0 and $\pi/2$ (a right angle). Figure \figref{unit-circle} shows how to generalize this
+to an angle that is an arbitrary real number. The circle is the \emph{unit} circle, i.e., the
+circle centered on the origin and having radius 1. The angle is by convention measured counterclockwise
+from the $x$ axis; a negative angle would indicate a clockwise rotation. The $(x,y)$ coordinates
+of a point on the unit circle at angle $\theta$ are $(\cos\theta,\sin\theta)$.
+
+It is handy to know these facts:
+\begin{align*}
+  \cos 0 &= 1 \\
+  \sin 0 &= 0
+\end{align*}
+These do not need to be memorized. They can be recovered instantly by visualizing the unit circle.
+
+The following identities will be needed later in the chapter.
+\begin{subequations}
+\begin{align}
+  \sin(x+y) &= \sin x\cos y + \cos x\sin y \label{eqn:sin-sum-of-angles} \\
+  \cos(x+y) &= \cos x\cos y - \sin x\sin y \label{eqn:cos-sum-of-angles}
+\end{align}
+\end{subequations}
+% Checked:
+% calc -e "x=.3; y=.7; sin(x+y); sin x cos y + cos x sin y"
+% calc -e "x=.3; y=.7; cos(x+y); cos x cos y - sin x sin y"
+<% end_sec('arbitrary-angles') %>
+
+<% begin_sec("Other trigonometric functions",nil,'other-trig-functions') %>
+In terms of the same variables defined above, we have the following additional trigonometric functions:
+\begin{align*}
+  \tan \theta &= \frac{y}{x} \qquad \text{[important]}\\
+  \csc \theta &= 1/\sin\theta \qquad \text{[not as important]} \\
+  \sec \theta &= 1/\cos\theta \qquad \text{[not as important]} \\
+  \cot \theta &= 1/\tan\theta \qquad \text{[not as important]}
+\end{align*}
+<% end_sec('other-trig-functions') %>
+
+<% end_sec('trig') %>
+
+<% begin_sec("Derivatives of trigonometric functions",nil,'derivatives-of-trig') %>\index{trigonometry!derivatives!trig functions}
+<% begin_sec("Derivatives of the sine and cosine",nil,'derivatives-of-sin-cos') %>
+Sometimes a variable oscillates back and forth. A weight hung from a rubber
+band will vibrate up and down. The temperature of Los Angeles goes down every winter
+and back up every summer. A sinusoidal wave is the most mathematically simple model
+of such an oscillation, and if we want to know the rate of change, we need to know
+how to differentiate such a function.
+
+So how would we find the derivative of a sine or cosine? Since
+they're transcendental, they can't be expressed in
+terms of simpler functions that we know how to differentiate. 
+
+<% begin_sec("Derivatives at $\\theta=0$",nil,'derivatives-of-sin-cos-at-zero') %>
+Let's start by finding the derivatives of these functions at zero, as shown in figure
+\figref{derivatives-of-sin-cos-at-zero}.
+<% marg(20) %>
+<%
+  fig(
+    'derivatives-of-sin-cos-at-zero',
+    %q{The derivatives of the cosine and sine functions at $\theta=0$.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'limit-of-sin-over-x',
+    %q{A geometrical method of finding $\sin'0$.}
+  )  
+%>
+<% end_marg %>
+
+Since the cosine is an even function, we have $\cos'0=0$.
+
+What about $\sin'0$?
+The definition of the derivative gives
+\begin{align*}
+  \sin'0 &= \lim_{\theta\rightarrow0} \frac{\sin\theta-\sin0}{\theta-0} \\
+         &= \lim_{\theta\rightarrow0} \frac{\sin\theta}{\theta}\eqquad.
+\end{align*}
+In figure
+\figref{limit-of-sin-over-x}, the definition of radian measure gives $\theta=s$, while the definition
+of the sine function tells us that $\sin\theta = y$. Thus the limit above becomes
+\begin{equation*}
+  \sin'0 = \lim_{\theta\rightarrow0} \frac{y}{s}\eqquad.
+\end{equation*}
+If $\theta$ is close to zero, then the lengths
+$y$ of the vertical line and $s$ of the arc should be nearly the same, so we have the small-angle
+approximation $\sin\theta\approx\theta$.
+Our limit is clearly\footnote{Strictly speaking, we should prove that for the approximation
+$\sin\theta\approx\theta$, the error $E=\theta-\sin\theta$ goes to zero fast enough so that
+$\lim_{\theta\rightarrow0}E/\theta=0$. In fact, one can show based on the \emph{areas}
+in figure \figref{limit-of-sin-over-x} that $|E|<|\theta^2|$ for $|\theta|<0.1$.}
+equal to 1, so we have $\sin'0=1$.
+
+As a check on our work, we can take a numerical approximation to the derivative at $\theta=0$,
+\begin{align*}
+  \sin'0 &\approx \frac{\sin0.001-\sin0}{0.001} \qquad [\text{angle in radians}] \\
+         &= 0.99999983\eqquad,
+\end{align*}
+which is indeed close to 1.
+<% end_sec('derivatives-of-sin-cos-at-zero') %>
+
+<% begin_sec("A preliminary sketch",nil,'sketch-derivatives-of-sin-cos') %>
+What about the value of $\sin'$ at $\theta\ne0$?
+Let's \emph{sketch} the derivative of $\sin\theta$
+in order to gain some insight. Using the techniques of section \ref{subsec:sketch-derivatives},
+p.~\pageref{subsec:sketch-derivatives}, we obtain figure \figref{sketch-derivative-of-sine}.
+At $\theta=0$, the slope of the sine function is 1, which is as large and positive as it ever gets,
+so the value of the derivative sketched
+in the bottom graph is large and positive. At $\pi/2$ (90 degrees), the sine has its maximum value of 1,
+and its derivative is 0. At $\pi$, the sine has its largest negative derivative. The graph we're
+led to draw for $\sin'\theta$ looks like the cosine function.
+<% marg(35) %>
+<%
+  fig(
+    'sketch-derivative-of-sine',
+    %q{Sketching the derivative of the sine function.}
+  )  
+%>
+<% end_marg %>
+
+The graph of the cosine function is
+the same as the graph of the sine function except for a shift to the left by a quarter of a cycle.
+Therefore by the shift property of the derivative (p.~\pageref{properties-of-derivative}),
+if the derivative of $\sin$ is $\cos$, then the derivative of $\cos$ must be a cosine function
+shifted to the left by another quarter-cycle, which gives $-\sin$. Curve sketching therefore
+leads us to the following conjectures:
+\begin{align*}
+  \sin' &= \cos \\
+  \cos' &= -\sin
+\end{align*}
+<% end_sec('sketch-derivatives-of-sin-cos') %>
+<% begin_sec("Proof of the derivatives of the sine and cosine",nil,'prove-derivatives-of-sin-cos') %>
+To prove this, let's apply the definition of the derivative to the sine function.
+\begin{equation*}
+  \sin' x = \lim_{h\rightarrow0} \frac{\sin(x+h)-\sin x}{h}
+\end{equation*}
+Making use of the identity $\sin(x+y) = \sin x\cos y + \cos x\sin y$
+(p.~\pageref{eqn:sin-sum-of-angles}), we find
+\begin{align*}
+  \sin' x &= \lim_{h\rightarrow0} \frac{\sin x\cos h+\cos x\sin h-\sin x}{h} \\
+        &= \cos x \lim_{h\rightarrow0} \frac{\sin h}{h} + \sin x \lim_{h\rightarrow0} \frac{\cos h-1}{h}\eqquad.
+\end{align*}
+We have already determined these two limits: they are 1 and 0, respectively,
+so $\sin'x = \cos x$ as claimed. The similar calculation for the derivative of $\cos x$ is left
+as an exercise.
+<% end_sec('prove-derivatives-of-sin-cos') %>
+
+<% end_sec('derivatives-of-sin-cos') %>
+<% end_sec('derivatives-of-trig') %>
+
+<% begin_sec("Review: the inverse of a function",nil,'inverse-of-function') %>\index{function!inverse}
+Some operations can be undone. Others can't. Computer software often has an ``undo'' function.
+But what if the operation is mixing hot coffee with cold milk? There is no way to undo this
+operation, even in principle, because information has been lost. No matter how closely we inspect the
+mixture, we have no way of determining how hot the original coffee was, or how cold the original milk.
+
+We've defined a function as a graph that passes the vertical line test, so that every input $x$ corresponds
+to a single output $y$. A function may or may not be undoable. If every $y$ corresponds to a single $x$,
+i.e., if the function passes a \emph{horizontal} line test,
+then it's undoable, and we call the ``undo'' operation the inverse of the function.
+The inverse of a function $f$ is notated $f^{-1}$, where only context tells us that we mean the
+``undoing'' of $f$, rather than $1/f$.
+
+<%
+  fig(
+    'inverses-of-functions',
+    %q{Some functions and their inverses. In each case, the inverse function is found by
+       reflecting the graph across the line $y=x$.
+    },
+    {
+      'width'=>'fullpage'
+    }
+  )
+%>
+
+Geometrically,
+inverting the function means interchanging the roles of $x$ and $y$, which requires flipping it
+across the 45-degree diagonal defined by the line $y=x$, as in figure \figref{inverses-of-functions}.
+For example, figure \subfigref{inverses-of-functions}{1} shows the ``add-one'' function defined
+by $f(x)=x+1$, and the ``subtract-one'' function $f^{-1}(x)=x-1$ that undoes it.
+
+We define a function as a graph that passes the vertical-line test. The set of all $x$ values for which
+the graph contains an $(x,y)$ point is called the \emph{domain} of the function, while the
+set of such $y$ values is its \emph{range}. That is, the domain is the set of all legal inputs,
+while the range is the set of possible outputs. Sometimes we define a particular function using a
+formula, and this may implicitly restrict its domain. For example, if we define
+\begin{equation*}
+  y = \frac{1}{x-1}\eqquad,
+\end{equation*}
+then by implication the domain is the whole real line except for $x=1$, which would produce division
+by zero.
+
+Sometimes there are real-world reasons for restricting the domain of a function. For example,
+in section \ref{subsec:limit-equals-infinity}, p.~\pageref{subsec:limit-equals-infinity}, we discussed
+the amount of tension $T$ in a telephone wire that was necessary in order to make it sag by a height
+$h$ at the middle. This function was of the form $T=k/h$, where $k$ is a constant. Mathematically
+this function is well defined for $h<0$, but physically that would be meaningless, since a cable
+can only sustain tension ($T>0$) --- only a rigid object such as a rod can sustain compression ($T<0$).
+
+Sometimes by restricting the domain of a function we can make it invertible. For example, the
+function $y=x^2$ fails the horizontal-line test, so it doesn't have an inverse function. But
+if we restrict its domain to $x\ge 0$, as in figure
+\subfigref{inverses-of-functions}{4}, then we can define its inverse function, which is $x=\sqrt{y}$
+(using the positive root).
+
+ In terms of the composition of functions
+(section \ref{subsec:composition}, p.~\pageref{subsec:composition}), the function
+$f\circ f^{-1}$ is simply the identity function $y=x$ (perhaps with a restriction on
+its domain and range). The same applies to $f^{-1}\circ f$.
+<% end_sec('inverse-of-function') %>
+
+\startdq
+
+\begin{dq}
+Which of the following four statements are true, and which are false?
+
+1. For all real numbers $x$, $\sin(\sin^{-1}x)=x$.
+
+2. For all real numbers $x$, $\sin^{-1}(\sin x)=x$.
+
+3. For all real numbers $x$, $\tan(\tan^{-1}x)=x$.
+
+4. For all real numbers $x$, $\tan^{-1}(\tan x)=x$.
+\end{dq}
+
+<% begin_sec("Derivative of the inverse of a function",nil,'deriv-of-inverse') %>\index{function!inverse!derivative of}
+Suppose that  $x$ is how many gallons of gas I buy,
+and $y$ is how much money I pay. Then $y$ is a function of $x$, and the rate at which this
+function changes, i.e., the price per gallon of gas, in my area is currently about
+\begin{equation*}
+  \frac{\Delta y}{\Delta x} = 4\ \frac{\$}{\text{gallon}}\eqquad.
+\end{equation*}
+It's valid to measure this rate of change with an expression of the form $\Delta\ldots/\Delta\ldots$,
+because the rate of change is constant. I might also want to know how much gas I can get for each
+additional dollar I'm willing to spend, and this is found by ordinary algebra to be
+\begin{equation*}
+  \frac{\Delta x}{\Delta y} = 0.25\ \frac{\text{gallon}}{\$}\eqquad.
+\end{equation*}
+
+If $y$ is a function of $x$, and the function is invertible, then the Leibniz notation suggests
+that this should hold even for non-constant rates of change, i.e., that
+the derivative of the inverse function is
+\begin{equation*}
+  \frac{\der x}{\der y} = \frac{1}{\left(\frac{\der y}{\der x}\right)}\eqquad.
+\end{equation*}
+This is in fact correct, with the caveat that when $\der y/\der x=0$, $\der x/\der y$ is
+undefined because it blows up to infinity.
+
+\begin{eg}{Derivative of a cube root}
+\egquestion Let $y=x^3$. Find $\der x/\der y$.
+
+\eganswer The function $y=x^3$, figure \figref{cube}, has a well-defined inverse $x=y^{1/3}$,
+which is the cube root, figure \figref{cube-root}. The derivative of the original function is
+\begin{equation*}
+  \frac{\der y}{\der x} = 3x^2\eqquad.
+\end{equation*}
+The derivative of the inverse function is
+\begin{align*}
+  \frac{\der x}{\der y} &= \frac{1}{\left(\frac{\der y}{\der x}\right)} \\
+                        &= \frac{1}{3x^2} \\
+                        &= \frac{1}{3}x^{-2}\eqquad.
+\end{align*}
+If we prefer to express this in terms of $y$, we can substitute to get
+\begin{equation*}
+  \frac{\der x}{\der y} = \frac{1}{3}y^{-2/3}\eqquad,
+\end{equation*}
+which agrees with the power rule (section \ref{sec:power-rule-general},
+p.~\pageref{sec:power-rule-general}).
+
+This expression holds everywhere except $x=0$, $y=0$, where $\der x/\der y$ blows up to infinity.
+\end{eg}
+
+
+<% marg(200) %>
+<%
+  fig(
+    'cube',
+    %q{The function $y=x^3$.}
+  )  
+%>
+\spacebetweenfigs
+<%
+  fig(
+    'cube-root',
+    %q{The function $x=y^{1/3}$.}
+  )  
+%>
+<% end_marg %>
+%%graph%% cube func=x**3 format=eps xlo=-3 xhi=3 ylo=-30 yhi=30 with=lines xtic_spacing=2 xtic_lo=-2 ytic_spacing=10
+%%graph%% cube-root func=(abs(x)**0.333)*(x/abs(x)) format=eps xlo=-30 xhi=30 ylo=-3 yhi=3 x=y y=x with=lines xtic_spacing=10 ytic_spacing=2 ytic_lo=-2
+
+<% end_sec('deriv-of-inverse') %>
+
+<% begin_sec("Review: logarithms",4,'exp-and-log') %>
+<% begin_sec("Logarithms",nil,'logs') %>\index{logarithm}
+The inverse of exponentiation is the logarithm.
+If
+\begin{equation*}
+  b^p = z\eqquad,
+\end{equation*}
+then 
+\begin{equation*}
+  \log_b z = p\eqquad.
+\end{equation*}
+For example, $\log_2 8=3$, because $2^3=8$.
+
+The number 10 has appeared above as a base, and that's because humans have 10 fingers.
+There's clearly nothing all that special about 10. It's an accident of
+evolution. A number with more cosmic significance is $e\approx2.71818\ldots$ Exponents
+and logarithms with base $e$ have some nice properties, which we'll discuss later in
+more detail. Any expression with $x$ in the exponent is called an exponential,
+but $e^x$ is ``the'' exponential function. Sometimes when $x$
+is a complicated expression it gets awkward to write it as a superscript, and then we
+write $\exp(\ldots)$ instead of $e^{\ldots}$. The logarithm with the special base $e$
+is called the \emph{natural logarithm}, notated $\ln$.
+<% end_sec('logs') %>
+
+<% begin_sec("Identities",nil,'log-and-exp-identities') %>\index{logarithm!identities}
+The following identities are useful. Exponentials and logs are inverse operations:
+\begin{subequations}
+\begin{align}
+  \log_b\left(b^x\right) &= x \label{eqn:log-of-exp} \\
+  b^{\log_b x} &= x \label{eqn:exp-of-log}
+\end{align}
+\end{subequations}
+Logs turn multiplication and division into addition and subtraction:
+\begin{subequations}
+\begin{align}
+  \log(xy) &= \log x+\log y \\
+  \log(x/y) &= \log x-\log y
+\end{align}
+\end{subequations}
+A log in one base can be changed into a log in another base:
+\begin{equation}\label{eqn:change-of-base}
+  \log_b x = \frac{\log_c x}{\log_c b}
+\end{equation}
+For example, $\log_{10} 10^6=6$, whereas $\log_{100} 10^6=3$.
+It may be convenient to convert a logarithm to a natural log, with $c=e$:
+\begin{equation}\label{eqn:convert-log-to-ln}
+  \log_b x = \frac{\ln x}{\ln b}\eqquad.
+\end{equation}
+Similarly, an exponential with an arbitrary base $b$ can be converted
+to an exponential with base $e$.
+\begin{equation}\label{eqn:convert-exponential-to-ex}
+  b^x = e^{(\ln b)x}
+\end{equation}
+<% end_sec('log-and-exp-identities') %>
+<% end_sec('exp-and-log') %>
+
+<% begin_sec("The derivative of a logarithm",nil,'deriv-of-log') %>\index{logarithm!derivative of}
+We now know enough to differentiate a logarithm. The natural log has the
+nicest properties, so we'll start with it. Let
+\begin{equation*}
+  y = \ln x\eqquad.
+\end{equation*}
+Then
+\begin{align*}
+  \frac{\der y}{\der x} &= \frac{1}{\left(\frac{\der x}{\der y}\right)} \qquad \text{[derivative of an inverse]} \\
+               &= \frac{1}{\left(\frac{\der e^y}{\der y}\right)} \qquad \text{[$x=e^y$]} \\
+               &= \frac{1}{e^y} \qquad \text{[derivative of the exponential is the exponential]} \\
+               &= \frac{1}{x} \qquad \text{[$x=e^y$ again]}
+\end{align*}
+The result is unexpectedly simple.
+
+\begin{important}[Derivative of the natural logarithm]
+\begin{equation*}
+  \frac{\der\:\ln x}{\der x} = \frac{1}{x}
+\end{equation*}
+\end{important}
+
+This is noteworthy because it shows that there must be an exception to the rule
+that we can always obtain a function that varies like $x^{n-1}$ by differentiating
+something like $x^n$. If we believed that this rule was
+always true, then we would think that we could obtain the function $x^{-1}$
+by differentiating some function of the form $(\text{constant})x^0$. But in fact this
+doesn't work, since $x^0$ is a constant, and the derivative of $x^0$ is therefore 0.
+Figure \figref{power-ladder-derivatives-only} shows the idea.
+
+<% marg(30) %>
+<%
+  fig(
+    'power-ladder-derivatives-only',
+    %q{A ``ladder'' of powers of $x$. Ignoring multiplicative constants, differentiation usually
+       just takes us one step down the ladder. The diagram shows the two exceptions.}
+  )  
+%>
+<% end_marg %>
+
+Derivatives of logs with other bases can be found by using equation \eqref{eqn:convert-log-to-ln}
+to convert to a natural log. The result is
+\begin{equation*}
+  \frac{\der\:\log_b x}{\der x} = \frac{1}{(\ln b)x}
+\end{equation*}
+
+\begin{eg}{The power rule for irrational exponents}\label{eg:power-any-exponent}
+In section \ref{sec:power-rule-general}, p.~\pageref{sec:power-rule-general}, we showed that the
+power rule $(x^n)'=nx^{n-1}$ held for any nonzero integer value of $n$, and also gave a sample
+of a proof for a fractional exponent. However, the methods used there were not capable of
+proving the result for irrational values of $n$, or of demonstrating it for all rational values
+in a single proof. We now have the ability to carry out the proof in an efficient way for
+any real, nonzero $n$.
+
+\begin{align*}
+  y &= x^n \\
+    &= e^{n \ln x} \\
+\intertext{By the chain rule,}
+  \frac{\der y}{\der x} &= e^{n \ln x} \cdot \frac{n}{x} \\
+                        &= x^n \cdot \frac{n}{x} \\
+                        &= nx^{n-1}\eqquad.
+\end{align*}
+(For $n=0$, the result is zero.)
+
+\end{eg}
+
+<% end_sec('deriv-of-log') %>
+
+<% begin_sec("Derivatives of inverse trigonometric functions",nil,'deriv-of-inv-trig') %>\index{trigonometry!derivatives!inverse trig functions}
+The sine and cosine functions are not invertible, since they fail the horizontal line test --- in fact,
+any horizontal line that crosses these functions crosses them in infinitely many places.
+For example, if I tell you that I took the sine of some angle, and the sine was zero, then
+the angle could have been any number from the infinite set $\{\ldots -2\pi, -\pi, 0, \pi, 2\pi, \ldots\}$.
+But by restricting the domain of the sine function appropriately, e.g., to $-\pi/2\le x\le \pi/2$, we
+can make an invertible function and define an inverse sine, figure \figref{inverse-sine}.
+<% marg(200) %>
+<%
+  fig(
+    'inverse-sine',
+    %q{The sine and inverse sine functions.}
+  )  
+%>
+<% end_marg %>
+
+The derivative of the inverse sine can be found straightforwardly by using our knowledge of the
+derivatives of inverses of functions. Let $y=\sin^{-1} x$.
+Then:
+\begin{align*}
+  \frac{\der y}{\der x} &= \frac{1}{\left(\frac{\der x}{\der y}\right)} \\
+          &= \frac{1}{\cos y} \qquad \text{[because $x=\sin y$]}\\
+          &= \frac{1}{\sqrt{1-\sin^2 y}} \qquad \text{[because $(\cos y,\sin y)$ lies on the unit circle]} \\
+          &= \frac{1}{\sqrt{1-x^2}}
+\end{align*}
+A similar calculation shows that the derivative of $\cos^{-1} x$ is $-1/\sqrt{1-x^2}$.
+<% end_sec('deriv-of-inv-trig') %>
+
+<% begin_sec("Summary of derivatives of transcendental functions",4,'transcendental-summary') %>
+Given the derivatives of trig and inverse trig functions from sections 
+\ref{sec:derivatives-of-trig} and \ref{sec:deriv-of-inv-trig}, it is straightforward to extend the list
+of derivatives to include the other familiar trig functions.
+In this section we provide a summary for reference
+purposes of all of the derivatives of the transcendental functions encountered so far.
+
+\noindent\begin{tabular}{ll}\label{transcendental-table}
+$(e^x)'=e^x$          &       $(\ln x)'=1/x$ \\
+$(\sin x)'=\cos x$    &       $(\sin^{-1} x)'=(1-x^2)^{-1/2}$ \\
+$(\cos x)'=-\sin x$    &      $(\cos^{-1} x)'=-(1-x^2)^{-1/2}$ \\
+$(\tan x)'=(\cos x)^{-2}$ &   $(\tan^{-1} x)'=(1+x^2)^{-1}$ \\
+\end{tabular}
+<% end_sec('transcendental-summary') %>
+<% begin_sec("Hyperbolic functions",nil,'hyperbolic-functions') %>
+The hyperbolic trig functions are defined as follows.\label{def-hyperbolic}
+\begin{align*}
+  \sinh x &= \frac{1}{2}\left(e^x-e^{-x}\right) \\
+  \cosh x &= \frac{1}{2}\left(e^x+e^{-x}\right) \qquad \text{and} \\  
+  \tanh x &= \frac{\sinh x}{\cosh x}\eqquad.
+\end{align*}
+Their inverses can be calculated using the following relations:
+\begin{align*}
+  \sinh^{-1} x &= \ln\left(x+\sqrt{x^2+1}\right) \\
+  \cosh^{-1} x &= \ln\left(x+\sqrt{x^2-1}\right) \\
+  \tanh^{-1} x &= \frac{1}{2}\ln\left(\frac{1+x}{1-x}\right)
+\end{align*}
+The derivatives are as follows:
+
+\noindent\begin{tabular}{ll}\label{transcendental-table}
+$(\sinh x)'=\cosh x$      &   $(\sinh^{-1} x)'=(x^2+1)^{-1/2}$ \\
+$(\cosh x)'=\sinh x$      &   $(\cosh^{-1} x)'=(x^2-1)^{-1/2}$ \\
+$(\tanh x)'=(\cosh x)^{-2}$      &   $(\tanh^{-1} x)'=(1-x^2)^{-1}$ 
+\end{tabular}\label{end-of-hyperbolic-functions}
+<% end_sec('hyperbolic-functions') %>
+
+<% begin_hw_sec("Review problems") %>
+
+<% hw('review-sin-and-cos-both-negative',{'solution'=>true}) %>
+<% hw('review-invert-random-function') %>
+<% hw('review-log-base-3') %>
+
+  <% hw_block(1) %>
+
+\begin{hwinstructions}
+Problem \ref{hw:more-limits-at-infinity} does not require any of the new calculus learned in this
+chapter, but does require knowledge of the transcendental functions reviewed in it.
+\end{hwinstructions}
+
+<% hw('more-limits-at-infinity') %>
+
+  <% hw_block(1) %>
+
+
+<% end_hw_sec %>
+
+<% begin_hw_sec %>
+
+<% hw('logarithmy',{'solution'=>true}) %>
+<% hw('sinusoidal',{'solution'=>true}) %>
+<% hw('ex-chain',{'solution'=>true}) %>
+<% hw('max-range',{'solution'=>true}) %>
+<% hw('derivative-of-tan',{'solution'=>true}) %>
+<% hw('sin-sin-sin',{'solution'=>true}) %>
+<% hw('cosh-extrema',{'solution'=>true}) %>
+
+  <% hw_block(1) %>
+
+<% hw('linear-approx-log') %>
+<% hw('linear-approx-cos') %>
+
+<% hw('inflection-visual-transcendental') %>
+%%graph%% inflection-visual-transcendental func=exp(x)-x**2 xlo=-3 xhi=3 ylo=-8 yhi=8 with=lines xtic_spacing=1 ytic_spacing=5 format=eps
+<% marg(-300) %>
+<%
+  fig(
+    'inflection-visual-transcendental',
+    %q{Problem \ref{hw:inflection-visual-transcendental}.}
+  )  
+%>
+<% end_marg %>
+
+<% hw('inflection-powers-of-2-and-3') %>
+
+  <% hw_block(1) %>
+
+\begin{hwinstructions}
+In problems \ref{hw:sin-cos-tan}-\ref{hw:atan-sqrt-ln}, differentiate the given functions.
+\end{hwinstructions}
+
+
+<% hw('sin-cos-tan') %>
+<% hw('ln-cos-ex') %>
+<% hw('e-sin-ln') %>
+<% hw('atan-sqrt-ln') %>
+
+<% hw('derivative-of-x-to-the-x') %>
+
+
+<% hw('mercator') %>
+<% marg(0) %>
+<%
+  fig(
+    'hw-mercator',
+    %q{A Mercator projection, problem \ref{hw:mercator}. Note the extremely exaggerated scale at the poles.}
+  )  
+%>
+<% end_marg %>
+
+
+  <% hw_block(1) %>
+
+<% hw('equilibrating-temperature',{'solution'=>true}) %>
+<% hw('parachute') %>
+<% hw('damped') %>
+<% hw('door-closer') %>
+
+  <% hw_block(1) %>
+
+<% hw('credit-card-fraud') %>
+
+\pagebreak
+
+<% marg(300) %>
+<%
+  fig(
+    'hw-gompertz',
+    %q{Problem \ref{hw:gompertz}. Probability of death in the U.S. in the year 2003. Note the logarithmic scale
+       on the vertical axis. Between the ages of about 30 and 95, the death rate rises exponentially,
+       as shown by the linearity of the data on the logarithmic graph.}
+  )  
+%>
+<% end_marg %>
+
+<% hw('gompertz') %>\index{Gompertz actuarial model}
+
+
+<% hw('transcendental-credit-card-fraud') %>
+
+  <% hw_block(4) %>
+
+<% hw('induction-nth-deriv-of-exponential') %>
+
+\pagebreak
+
+<% hw('induction-nth-deriv-of-gaussian') %>
+
+
+<% end_hw_sec %>
+
+<% end_chapter %>
