@@ -132,7 +132,7 @@ def populate_properties():
     for filename in feature_dict.keys():
         fd =  open(filename)
         tex_source = fd.read()
-        feature_dict[k].update(feature_extraction(tex_source))
+        feature_dict[filename].update(feature_extraction(tex_source))
     
     return feature_dict
 
