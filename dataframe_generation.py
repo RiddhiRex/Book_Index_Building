@@ -12,7 +12,7 @@ def generate_dataframe(filename,feat_dict,feature_list_from_tex):
         
     tagged = nltk.pos_tag(frequency.keys())
     
-    notpos = ['VB','VBP','PRP','IN','RB','DT','WDT','WP','WRB','UH','TO','RBR','RBS','POS','MD','EX','WP$','PRP$','$']
+    notpos = ['VB','VBP','PRP','IN','RB','DT','WDT','WP','WRB','UH','TO','RBR','RBS','POS','MD','EX','WP$','PRP$','$','CC','LS','PDT','RP']
     w1 = list(filter(lambda word_tag: word_tag[1]  not in notpos, tagged))
     
     word = []
@@ -28,8 +28,7 @@ def generate_dataframe(filename,feat_dict,feature_list_from_tex):
     for each in word:
         count.append(frequency[each])
     df['wordcount'] = count
-    
-    cols = ['NN','NNP','NNS','VBG','VBD','VBN','VBZ','VBP','VB','CD','CC','LS','JJ','JJS','JJR','PDT','RP','FW','NNPS']
+    cols = ['NN','NNP','NNS','VBG','VBD','VBN','VBZ','VBP','VB','CD','JJ','JJS','JJR','FW','NNPS']
     df1 = pd.DataFrame(0, index=np.arange(len(df['word'])), columns=cols)
     df2 = pd.concat([df, df1], axis=1)
     
