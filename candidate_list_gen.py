@@ -27,7 +27,7 @@ def process_text(input_text):
 
     processed_word = []
     for each in filtered_words:
-        if not each:
+        if not each or len(''.join([i for i in each if not i.isdigit()])) < 3:
             continue
         else:
             processed_word.append(each) 

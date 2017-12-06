@@ -120,6 +120,8 @@ def feature_extraction(tex_source):
     features_dict['large'] = large
 
     return features_dict
+def tf_idf():
+   """computes tf-idf of each word and makes it a feature"""
 
 def populate_properties():
     '''

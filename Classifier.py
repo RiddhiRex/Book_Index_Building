@@ -110,6 +110,7 @@ def Evaluate_accuracy(pred, true_value):
     
 
     cr= classification_report(true_value, pred)
+    print(cr)
     xticks = ['precision', 'recall', 'f1-score', 'support']
     yticks = list(np.unique(true_value))
     yticks += ['avg']
@@ -117,8 +118,8 @@ def Evaluate_accuracy(pred, true_value):
     avg = np.mean(rep, axis=0)
     avg[-1] = np.sum(rep[:, -1])
     rep = np.insert(rep, rep.shape[0], avg, axis=0)
-    plt.title('Classification Report (Normalized)')
-    rep =rep.astype('float') / rep.sum(axis=1)[:, np.newaxis]
+    plt.title('Classification Report')
+#    rep =rep.astype('float') / rep.sum(axis=1)[:, np.newaxis]
     sns.heatmap(rep, annot=True, xticklabels=xticks, yticklabels=yticks)
     plt.show()
     

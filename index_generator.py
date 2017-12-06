@@ -14,7 +14,7 @@ def index_gen(predicted_indices,input_file,output_file):
   with open(input_file) as f:
       data = f.read()
       for word in predicted_indices:
-          data = re.sub(r'%s'%(word),'%s\index{%s}'%(word,word),data)
+          data = re.sub(r'\b%s\b'%(word),'%s\index{%s}'%(word,word),data)
 
   with open(output_file,"w") as f:
       f.write(data)

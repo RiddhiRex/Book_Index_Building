@@ -1,8 +1,9 @@
 import nltk, collections
 import pandas as pd
 import numpy as np
+import math
 
-
+n_src = 88 #number of source files
 def generate_dataframe(filename,feat_dict,feature_list_from_tex):
     df = pd.DataFrame()
     candidate_list = feat_dict["candidate_list"]
@@ -41,3 +42,14 @@ def generate_dataframe(filename,feat_dict,feature_list_from_tex):
         df2.loc[df2['word'].isin(feat_dict[feat]),feat]=1
     df2["filename"] = filename
     return df2
+
+def add_tf_idf(df):
+    grouping = df.groupby('word').size()
+
+    idf_df = pd.DataFrame({'word':grouping.index, 'idf':grouping.values})
+    idf_df["idf"] = n_src/((idf_df["idf"])+1)
+    idf_df["idf"] = idf_df["idf"].apply(math.log)
+
+    df = df.merge(idf_df,on='word',how='left')
+    df["tf-idf"] = df["wordcount"] * df["idf"]
+    return df
