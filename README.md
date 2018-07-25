@@ -7,24 +7,17 @@ generated.
 
 Data sources:
 We initially considered using papers from arXiv.org as the main source for data for this project.
-However, we found that the number of papers with indices were less. Therefore we used tex
-
-source of textbooks that were available online as our primary data source. We have used
-textbooks from domains such as physics, mathematics, computer science. This was done to
-make sure that the model that we build doesn’t overfit a particular domain. We faced encoding
-issues while processing some of the books. We had to resolve them to make the data sources
-usable.
+However, we found that the number of papers with indices were less. Therefore we used tex source of textbooks that were available online as our primary data source. We have used textbooks from domains such as physics, mathematics, computer science. This was done to
+make sure that the model that we build doesn’t overfit a particular domain. We faced encoding issues while processing some of the books. We had to resolve them to make the data sources usable.
 
 Data Preprocessing:
 A particular challenge is this task is that a very small number of words in a given source file will
 be present in the index. As a result the ‘index-word’ class will have significantly less members
 than the ‘non-index-word’ class.
-
 We attempt to address this by having a ‘Candidate list’ of words which is a list of candidate or
 potential index words. To put it simply, the candidate list will have only those words or n-grams
 that have a probability > 0 to be in index. If we can ascertain that a word will not be in the
 index, we do not add it to the candidate list.
-
 In an ideal scenario, the candidate list will have each and every word that is a part of index and
 other words that have a good chance to be in the index. We are generating the candidate list by
 passing the data through the following pipeline:
@@ -53,7 +46,6 @@ and bigrams.
 
 ● Filtering by POS : We observed that certain Parts of Speech never appear in the indices,
 thus having them in the candidate list is of little use.
-
 
 
 Feature extraction:
