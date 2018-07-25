@@ -84,10 +84,10 @@ Recall is 0.24
 F score is 0.045
 
 Drawbacks of the baseline model:
-● Only TF was being used as a feature ignoring the Inverse Document Frequency (IDF).
-● Pruning done when generating candidate list is insufficient.
-● Imbalance between the number of samples in the index class and the non-index class.
-● Poor recall value.
+● Only TF was being used as a feature ignoring the Inverse Document Frequency (IDF).  
+● Pruning done when generating candidate list is insufficient.  
+● Imbalance between the number of samples in the index class and the non-index class. 
+● Poor recall value.  
 
 Extended baseline model:
 We used a Multilayer Perceptron(MLP) network to build our extended baseline model. The
